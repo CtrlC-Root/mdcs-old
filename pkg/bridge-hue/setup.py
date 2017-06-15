@@ -12,6 +12,7 @@ setup(
 
     packages=find_packages(),
     install_requires=[
+        'python-daemon >= 2.0.0'
     ],
 
     entry_points={

@@ -25,7 +25,7 @@ class Node:
         """
 
         if device.uuid in self.devices:
-            raise KeyError("device {0} already exists".format(device))
+            raise KeyError("device identifier is not unique")
 
         self.devices[device.uuid] = device
 
@@ -35,6 +35,6 @@ class Node:
         """
 
         if device.uuid not in self.devices:
-            raise KeyError("device {0} not found".format(device))
+            raise KeyError("device not found")
 
         del self.devices[device.uuid]

@@ -46,7 +46,7 @@ class NodeServer:
         self.node = node
 
         # create the HTTP server
-        self.http_server = HTTPServer((self.http_host, self.http_port), NodeHTTPRequestHandler)
+        self.http_server = HTTPServer((http_host, http_port), NodeHTTPRequestHandler)
 
     @property
     def http_host(self):

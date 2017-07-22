@@ -14,7 +14,33 @@ class BridgeAPIHandler(BaseHTTPRequestHandler):
     TODO.
     """
 
-    pass
+    def do_HEAD(self):
+        """
+        TODO.
+        """
+
+        # write headers
+        self.send_response(200)
+        self.send_header("Content-Type", "application/javascript")
+        self.end_headers()
+
+    def do_GET(self):
+        """
+        TODO.
+        """
+
+        # XXX debug
+        print(self.client_address)
+        print(self.path)
+        print(self.headers.keys())
+
+        # write headers
+        self.send_response(200)
+        self.send_header("Content-Type", "application/javascript")
+        self.end_headers()
+
+        # write response
+        self.wfile.write("{'foo': 'bar'}".encode("utf-8"))
 
 
 class BridgeNode:
@@ -87,4 +113,9 @@ def main():
 
     # run the daemon
     with context:
-        node.run()
+        try:
+            node.run()
+
+        except KeyboardInterrupt:
+            # TODO: log this
+            print("received SIGINT, quitting")

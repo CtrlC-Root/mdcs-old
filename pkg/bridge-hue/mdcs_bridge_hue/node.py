@@ -34,7 +34,7 @@ class Node:
         Remove a device from this node.
         """
 
-        if not device.uuid in self.devices:
+        if device.uuid not in self.devices:
             raise KeyError("device {0} not found".format(device))
 
         del self.devices[device.uuid]

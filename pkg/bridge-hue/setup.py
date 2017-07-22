@@ -12,7 +12,8 @@ setup(
 
     packages=find_packages(),
     install_requires=[
-        'python-daemon >= 2.0.0'
+        'python-daemon >= 2.0.0',
+        'werkzeug >= 0.12.0'
     ],
 
     entry_points={

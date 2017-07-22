@@ -1,5 +1,11 @@
+#!/usr/bin/env python
+
 import socket
+import threading
+import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
+
+from werkzeug.routing import Map, Rule
 
 
 class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -22,10 +28,9 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
         TODO.
         """
 
-        # XXX debug
-        print(self.client_address)
-        print(self.path)
-        print(self.headers.keys())
+        # XXX
+        url_parts = urllib.parse.urlparse(self.path)
+        path_parts = url_parts.path.split('/')
 
         # write headers
         self.send_response(200)
@@ -44,6 +49,25 @@ class NodeServer:
     def __init__(self, node, http_host, http_port):
         # store the server settings
         self.node = node
+
+        # create the URL dispatch rules
+        self.url_map = Map([
+            Rule('/', endpoint='status'),
+
+            Rule('/devices', endpoint='device_list'),
+            Rule('/devices/<device>', endpoint='device_detail'),
+            Rule('/devices/<device>/attributes', endpoint='attribute_list'),
+            Rule('/devices/<device>/attributes/<path>', endpoint='attribute_detail'),
+            Rule('/devices/<device>/actions', endpoint='action_list'),
+            Rule('/devices/<device>/actions/<path>', endpoint='action_detail'),
+
+            Rule('/d', endpoint='device_list'),
+            Rule('/d/<device>', endpoint='device_detail'),
+            Rule('/d/<device>/at', endpoint='attribute_list'),
+            Rule('/d/<device>/at/<path>', endpoint='attribute_detail'),
+            Rule('/d/<device>/ac', endpoint='action_list'),
+            Rule('/d/<device>/ac/<path>', endpoint='action_detail'),
+        ])
 
         # create the HTTP server
         self.http_server = HTTPServer((http_host, http_port), NodeHTTPRequestHandler)
@@ -79,13 +103,18 @@ class NodeServer:
         Run the server.
         """
 
-        # run the HTTP server indefinitely
+        # run the HTTP server until stopped
         self.http_server.serve_forever()
+
+        # close the HTTP server
+        self.http_server.serve_close()
 
     def stop(self):
         """
         Stop the server.
         """
 
-        # stop the HTTP server
-        self.http_server.shutdown()
+        # stop the HTTP server in a separate thread to avoid deadlock
+        # XXX: better way of doing this that avoids dangling threads?
+        thread = threading.Thread(target=self.http_server.shutdown)
+        thread.start()

@@ -6,79 +6,8 @@ import signal
 import lockfile
 import argparse
 
-from http.server import BaseHTTPRequestHandler, HTTPServer
-
-
-class BridgeAPIHandler(BaseHTTPRequestHandler):
-    """
-    TODO.
-    """
-
-    def do_HEAD(self):
-        """
-        TODO.
-        """
-
-        # write headers
-        self.send_response(200)
-        self.send_header("Content-Type", "application/javascript")
-        self.end_headers()
-
-    def do_GET(self):
-        """
-        TODO.
-        """
-
-        # XXX debug
-        print(self.client_address)
-        print(self.path)
-        print(self.headers.keys())
-
-        # write headers
-        self.send_response(200)
-        self.send_header("Content-Type", "application/javascript")
-        self.end_headers()
-
-        # write response
-        self.wfile.write("{'foo': 'bar'}".encode("utf-8"))
-
-
-class BridgeNode:
-    """
-    A bridge node daemon.
-    """
-
-    def __init__(self, host, port):
-        # HTTP settings
-        self.host = host
-        self.port = port
-
-        # HTTP server
-        self.http_server = HTTPServer((self.host, self.port), BridgeAPIHandler)
-
-    @property
-    def http_socket(self):
-        """
-        XXX.
-        """
-
-        return self.http_server.socket
-
-    def run(self):
-        """
-        Run the node.
-        """
-
-        # run the HTTP server indefinitely
-        self.http_server.serve_forever()
-
-    def stop(self):
-        """
-        Stop the node.
-        """
-
-        # stop the HTTP server
-        self.http_server.shutdown()
+from .generic import Node
+from .daemon import NodeServer
 
 
 def main():
@@ -94,13 +23,16 @@ def main():
 
     args = parser.parse_args()
 
-    # create the bridge node
-    node = BridgeNode(host=args.host, port=args.port)
+    # XXX create the bridge node
+    node = Node()
+
+    # create the node server
+    server = NodeServer(node=node, http_host=args.host, http_port=args.port)
 
     # create the daemon context
     context = daemon.DaemonContext(
-        files_preserve=[node.http_socket.fileno()],
-        signal_map={signal.SIGTERM: node.stop})
+        files_preserve=[server.http_socket.fileno()],
+        signal_map={signal.SIGTERM: server.stop})
 
     if not args.daemon:
         # run the process in the foreground
@@ -111,10 +43,10 @@ def main():
         context.stdout = sys.stdout
         context.stderr = sys.stderr
 
-    # run the daemon
+    # run the server
     with context:
         try:
-            node.run()
+            server.run()
 
         except KeyboardInterrupt:
             # TODO: log this

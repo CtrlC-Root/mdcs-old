@@ -1,6 +1,8 @@
 # project settings
 TOP := $(shell pwd)
 PROJECT := bridge-hue
+PACKAGE := mdcs_bridge_hue
+BINARY := $(PACKAGE)
 
 #
 # COMMON
@@ -20,7 +22,7 @@ clean:
 
 # clean all development files
 distclean: clean
-	rm -rf $(TOP)/$(PROJECT).egg-info
+	rm -rf $(TOP)/$(PACKAGE).egg-info
 	rm -rf $(TOP)/build $(TOP)/dist
 
 #
@@ -36,8 +38,8 @@ reqs: check-env
 
 # check if requirements are installed
 check-reqs: check-env
-ifeq (, $(shell which $(PROJECT)))
-	$(error "No $(PROJECT) in $(PATH), consider running the reqs target")
+ifeq (, $(shell which $(BINARY)))
+	$(error "No $(BINARY) in $(PATH), consider running the reqs target")
 endif
 
 #
@@ -49,7 +51,7 @@ endif
 test-style: check-env
 	python setup.py egg_info
 	pep8 --show-source --count \
-		`cat $(PROJECT).egg-info/top_level.txt | xargs echo`
+		`cat $(PACKAGE).egg-info/top_level.txt | xargs echo`
 
 test-unit: check-env
 	$(PROJECT) test

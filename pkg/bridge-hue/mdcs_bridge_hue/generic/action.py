@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 class Action:
     """
     An action that changes a device's current state.

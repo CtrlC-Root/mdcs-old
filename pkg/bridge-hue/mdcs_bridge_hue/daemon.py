@@ -10,6 +10,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException
 
+from .http.device import device_list, device_detail
+
 
 class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
     """
@@ -53,7 +55,7 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
             return
 
         view = self.node_server.views[endpoint]
-        response = view(self.command, args)
+        response = view(self.node_server.node, self.command, args)
 
         # process the response
         if isinstance(response, dict):
@@ -91,16 +93,10 @@ class NodeServer:
         # store the server settings
         self.node = node
 
-        # create HTTP views
-        def node_status(method, args):
-            return {'status': 'ok'}
-
-        def device_list(method, args):
-            return {'devices': list(map(str, node.devices.keys()))}
-
+        # create the views
         self.views = {
-            'status': node_status,
             'device_list': device_list,
+            'device_detail': device_detail,
         }
 
         # create the URL dispatch rules

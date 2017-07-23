@@ -25,10 +25,12 @@ def main():
 
     # XXX create the bridge node
     device = Device()
-    device.add_attribute(Attribute("color.red", AttributeFlags.READ | AttributeFlags.WRITE))
-    device.add_attribute(Attribute("color.green", AttributeFlags.READ | AttributeFlags.WRITE))
-    device.add_attribute(Attribute("color.blue", AttributeFlags.READ | AttributeFlags.WRITE))
-    device.add_attribute(Attribute("brightness", AttributeFlags.READ | AttributeFlags.WRITE))
+
+    rw_flags = AttributeFlags.READ | AttributeFlags.WRITE
+    device.add_attribute(Attribute("color.red", rw_flags, {'type': 'integer'}))
+    device.add_attribute(Attribute("color.green", rw_flags, {'type': 'integer'}))
+    device.add_attribute(Attribute("color.blue", rw_flags, {'type': 'integer'}))
+    device.add_attribute(Attribute("brightness", rw_flags, {'type': 'integer'}))
     device.add_action(Action("blink"))
 
     node = Node()

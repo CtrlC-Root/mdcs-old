@@ -18,9 +18,10 @@ class Attribute:
     An attribute that represents part of a device's current state.
     """
 
-    def __init__(self, path, flags):
+    def __init__(self, path, flags, schema):
         self.path = path
         self.flags = flags
+        self.schema = schema
 
     @property
     def dynamic(self):

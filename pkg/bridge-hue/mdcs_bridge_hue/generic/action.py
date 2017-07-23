@@ -9,7 +9,7 @@ class Action:
     def __init__(self, path):
         self.path = path
 
-    def run(self, args):
+    def run(self):
         """
         Run the action with the given arguments.
         """

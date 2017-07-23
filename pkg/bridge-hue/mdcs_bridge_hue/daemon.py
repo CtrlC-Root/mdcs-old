@@ -11,6 +11,8 @@ from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException
 
 from .http.device import device_list, device_detail
+from .http.attribute import attribute_detail
+from .http.action import action_detail
 
 
 class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -97,26 +99,24 @@ class NodeServer:
         self.views = {
             'device_list': device_list,
             'device_detail': device_detail,
+            'attribute_detail': attribute_detail,
+            'action_detail': action_detail
         }
 
         # create the URL dispatch rules
         self.urls = None
         self.routes = Map([
-            Rule('/', endpoint='status'),
+            Rule('/', methods=['GET'], endpoint='status'),
 
-            Rule('/devices', endpoint='device_list'),
-            Rule('/devices/<device>', endpoint='device_detail'),
-            Rule('/devices/<device>/attributes', endpoint='attribute_list'),
-            Rule('/devices/<device>/attributes/<path>', endpoint='attribute_detail'),
-            Rule('/devices/<device>/actions', endpoint='action_list'),
-            Rule('/devices/<device>/actions/<path>', endpoint='action_detail'),
+            Rule('/devices', methods=['GET'], endpoint='device_list'),
+            Rule('/devices/<device>', methods=['GET'], endpoint='device_detail'),
+            Rule('/devices/<device>/attributes/<path>', methods=['GET'], endpoint='attribute_detail'),
+            Rule('/devices/<device>/actions/<path>', methods=['GET'], endpoint='action_detail'),
 
-            Rule('/d', endpoint='device_list'),
-            Rule('/d/<device>', endpoint='device_detail'),
-            Rule('/d/<device>/at', endpoint='attribute_list'),
-            Rule('/d/<device>/at/<path>', endpoint='attribute_detail'),
-            Rule('/d/<device>/ac', endpoint='action_list'),
-            Rule('/d/<device>/ac/<path>', endpoint='action_detail'),
+            Rule('/d', methods=['GET'], endpoint='device_list'),
+            Rule('/d/<device>', methods=['GET'], endpoint='device_detail'),
+            Rule('/d/<device>/at/<path>', methods=['GET'], endpoint='attribute_detail'),
+            Rule('/d/<device>/ac/<path>', methods=['GET'], endpoint='action_detail'),
         ])
 
         # create the HTTP server

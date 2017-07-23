@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import time
 import daemon
 import signal
 import lockfile
@@ -60,4 +61,6 @@ def main():
 
     # run the server
     with context:
-        server.run()
+        server.start()
+        while server.running:
+            time.sleep(1)

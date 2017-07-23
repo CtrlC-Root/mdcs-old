@@ -3,7 +3,7 @@
 import uuid
 from http import HTTPStatus
 
-from mdcs_bridge_hue.generic.attribute import AttributeFlags
+from mdcs.generic.attribute import AttributeFlags
 
 
 def attribute_detail(node, method, args):

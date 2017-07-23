@@ -3,21 +3,17 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='mdcs-bridge-hue',
+    name='mdcs',
     version='0.1',
-    description='mdcs bridge node for philips hue lights',
+    description='mdcs common library',
     author='Alexandru Barbur',
     author_email='root.ctrlc@gmail.com',
     url='https://github.com/mdcs/pkg/bridge-hue',
 
     packages=find_packages(),
     install_requires=[
-        'mdcs >= 0.1'
-    ],
-
-    entry_points={
-        'console_scripts': [
-            'mdcs-bridge-hue=mdcs_bridge_hue.cli:main'
-        ]
-    }
+        'python-daemon >= 2.0.0',
+        'werkzeug >= 0.12.0',
+        'avro >= 1.8.0'
+    ]
 )

@@ -6,8 +6,8 @@ import signal
 import lockfile
 import argparse
 
-from .generic import Node, Device, Attribute, AttributeFlags, Action
-from .daemon import NodeServer
+from mdcs.generic import Node, Device, Attribute, AttributeFlags, Action
+from mdcs.daemon import NodeServer
 
 
 def main():

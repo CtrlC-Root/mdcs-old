@@ -1,8 +1,7 @@
 # project settings
 TOP := $(shell pwd)
-PROJECT := bridge-hue
-PACKAGE := mdcs_bridge_hue
-BINARY := $(PACKAGE)
+PROJECT := libmdcs-python
+PACKAGE := mdcs
 
 #
 # COMMON
@@ -35,12 +34,6 @@ distclean: clean
 reqs: check-env
 	pip install --upgrade -r requirements/development.txt
 	python $(TOP)/setup.py develop
-
-# check if requirements are installed
-check-reqs: check-env
-ifeq (, $(shell which $(BINARY)))
-	$(error "No $(BINARY) in $(PATH), consider running the reqs target")
-endif
 
 #
 # TESTING

@@ -80,7 +80,7 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
 
 class NodeHTTPServer(HTTPServer):
     """
-    A server that provides the APIs for interacting with a Node.
+    A server that provides the HTTP API for interacting with a Node.
     """
 
     def __init__(self, node, host, port):
@@ -124,10 +124,6 @@ class NodeHTTPServer(HTTPServer):
         return self.server_address[1]
 
     def run(self):
-        """
-        Run the server.
-        """
-
         try:
             # create the route adapter
             self.urls = self.routes.bind(

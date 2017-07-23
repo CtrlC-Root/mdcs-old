@@ -58,9 +58,4 @@ def main():
 
     # run the server
     with context:
-        try:
-            server.run()
-
-        except KeyboardInterrupt:
-            # TODO: log this
-            print("received SIGINT, quitting")
+        server.run()

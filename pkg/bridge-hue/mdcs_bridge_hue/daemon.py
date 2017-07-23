@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+import json
 import socket
 import threading
 import urllib.parse
+from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from werkzeug.routing import Map, Rule
@@ -35,19 +37,49 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
                 query_args=request_url.query)
 
         except HTTPException as e:
+            # TODO handle different exceptions appropriately
             print(e)
-            self.send_response(500)
+            self.send_response(HTTPStatus.INTERNAL_SERVER_ERROR)
             self.end_headers()
             return
 
-        # write headers
-        self.send_response(200)
-        self.send_header("Content-Type", "text/plain")
+        # retrieve and execute the view
+        if endpoint not in self.node_server.views:
+            self.send_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+            self.send_header('Content-Type', 'text/plain')
+            self.end_headers()
+
+            self.wfile.write("endpoint not implemented".encode('utf-8'))
+            return
+
+        view = self.node_server.views[endpoint]
+        response = view(self.command, args)
+
+        # process the response
+        if isinstance(response, dict):
+            self.send_response(HTTPStatus.OK)
+            self.send_header('Content-Type', 'application/javascript')
+            self.end_headers()
+
+            self.wfile.write(json.dumps(response).encode('utf-8'))
+            return
+
+        elif isinstance(response, tuple) and len(response) == 2:
+            status_code, message = response
+
+            self.send_response(status_code)
+            self.send_header('Content-Type', 'text/plain')
+            self.end_headers()
+
+            self.wfile.write(message.encode('utf-8'))
+            return
+
+        # unknown response
+        self.send_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+        self.send_header('Content-Type', 'text/plain')
         self.end_headers()
 
-        # write response
-        self.wfile.write("endpoint: {0}\n".format(endpoint).encode("utf-8"))
-        self.wfile.write("args: {0}\n".format(args).encode("utf-8"))
+        self.wfile.write("unknown response".encode('utf-8'))
 
 
 class NodeServer:
@@ -58,6 +90,18 @@ class NodeServer:
     def __init__(self, node, http_host, http_port):
         # store the server settings
         self.node = node
+
+        # create HTTP views
+        def node_status(method, args):
+            return {'status': 'ok'}
+
+        def device_list(method, args):
+            return {'devices': list(map(str, node.devices.keys()))}
+
+        self.views = {
+            'status': node_status,
+            'device_list': device_list,
+        }
 
         # create the URL dispatch rules
         self.urls = None

@@ -6,22 +6,20 @@ import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from werkzeug.routing import Map, Rule
+from werkzeug.exceptions import HTTPException
 
 
 class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
     """
-    TODO.
+    A handler for node HTTP API requests.
     """
 
-    def do_HEAD(self):
-        """
-        TODO.
-        """
+    @property
+    def node_server(self):
+        assert hasattr(self.server, 'node_server')
+        assert isinstance(self.server.node_server, NodeServer)
 
-        # write headers
-        self.send_response(200)
-        self.send_header("Content-Type", "application/javascript")
-        self.end_headers()
+        return self.server.node_server
 
     def do_GET(self):
         """
@@ -29,16 +27,27 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
         """
 
         # XXX
-        url_parts = urllib.parse.urlparse(self.path)
-        path_parts = url_parts.path.split('/')
+        try:
+            request_url = urllib.parse.urlparse(self.path)
+            endpoint, args = self.node_server.urls.match(
+                path_info=request_url.path,
+                method=self.command,
+                query_args=request_url.query)
+
+        except HTTPException as e:
+            print(e)
+            self.send_response(500)
+            self.end_headers()
+            return
 
         # write headers
         self.send_response(200)
-        self.send_header("Content-Type", "application/javascript")
+        self.send_header("Content-Type", "text/plain")
         self.end_headers()
 
         # write response
-        self.wfile.write("{'foo': 'bar'}".encode("utf-8"))
+        self.wfile.write("endpoint: {0}\n".format(endpoint).encode("utf-8"))
+        self.wfile.write("args: {0}\n".format(args).encode("utf-8"))
 
 
 class NodeServer:
@@ -51,7 +60,8 @@ class NodeServer:
         self.node = node
 
         # create the URL dispatch rules
-        self.url_map = Map([
+        self.urls = None
+        self.routes = Map([
             Rule('/', endpoint='status'),
 
             Rule('/devices', endpoint='device_list'),
@@ -71,6 +81,7 @@ class NodeServer:
 
         # create the HTTP server
         self.http_server = HTTPServer((http_host, http_port), NodeHTTPRequestHandler)
+        self.http_server.node_server = self
 
     @property
     def http_host(self):
@@ -103,11 +114,21 @@ class NodeServer:
         Run the server.
         """
 
-        # run the HTTP server until stopped
-        self.http_server.serve_forever()
+        try:
+            # create the route adapter
+            self.urls = self.routes.bind(
+                server_name='{0}:{1}'.format(self.http_host, self.http_port),
+                url_scheme='http')
 
-        # close the HTTP server
-        self.http_server.serve_close()
+            # run the HTTP server until stopped
+            self.http_server.serve_forever()
+
+        finally:
+            # close the HTTP server
+            self.http_server.server_close()
+
+            # remove the route adapter
+            self.urls = None
 
     def stop(self):
         """

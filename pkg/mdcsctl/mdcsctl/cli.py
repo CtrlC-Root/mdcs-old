@@ -48,8 +48,20 @@ def main():
     reader = avro.datafile.DataFileReader(response_buffer, avro.io.DatumReader())
 
     # TODO: process the response
-    for thing in reader:
-        print(">> response: ", thing)
+    for response in reader:
+        result = response['result']
+        if 'message' in result:
+            print("error: {0}".format(result))
+
+        else:
+            when = result['when']
+            data = result['value']
+
+            data_reader = avro.datafile.DataFileReader(io.BytesIO(data), avro.io.DatumReader())
+            for value in data_reader:
+                print("value: {0} @ {1}".format(value, when))
+
+            data_reader.close()
 
     # TODO: close the reader
     reader.close()

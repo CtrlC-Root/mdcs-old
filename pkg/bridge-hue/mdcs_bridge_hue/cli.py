@@ -31,7 +31,7 @@ def main():
     ro_flags = AttributeFlags.READ
     rw_flags = AttributeFlags.READ | AttributeFlags.WRITE
     device.add_attribute(StoredAttribute('serial', ro_flags, {'type': 'string'}, '123456'))
-    device.add_attribute(StoredAttribute('brightness', rw_flags, {'type': 'integer'}, 128))
+    device.add_attribute(StoredAttribute('brightness', rw_flags, {'type': 'int'}, 128))
     device.add_action(Action('blink'))
 
     node = Node()

@@ -24,6 +24,16 @@
                         {"name": "attribute", "type": "string"},
                         {"name": "value", "type": "bytes"}
                     ]
+                },
+                {
+                    "name": "run",
+                    "type": "record",
+                    "doc": "run device action",
+                    "fields": [
+                        {"name": "device", "type": "string"},
+                        {"name": "action", "type": "string"},
+                        {"name": "input", "type": "bytes"}
+                    ]
                 }
             ]
         }

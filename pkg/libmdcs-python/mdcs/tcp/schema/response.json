@@ -25,6 +25,16 @@
                         {"name": "when", "type": "long", "logicalType": "timestamp-millis"},
                         {"name": "value", "type": "bytes"}
                     ]
+                },
+                {
+                    "name": "result",
+                    "type": "record",
+                    "doc": "device action result",
+                    "fields": [
+                        {"name": "start", "type": "long", "logicalType": "timestamp-millis"},
+                        {"name": "start", "type": "long", "logicalType": "timestamp-millis"},
+                        {"name": "output", "type": "bytes"}
+                    ]
                 }
             ]
         }

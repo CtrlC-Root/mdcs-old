@@ -8,7 +8,7 @@ setup(
     description='mdcs common library',
     author='Alexandru Barbur',
     author_email='root.ctrlc@gmail.com',
-    url='https://github.com/mdcs/pkg/bridge-hue',
+    url='https://github.com/mdcs/pkg/libmdcs-python',
 
     packages=find_packages(),
     include_package_data=True,

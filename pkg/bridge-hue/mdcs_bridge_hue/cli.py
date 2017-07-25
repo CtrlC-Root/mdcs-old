@@ -7,7 +7,7 @@ import signal
 import lockfile
 import argparse
 
-from mdcs.generic import Node, Device, Attribute, AttributeFlags, Action
+from mdcs.generic import Node, Device, AttributeFlags, StoredAttribute, Action
 from mdcs.daemon import NodeServer
 
 
@@ -28,12 +28,11 @@ def main():
     # XXX create the bridge node
     device = Device()
 
+    ro_flags = AttributeFlags.READ
     rw_flags = AttributeFlags.READ | AttributeFlags.WRITE
-    device.add_attribute(Attribute("color.red", rw_flags, {'type': 'integer'}))
-    device.add_attribute(Attribute("color.green", rw_flags, {'type': 'integer'}))
-    device.add_attribute(Attribute("color.blue", rw_flags, {'type': 'integer'}))
-    device.add_attribute(Attribute("brightness", rw_flags, {'type': 'integer'}))
-    device.add_action(Action("blink"))
+    device.add_attribute(StoredAttribute('serial', ro_flags, {'type': 'string'}, '123456'))
+    device.add_attribute(StoredAttribute('brightness', rw_flags, {'type': 'integer'}, 128))
+    device.add_action(Action('blink'))
 
     node = Node()
     node.add_device(device)

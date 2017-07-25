@@ -48,3 +48,19 @@ class Attribute:
         """
 
         raise NotImplemented()
+
+
+class StoredAttribute(Attribute):
+    """
+    An attribute that stores its value in memory.
+    """
+
+    def __init__(self, path, flags, schema, value):
+        super().__init__(self, path, flags, schema)
+        self.value = value
+
+    def read(self):
+        return self.value
+
+    def write(self, value):
+        self.value = value

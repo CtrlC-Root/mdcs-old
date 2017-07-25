@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
 import io
-import os.path
 from socketserver import TCPServer, BaseRequestHandler
 
 import avro.io
-import avro.schema
 import avro.datafile
 import pkg_resources
+
+from .schema import REQUEST_SCHEMA, RESPONSE_SCHEMA
 
 
 class NodeTCPRequestHandler(BaseRequestHandler):
@@ -44,14 +44,6 @@ class NodeTCPServer(TCPServer):
         return self.server_address[1]
 
     def run(self):
-        # load and parse the interface schemas
-        # TODO: detect path to schema files instead of hard-coding
-        self.request_schema = avro.schema.Parse(
-            pkg_resources.resource_string('mdcs', os.path.join('tcp', 'schema', 'request.json')))
-
-        self.response_schema = avro.schema.Parse(
-            pkg_resources.resource_string('mdcs', os.path.join('tcp', 'schema', 'response.json')))
-
         try:
             # bind and activate the TCP server
             self.server_bind()

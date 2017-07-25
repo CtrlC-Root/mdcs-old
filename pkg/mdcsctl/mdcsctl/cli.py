@@ -2,13 +2,13 @@
 
 import io
 import socket
-import os.path
 import argparse
 
 import avro.io
-import avro.schema
 import avro.datafile
 import pkg_resources
+
+from mdcs.tcp.schema import REQUEST_SCHEMA, RESPONSE_SCHEMA
 
 
 def main():
@@ -24,13 +24,6 @@ def main():
 
     args = parser.parse_args()
 
-    # XXX load schemas
-    request_schema = avro.schema.Parse(
-        pkg_resources.resource_string('mdcs', os.path.join('tcp', 'schema', 'request.json')))
-
-    response_schema = avro.schema.Parse(
-        pkg_resources.resource_string('mdcs', os.path.join('tcp', 'schema', 'response.json')))
-
     # TODO
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcp_socket.connect((args.host, args.tcp_port))
@@ -40,7 +33,7 @@ def main():
 
     # TODO
     request_buffer = io.BytesIO()
-    writer = avro.datafile.DataFileWriter(request_buffer, avro.io.DatumWriter(), request_schema)
+    writer = avro.datafile.DataFileWriter(request_buffer, avro.io.DatumWriter(), REQUEST_SCHEMA)
     writer.append(request)
     writer.flush()
 

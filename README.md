@@ -38,5 +38,5 @@ $ mdcs-bridge-hue
 Run the console client.
 
 ```
-$ mdcsctl --host 127.0.0.1
+$ mdcsctl
 ```

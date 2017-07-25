@@ -18,6 +18,14 @@
                     ]
                 },
                 {
+                    "name": "confirm",
+                    "type": "record",
+                    "doc": "device attribute write confirmation",
+                    "fields": [
+                        {"name": "when", "type": "long", "logicalType": "timestamp-millis"}
+                    ]
+                },
+                {
                     "name": "value",
                     "type": "record",
                     "doc": "device attribute value",
@@ -31,8 +39,7 @@
                     "type": "record",
                     "doc": "device action result",
                     "fields": [
-                        {"name": "start", "type": "long", "logicalType": "timestamp-millis"},
-                        {"name": "start", "type": "long", "logicalType": "timestamp-millis"},
+                        {"name": "when", "type": "long", "logicalType": "timestamp-millis"},
                         {"name": "output", "type": "bytes"}
                     ]
                 }

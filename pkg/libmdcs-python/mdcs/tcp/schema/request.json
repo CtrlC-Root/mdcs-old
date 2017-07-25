@@ -1,0 +1,31 @@
+{
+    "name": "request",
+    "type": "record",
+    "doc": "request to node server data interface",
+    "fields": [
+        {
+            "name": "command",
+            "type": [
+                {
+                    "name": "read",
+                    "type": "record",
+                    "doc": "read device attribute value",
+                    "fields": [
+                        {"name": "device", "type": "string"},
+                        {"name": "path", "type": "string"}
+                    ]
+                },
+                {
+                    "name": "write",
+                    "type": "record",
+                    "doc": "write device attribute value",
+                    "fields": [
+                        {"name": "device", "type": "string"},
+                        {"name": "path", "type": "string"},
+                        {"name": "value", "type": "bytes"}
+                    ]
+                }
+            ]
+        }
+    ]
+}

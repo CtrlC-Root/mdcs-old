@@ -1,0 +1,41 @@
+{
+    "name": "response",
+    "type": "record",
+    "doc": "response from node server data interface",
+    "fields": [
+        {
+            "name": "result",
+            "type": [
+                {
+                    "name": "error",
+                    "type": "record",
+                    "doc": "error processing request",
+                    "fields": [
+                        {"name": "message", "type": "string"},
+                        {"name": "device", "type": ["null", "string"]},
+                        {"name": "attribute", "type": ["null", "string"]},
+                        {"name": "action", "type": ["null", "string"]}
+                    ]
+                },
+                {
+                    "name": "read",
+                    "type": "record",
+                    "doc": "value read from device attribute",
+                    "fields": [
+                        {"name": "when", "type": "long", "logicalType": "timestamp-millis"},
+                        {"name": "value", "type": "bytes"}
+                    ]
+                },
+                {
+                    "name": "write",
+                    "type": "record",
+                    "doc": "value written to device attribute",
+                    "fields": [
+                        {"name": "when", "type": "long", "logicalType": "timestamp-millis"},
+                        {"name": "value", "type": "bytes"}
+                    ]
+                }
+            ]
+        }
+    ]
+}

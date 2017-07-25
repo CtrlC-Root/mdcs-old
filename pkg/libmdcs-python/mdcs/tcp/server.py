@@ -1,17 +1,25 @@
 #!/usr/bin/env python
 
+import io
 import os.path
-from socketserver import TCPServer, StreamRequestHandler
+from socketserver import TCPServer, BaseRequestHandler
 
+import avro.io
 import avro.schema
+import avro.datafile
 import pkg_resources
 
 
-class NodeTCPRequestHandler(StreamRequestHandler):
+class NodeTCPRequestHandler(BaseRequestHandler):
     def handle(self):
-        self.data = self.rfile.readline().strip()
-        print("{0} wrote: {1}".format(self.client_address[0], self.data))
-        self.wfile.write(self.data)
+        request_data = self.request.recv(10240)
+        request_buffer = io.BytesIO(request_data)
+        reader = avro.datafile.DataFileReader(request_buffer, avro.io.DatumReader())
+
+        for thing in reader:
+            print(">> request: ", thing)
+
+        reader.close()
 
 
 class NodeTCPServer(TCPServer):

@@ -69,7 +69,7 @@ if __name__ == '__main__':
     #example bulb (living room island)
     bulb = 10
 
-    #retreiving functions
+    #retrieving functions
     bulbOn = globals()['bulbOn']
     blinkOn = globals()['blinkOn']
     blinkOff = globals()['blinkOff']
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     setHue = globals()['setHue']
     setSaturation = globals()['setSaturation']
 
-    #running them demo
+    #running the demo
     bulbOn(bulb)
     blinkOn(bulb)
     blinkOff(bulb)

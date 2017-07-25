@@ -24,19 +24,32 @@ def main():
 
     args = parser.parse_args()
 
-    # TODO
+    # TODO: connect to the server
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcp_socket.connect((args.host, args.tcp_port))
 
-    # TODO
+    # TODO: create the request
     request = {'command': {'device': 'hue', 'attribute': 'serial'}}
 
-    # TODO
+    # TODO: serialize the request
     request_buffer = io.BytesIO()
     writer = avro.datafile.DataFileWriter(request_buffer, avro.io.DatumWriter(), REQUEST_SCHEMA)
     writer.append(request)
     writer.flush()
 
+    # TODO: send the request
     request_buffer.seek(0)
     request_data = request_buffer.read()
     tcp_socket.send(request_data)
+
+    # TODO: read the response
+    response_data = tcp_socket.recv(10240)
+    response_buffer = io.BytesIO(response_data)
+    reader = avro.datafile.DataFileReader(response_buffer, avro.io.DatumReader())
+
+    # TODO: process the response
+    for thing in reader:
+        print(">> response: ", thing)
+
+    # TODO: close the reader
+    reader.close()

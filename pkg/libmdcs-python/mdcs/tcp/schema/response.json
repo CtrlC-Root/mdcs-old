@@ -18,18 +18,9 @@
                     ]
                 },
                 {
-                    "name": "read",
+                    "name": "value",
                     "type": "record",
-                    "doc": "value read from device attribute",
-                    "fields": [
-                        {"name": "when", "type": "long", "logicalType": "timestamp-millis"},
-                        {"name": "value", "type": "bytes"}
-                    ]
-                },
-                {
-                    "name": "write",
-                    "type": "record",
-                    "doc": "value written to device attribute",
+                    "doc": "device attribute value",
                     "fields": [
                         {"name": "when", "type": "long", "logicalType": "timestamp-millis"},
                         {"name": "value", "type": "bytes"}

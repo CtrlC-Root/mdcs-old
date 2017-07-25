@@ -12,14 +12,29 @@ from .schema import REQUEST_SCHEMA, RESPONSE_SCHEMA
 
 class NodeTCPRequestHandler(BaseRequestHandler):
     def handle(self):
+        # XXX
+        response_buffer = io.BytesIO()
+        writer = avro.datafile.DataFileWriter(response_buffer, avro.io.DatumWriter(), RESPONSE_SCHEMA)
+
+        # XXX receive the request
         request_data = self.request.recv(10240)
         request_buffer = io.BytesIO(request_data)
         reader = avro.datafile.DataFileReader(request_buffer, avro.io.DatumReader())
 
+        # XXX process requests
         for thing in reader:
             print(">> request: ", thing)
+            writer.append({'result': {'when': 1000, 'value': bytes([0x0A, 0x15])}})
 
+        # XXX
         reader.close()
+
+        # XXX
+        writer.flush()
+        response_buffer.seek(0)
+        response_data = response_buffer.read()
+
+        self.request.send(response_data)
 
 
 class NodeTCPServer(TCPServer):

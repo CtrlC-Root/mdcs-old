@@ -13,7 +13,7 @@ from mdcs.tcp.schema import REQUEST_SCHEMA, RESPONSE_SCHEMA
 
 def main():
     """
-    Run the bridge node daemon.
+    Run the console client.
     """
 
     # parse command line arguments

@@ -12,7 +12,7 @@
                     "doc": "read device attribute value",
                     "fields": [
                         {"name": "device", "type": "string"},
-                        {"name": "path", "type": "string"}
+                        {"name": "attribute", "type": "string"}
                     ]
                 },
                 {
@@ -21,7 +21,7 @@
                     "doc": "write device attribute value",
                     "fields": [
                         {"name": "device", "type": "string"},
-                        {"name": "path", "type": "string"},
+                        {"name": "attribute", "type": "string"},
                         {"name": "value", "type": "bytes"}
                     ]
                 }

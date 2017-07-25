@@ -18,27 +18,40 @@ class NodeTCPRequestHandler(BaseRequestHandler):
         return self.server.node
 
     def handle(self):
-        # XXX
+        """
+        Process requests from a TCP API client.
+        """
+
+        # create the response writer
         response_buffer = io.BytesIO()
-        writer = avro.datafile.DataFileWriter(response_buffer, avro.io.DatumWriter(), RESPONSE_SCHEMA)
+        responses = avro.datafile.DataFileWriter(response_buffer, avro.io.DatumWriter(), RESPONSE_SCHEMA)
 
-        # XXX receive the request
-        request_data = self.request.recv(65535)
+        # receive the request data and create a reader to unserialize it
+        request_data = self.request.recv(65535) # XXX: hard-coded size, what if under or over?
         request_buffer = io.BytesIO(request_data)
-        reader = avro.datafile.DataFileReader(request_buffer, avro.io.DatumReader())
+        requests = avro.datafile.DataFileReader(request_buffer, avro.io.DatumReader())
 
-        # XXX process requests
-        for request in reader:
-            writer.append(self.handle_one_request(request))
+        # process requests
+        for request in requests:
+            try:
+                response = self.handle_one_request(request)
 
-        # XXX
-        reader.close()
+            except Exception as e:
+                # XXX better way to format this?
+                responses.append({'response': {'message': "error: {0}".format(e)}})
 
-        # XXX
-        writer.flush()
+            else:
+                responses.append({'result': response})
+
+        # close the request reader
+        requests.close()
+
+        # retrieve the response data
+        responses.flush()
         response_buffer.seek(0)
         response_data = response_buffer.read()
 
+        # send the response data
         self.request.send(response_data)
 
     def handle_one_request(self, request):
@@ -47,33 +60,74 @@ class NodeTCPRequestHandler(BaseRequestHandler):
         """
 
         command = request['command']
+
+        # retrieve the relevant device
         if command['device'] not in self.node.devices:
-            return {'result': {'message': 'device not found', 'device': command['device']}}
+            return {'message': 'device not found', 'device': command['device']}
 
         device = self.node.devices[command['device']]
-        if command['attribute'] not in device.attributes:
-            return {'result': {
-                'message': 'device attribute not found',
-                'device': device.name,
-                'attribute': command['attribute']
-            }}
 
-        attribute = device.attributes[command['attribute']]
-        if 'value' in command:
-            # TODO: write value
-            return {'result': {'message': 'write not implemented yet'}}
+        # command is an attribute read or write
+        if 'attribute' in command:
+            # retrieve the relevant attribute
+            if command['attribute'] not in device.attributes:
+                return {
+                    'message': 'device attribute not found',
+                    'device': device.name,
+                    'attribute': command['attribute']
+                }
 
-        # XXX
-        data_buffer = io.BytesIO()
-        value_schema = avro.schema.Parse(json.dumps(attribute.schema))
-        data_writer = avro.datafile.DataFileWriter(data_buffer, avro.io.DatumWriter(), value_schema)
+            attribute = device.attributes[command['attribute']]
 
-        data_writer.append(attribute.read())
-        data_writer.flush()
-        data_buffer.seek(0)
-        data = data_buffer.read()
+            # parse the attribute value schema
+            value_schema = avro.schema.Parse(json.dumps(attribute.schema))
 
-        return {'result': {'when': 1200, 'value': data}}
+            # write attribute value
+            if 'value' in command:
+                data_buffer = io.BytesIO(command['value'])
+                data_reader = avro.datafile.DataFileReader(data_buffer, avro.io.DatumReader())
+                value = next(data_reader, None)
+
+                attribute.write(value)
+                data_reader.close()
+
+                return {'when': 1200}
+
+            # read attribute value
+            else:
+                data_buffer = io.BytesIO()
+                data_writer = avro.datafile.DataFileWriter(data_buffer, avro.io.DatumWriter(), value_schema)
+                data_writer.append(attribute.read())
+
+                data_writer.flush()
+                data_buffer.seek(0)
+                data = data_buffer.read()
+                data_writer.close()
+
+                return {'when': 1200, 'value': data}
+
+        # command is an action run
+        elif 'action' in command:
+            # retrieve the relevant action
+            if command['action'] not in device.actions:
+                return {
+                    'message': 'device action not found',
+                    'device': device.name,
+                    'action': command['action']
+                }
+
+            action = device.attributes[command['action']]
+
+            # TODO: parse the action schemas
+            # TODO: unserialize input
+            # TODO: run action
+            # TODO: serialize output
+
+            # XXX temporary hard-coded response
+            return {'when': 1200, 'output': bytes([0x0A])}
+
+        # unknown command
+        return {'message': 'unknown request'}
 
 
 class NodeTCPServer(TCPServer):

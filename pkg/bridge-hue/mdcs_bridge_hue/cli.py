@@ -8,7 +8,7 @@ import lockfile
 import argparse
 
 from mdcs.generic import Node, Device, AttributeFlags, StoredAttribute, Action
-from mdcs.daemon import NodeServer
+from mdcs import NodeServer
 
 
 def main():

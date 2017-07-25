@@ -29,7 +29,7 @@ def main():
     tcp_socket.connect((args.host, args.tcp_port))
 
     # TODO: create the request
-    request = {'command': {'device': 'hue', 'attribute': 'serial'}}
+    request = {'command': {'device': 'hue', 'attribute': 'brightness'}}
 
     # TODO: serialize the request
     request_buffer = io.BytesIO()

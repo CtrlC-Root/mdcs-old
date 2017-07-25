@@ -17,7 +17,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'mdcs-bridge-hue=mdcs_bridge_hue.cli:main'
+            'mdcs-bridge-hue=mdcs_bridge_hue.node:main'
         ]
     }
 )

@@ -11,6 +11,7 @@ setup(
     url='https://github.com/mdcs/pkg/bridge-hue',
 
     packages=find_packages(),
+    include_package_data=True,
     install_requires=[
         'python-daemon >= 2.0.0',
         'werkzeug >= 0.12.0',

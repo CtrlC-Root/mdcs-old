@@ -18,7 +18,7 @@ def main():
 
     # parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--host', type=str, default='0.0.0.0', help="node hostname or IP address")
+    parser.add_argument('--host', type=str, default='127.0.0.1', help="node hostname or IP address")
     parser.add_argument('--http-port', type=int, default=5510, help="HTTP API port")
     parser.add_argument('--tcp-port', type=int, default=5511, help="TCP API port")
 

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import uuid
-
 
 class Device:
     """
@@ -9,13 +7,13 @@ class Device:
     actions that can modify that state.
     """
 
-    def __init__(self):
+    def __init__(self, name):
         """
         Create a new device.
         """
 
-        # create a unique identifier
-        self.uuid = uuid.uuid4()
+        # store the device settings
+        self.name = name
 
         # device state and actions
         self.attributes = {}

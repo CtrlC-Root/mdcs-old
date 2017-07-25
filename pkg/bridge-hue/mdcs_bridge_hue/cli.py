@@ -26,7 +26,7 @@ def main():
     args = parser.parse_args()
 
     # XXX create the bridge node
-    device = Device()
+    device = Device('hue')
 
     ro_flags = AttributeFlags.READ
     rw_flags = AttributeFlags.READ | AttributeFlags.WRITE

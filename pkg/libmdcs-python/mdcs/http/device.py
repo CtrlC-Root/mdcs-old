@@ -15,18 +15,12 @@ def device_detail(node, method, args):
     if method != 'GET':
         return (HTTPStatus.METHOD_NOT_ALLOWED, '')
 
-    try:
-        device_uuid = uuid.UUID(hex=args['device'], version=4)
-
-    except Exception as e:
-        return (HTTPStatus.INTERNAL_SERVER_ERROR, str(e))
-
-    if device_uuid not in node.devices:
+    if args['device'] not in node.devices:
         return (HTTPStatus.NOT_FOUND, 'device not found')
 
-    device = node.devices[device_uuid]
+    device = node.devices[args['device']]
     return {
-        'device': str(device.uuid),
-        'attributes': list(map(str, device.attributes.keys())),
-        'actions': list(map(str, device.actions.keys())),
+        'device': device.name,
+        'attributes': list(device.attributes.keys()),
+        'actions': list(device.actions.keys()),
     }

@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
+import os.path
 from socketserver import TCPServer, StreamRequestHandler
+
+import pkg_resources
 
 
 class NodeTCPRequestHandler(StreamRequestHandler):
@@ -32,6 +35,11 @@ class NodeTCPServer(TCPServer):
         return self.server_address[1]
 
     def run(self):
+        # load the API schema definitions
+        schema_path = os.path.join('tcp', 'schema') # XXX: detect path to current file in package
+        self.request_schema = pkg_resources.resource_string('mdcs', os.path.join(schema_path, 'request.json'))
+        self.response_schema = pkg_resources.resource_string('mdcs', os.path.join(schema_path, 'response.json'))
+
         try:
             # bind and activate the TCP server
             self.server_bind()

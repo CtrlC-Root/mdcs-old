@@ -62,5 +62,9 @@ def main():
     # run the server
     with context:
         server.start()
-        while server.running:
+        while server.running and server.healthy:
             time.sleep(1)
+
+        if server.running:
+            print("server fault, stopping") # XXX: this should be logged
+            server.stop()

@@ -14,7 +14,6 @@ class NodeServer:
 
     def __init__(self, node, host, http_port, tcp_port):
         self.node = node
-        self.running = False
 
         # create the HTTP server
         self.http_server = NodeHTTPServer(self.node, host, http_port)
@@ -48,6 +47,30 @@ class NodeServer:
     def tcp_socket(self):
         return self.tcp_server.socket
 
+    @property
+    def running(self):
+        """
+        Server is running when any thread is still alive.
+        """
+
+        return any([
+            self.http_server_thread.is_alive(),
+            self.tcp_server_thread.is_alive()
+        ])
+
+    @property
+    def healthy(self):
+        """
+        Server is healthy when all the threads are alive or dead.
+        """
+
+        thread_states = set([
+            self.http_server_thread.is_alive(),
+            self.tcp_server_thread.is_alive()
+        ])
+
+        return len(thread_states) == 1
+
     def start(self):
         """
         Start the server.
@@ -56,10 +79,11 @@ class NodeServer:
         if self.running:
             raise RuntimeError("server is already running")
 
-        self.running = True
+        if not self.tcp_server_thread.is_alive():
+            self.tcp_server_thread.start()
 
-        self.tcp_server_thread.start()
-        self.http_server_thread.start()
+        if not self.http_server_thread.is_alive():
+            self.http_server_thread.start()
 
     def stop(self):
         """
@@ -69,10 +93,10 @@ class NodeServer:
         if not self.running:
             raise RuntimeError("server is not running")
 
-        self.http_server.shutdown()
-        self.http_server_thread.join()
+        if self.http_server_thread.is_alive():
+            self.http_server.shutdown()
+            self.http_server_thread.join()
 
-        self.tcp_server.shutdown()
-        self.tcp_server_thread.join()
-
-        self.running = False
+        if self.tcp_server_thread.is_alive():
+            self.tcp_server.shutdown()
+            self.tcp_server_thread.join()

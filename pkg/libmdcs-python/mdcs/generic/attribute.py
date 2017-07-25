@@ -56,7 +56,7 @@ class StoredAttribute(Attribute):
     """
 
     def __init__(self, path, flags, schema, value):
-        super().__init__(self, path, flags, schema)
+        super().__init__(path, flags, schema)
         self.value = value
 
     def read(self):

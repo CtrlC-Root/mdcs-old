@@ -13,8 +13,8 @@ class LightDevice(Device):
     A Philips Hue light connected to a bridge.
     """
 
-    def __init__(self, bridge, user, light):
-        super().__init__("light-{0}".format(light), {'bridge': bridge, 'user': user, 'light': light})
+    def __init__(self, name, bridge, user, light):
+        super().__init__(name, {'bridge': bridge, 'user': user, 'light': light})
 
         # create attributes and actions
         self.add_attribute(DelegatedAttribute(

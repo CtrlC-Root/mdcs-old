@@ -12,12 +12,14 @@ setup(
 
     packages=find_packages(),
     install_requires=[
-        'mdcs >= 0.1'
+        'mdcs >= 0.1',
+        'requests >= 2.18.0'
     ],
 
     entry_points={
         'console_scripts': [
-            'mdcs-bridge-hue=mdcs_bridge_hue.node:main'
+            'mdcs-bridge-hue=mdcs_bridge_hue.node:main',
+            'mdcs-hue=mdcs_bridge_hue.utility:main'
         ]
     }
 )

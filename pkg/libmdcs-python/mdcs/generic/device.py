@@ -7,13 +7,14 @@ class Device:
     actions that can modify that state.
     """
 
-    def __init__(self, name):
+    def __init__(self, name, config={}):
         """
         Create a new device.
         """
 
         # store the device settings
         self.name = name
+        self.config = config
 
         # device state and actions
         self.attributes = {}

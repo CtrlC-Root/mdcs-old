@@ -25,6 +25,34 @@ class LightDevice(Device):
             self.write_name))
 
         self.add_attribute(DelegatedAttribute(
+            'manufacturer',
+            AttributeFlags.READ,
+            {'type': 'string'},
+            self.read_manufacturer,
+            None))
+
+        self.add_attribute(DelegatedAttribute(
+            'model',
+            AttributeFlags.READ,
+            {'type': 'string'},
+            self.read_model,
+            None))
+
+        self.add_attribute(DelegatedAttribute(
+            'product',
+            AttributeFlags.READ,
+            {'type': 'string'},
+            self.read_product,
+            None))
+
+        self.add_attribute(DelegatedAttribute(
+            'firmware',
+            AttributeFlags.READ,
+            {'type': 'string'},
+            self.read_firmware,
+            None))
+
+        self.add_attribute(DelegatedAttribute(
             'reachable',
             AttributeFlags.READ,
             {'type': 'boolean'},
@@ -100,6 +128,22 @@ class LightDevice(Device):
             raise RuntimeError("name must be between 1 and 32 characters long")
 
         self.set_data({'name': value})
+
+    def read_manufacturer(self):
+        data = self.get_data()
+        return data['manufacturername']
+
+    def read_model(self):
+        data = self.get_data()
+        return data['modelid']
+
+    def read_product(self):
+        data = self.get_data()
+        return data['productid']
+
+    def read_firmware(self):
+        data = self.get_data()
+        return data['swversion']
 
     def read_reachable(self):
         state = self.get_state()

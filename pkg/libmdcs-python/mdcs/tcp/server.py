@@ -84,6 +84,13 @@ class NodeTCPRequestHandler(BaseRequestHandler):
 
             # write attribute value
             if 'value' in command:
+                if not attribute.writable:
+                    return {
+                        'message': 'device attribute not writable',
+                        'device': device.name,
+                        'attribute': attribute.path
+                    }
+
                 data_buffer = io.BytesIO(command['value'])
                 data_reader = avro.datafile.DataFileReader(data_buffer, avro.io.DatumReader())
                 value = next(data_reader, None)
@@ -95,6 +102,13 @@ class NodeTCPRequestHandler(BaseRequestHandler):
 
             # read attribute value
             else:
+                if not attribute.readable:
+                    return {
+                        'message': 'device attribute not writable',
+                        'device': device.name,
+                        'attribute': attribute.path
+                    }
+
                 data_buffer = io.BytesIO()
                 data_writer = avro.datafile.DataFileWriter(data_buffer, avro.io.DatumWriter(), value_schema)
                 data_writer.append(attribute.read())

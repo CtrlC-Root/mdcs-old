@@ -64,3 +64,20 @@ class StoredAttribute(Attribute):
 
     def write(self, value):
         self.value = value
+
+
+class DelegatedAttribute(Attribute):
+    """
+    An attribute that uses external functions to read and write a value.
+    """
+
+    def __init__(self, path, flags, schema, read_handler, write_handler):
+        super().__init__(path, flags, schema)
+        self.read_handler = read_handler
+        self.write_handler = write_handler
+
+    def read(self):
+        return self.read_handler()
+
+    def write(self, value):
+        return self.write_handler(value)

@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='mdcsctl',
+    name='mdcs-console',
     version='0.1',
     description='mdcs console client',
     author='Alexandru Barbur',
@@ -17,7 +17,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'mdcsctl=mdcsctl.cli:main'
+            'mdcsctl=mdcs_console.ctl:main'
         ]
     }
 )

@@ -24,7 +24,7 @@ $ popd
 $ pushd pkg/bridge-hue
 $ make reqs
 $ popd
-$ pushd pkg/mdcsctl
+$ pushd pkg/mdcs-console
 $ make reqs
 $ popd
 ```

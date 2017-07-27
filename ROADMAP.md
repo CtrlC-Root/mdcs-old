@@ -22,6 +22,14 @@
     - [ ] Run an action.
   - [ ] Node server Multicast UDP interface
     - [ ] Design the protocol.
+- [ ] Python Node
+  - [ ] Investigate Python plugins.
+    * https://stackoverflow.com/a/37233643/937006
+  - [ ] Investigate Python udev and evdev libraries.
+    * https://stackoverflow.com/a/28890654/937006
+    * https://pyudev.readthedocs.io/en/latest/
+    * https://python-evdev.readthedocs.io/en/latest/
+  - [ ] Design the architecture.
 - [ ] Console Client
   - [ ] Retrieve a list of devices.
   - [ ] Retrieve a list of device attributes and actions.

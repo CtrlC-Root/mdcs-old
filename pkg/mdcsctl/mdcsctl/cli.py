@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
 import io
+import json
 import socket
 import argparse
 
 import avro.io
+import avro.schema
 import avro.datafile
 import pkg_resources
 
@@ -28,8 +30,19 @@ def main():
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcp_socket.connect((args.host, args.tcp_port))
 
+    # XXX serialize attribute value using hard-coded schema
+    # XXX ideally we would get this using the HTTP API from the server
+    value_schema = avro.schema.Parse(json.dumps({'type': 'boolean'}))
+    value_buffer = io.BytesIO()
+    value_writer = avro.datafile.DataFileWriter(value_buffer, avro.io.DatumWriter(), value_schema)
+    value_writer.append(bool(input('on: ').strip().lower() in ['yes', 'true']))
+
+    value_writer.flush()
+    value_buffer.seek(0)
+    value_data = value_buffer.read()
+
     # TODO: create the request
-    request = {'command': {'device': 'hue', 'attribute': 'brightness'}}
+    request = {'command': {'device': 'hue-group-4', 'attribute': 'on', 'value': value_data}}
 
     # TODO: serialize the request
     request_buffer = io.BytesIO()
@@ -53,15 +66,18 @@ def main():
         if 'message' in result:
             print("error: {0}".format(result))
 
-        else:
+        elif 'value' in result:
             when = result['when']
             data = result['value']
 
             data_reader = avro.datafile.DataFileReader(io.BytesIO(data), avro.io.DatumReader())
             for value in data_reader:
-                print("value: {0} @ {1}".format(value, when))
+                print("value {0} @ {1}".format(value, when))
 
             data_reader.close()
+
+        else:
+            print("confirm @ {0}".format(result['when']))
 
     # TODO: close the reader
     reader.close()

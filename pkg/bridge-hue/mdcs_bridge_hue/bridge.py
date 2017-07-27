@@ -14,7 +14,7 @@ import requests
 from mdcs.generic import Node, Device, AttributeFlags, StoredAttribute, Action
 from mdcs import NodeServer
 
-from .device import LightDevice
+from .device import LightDevice, GroupDevice
 
 
 def main():
@@ -44,9 +44,19 @@ def main():
 
     lights = response.json()
     for light_id, light_data in lights.items():
-        name = light_data['uniqueid'][:-3].replace(':', '-')
-        print("found light ({0}): {1}".format(light_id, name))
-        node.add_device(LightDevice(name, args.bridge, args.user, light_id))
+        #name = light_data['uniqueid'][:-3].replace(':', '-')
+        node.add_device(LightDevice('hue-light-{0}'.format(light_id), args.bridge, args.user, light_id))
+
+    # retrieve available groups from the Hue bridge and create devices
+    response = requests.get("http://{0}/api/{1}/groups".format(args.bridge, args.user))
+    if response.status_code != HTTPStatus.OK:
+        print("error retrieving groups from bridge: {0}".format(response))
+        sys.exit(1)
+
+    groups = response.json()
+    for group_id, group_data in groups.items():
+        #name = light_data['uniqueid'][:-3].replace(':', '-')
+        node.add_device(GroupDevice('hue-group-{0}'.format(group_id), args.bridge, args.user, group_id))
 
     # create the node server
     server = NodeServer(node=node, host=args.host, http_port=args.http_port, tcp_port=args.tcp_port)

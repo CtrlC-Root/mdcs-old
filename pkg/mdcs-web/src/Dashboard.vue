@@ -1,17 +1,71 @@
 <template>
   <div class="container">
-    <h3 class="display-3 text-xs-center">Dashboard</h3>
+    <h3 class="display-3 text-center">Dashboard</h3>
 
     <!-- Controls -->
     <div class="row">
-      <!-- Control Card -->
-      <div class="col-sm-12 col-md-6 col-lg-4">
+      <!-- Control Cards -->
+      <div class="col-sm-12 col-md-6 col-lg-4 my-2">
         <div class="card">
           <div class="card-block">
-            <h4 class="card-title">hue-light-1: brightness</h4>
-            <p class="card-text">TODO</p>
-            <a href="#" class="btn btn-danger">X</a>
+            <h4 class="card-title">
+              Office Brightness
+              <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </h4>
+            <h6 class="card-subtitle mb-2 text-muted">hue-group-1:brightness</h6>
+            <input type="range" min="1" max="254" step="1">
           </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md-6 col-lg-4 my-2">
+        <div class="card">
+          <div class="card-block">
+            <h4 class="card-title">
+              Apartment Lights
+              <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </h4>
+            <h6 class="card-subtitle mb-2 text-muted">hue-group-0:on</h6>
+            <div class="btn-group" role="group" data-toggle="buttons" aria-label="Toggle State">
+              <label class="btn btn-secondary active">
+                <input type="radio" autocomplete="off"> On
+              </label>
+              <label class="btn btn-secondary">
+                <input type="radio" autocomplete="off"> Off
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md-6 col-lg-4 my-2">
+        <div class="card">
+          <div class="card-block">
+            <h4 class="card-title">
+              Group Name
+              <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </h4>
+            <h6 class="card-subtitle mb-2 text-muted">hue-group-1:name</h6>
+            <div class="input-group">
+              <input class="form-control" type="text" value="Office">
+              <span class="input-group-btn">
+                <button class="btn btn-secondary" type="button">Set</button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add New Card -->
+      <div class="col-sm-12 col-md-6 col-lg-4 my-2">
+        <div class="card card-template">
+          <span>+</span>
         </div>
       </div>
     </div>
@@ -31,4 +85,20 @@ export default {
 </script>
 
 <style>
+.card {
+  height: 100%;
+}
+
+.card-template {
+  border-color: #ddd;
+  border-style: dashed;
+  border-width: 6px;
+}
+
+.card-template span {
+  font-size: 60pt;
+  text-align: center;
+
+  color: #ddd;
+}
 </style>

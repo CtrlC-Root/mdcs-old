@@ -85,20 +85,4 @@ export default {
 </script>
 
 <style>
-.card {
-  height: 100%;
-}
-
-.card-template {
-  border-color: #ddd;
-  border-style: dashed;
-  border-width: 6px;
-}
-
-.card-template span {
-  font-size: 60pt;
-  text-align: center;
-
-  color: #ddd;
-}
 </style>

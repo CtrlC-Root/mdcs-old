@@ -5,11 +5,7 @@
     <!-- Controls -->
     <div class="row">
       <!-- Node Cards -->
-      <div class="col-sm-12 col-md-6 col-lg-4 my-2">
-        <node-card />
-      </div>
-
-      <div class="col-sm-12 col-md-6 col-lg-4 my-2">
+      <div class="col-sm-12 col-md-6 col-lg-4 my-2" v-for="node in nodes">
         <node-card />
       </div>
 
@@ -17,15 +13,18 @@
       <div class="col-sm-12 col-md-6 col-lg-4 my-2">
         <div class="card card-template">
           <div class="card-block">
+            <h4 class="card-title">Add Node</h4>
             <form>
               <div class="form-group">
-                <input type="text" class="form-control" id="nodeHost" placeholder="Hostname or IP address">
+                <label for="nodeUrl">HTTP API URL</label>
+                <input type="text"
+                  class="form-control"
+                  id="nodeUrl"
+                  placeholder="http://127.0.0.1:5510/"
+                  v-model="nodeUrl">
               </div>
               <div class="form-group">
-                <input type="text" class="form-control" id="nodeHttpPort" placeholder="HTTP API port">
-              </div>
-              <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Connect">
+                <input type="submit" class="btn btn-primary" value="Connect" v-on:click="connectNode">
               </div>
             </form>
           </div>
@@ -44,9 +43,17 @@ export default {
     'node-card': NodeCard
   },
   data () {
-    return {}
+    return {
+      'nodeUrl': '',
+      'nodes': [{'url': 'http://127.0.0.1:5510/'}]
+    }
   },
-  methods: {}
+  methods: {
+    connectNode: function () {
+      console.log("TODO: connect to new node: " + this.nodeUrl);
+      this.nodeUrl = '';
+    }
+  }
 }
 </script>
 

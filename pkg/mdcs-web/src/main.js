@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 
@@ -6,6 +7,7 @@ import Dashboard from './Dashboard.vue'
 import Network from './Network.vue'
 
 // configure Vue plugins
+Vue.use(Vuex)
 Vue.use(VueRouter)
 Vue.use(VueResource)
 

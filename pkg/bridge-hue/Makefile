@@ -2,7 +2,7 @@
 TOP := $(shell pwd)
 PROJECT := bridge-hue
 PACKAGE := mdcs_bridge_hue
-BINARY := $(PACKAGE)
+BINARY := mdcs-bridge-hue
 
 #
 # COMMON

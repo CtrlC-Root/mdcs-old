@@ -4,16 +4,13 @@ import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 
 import store from './store/index'
-import Dashboard from './Dashboard.vue'
-import Network from './Network.vue'
+import Dashboard from './components/Dashboard.vue'
+import Network from './components/Network.vue'
 
 // configure Vue plugins
 Vue.use(Vuex)
 Vue.use(VueRouter)
 Vue.use(VueResource)
-
-// configure Vue default settings
-Vue.http.options.root = 'http://127.0.0.1:8000'
 
 // create the Vue router
 const router = new VueRouter({
@@ -26,6 +23,5 @@ const router = new VueRouter({
 // create the Vue application
 const app = new Vue({
   store,
-  router: router,
-  http: {}
+  router: router
 }).$mount("#app")

@@ -16,6 +16,7 @@ Vue.http.options.root = 'http://127.0.0.1:8000'
 
 // create the data store
 const store = new Vuex.Store({
+  strict: true,
   state: {
     nextNodeId: 0,
     nodes: []

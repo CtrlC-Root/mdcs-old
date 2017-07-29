@@ -36,12 +36,14 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
             # TODO handle different exceptions appropriately
             print(e)
             self.send_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+            self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             return
 
         # retrieve and execute the view
         if endpoint not in self.server.views:
             self.send_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+            self.send_header('Access-Control-Allow-Origin', '*')
             self.send_header('Content-Type', 'text/plain')
             self.end_headers()
 
@@ -54,6 +56,7 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
         # process the response
         if isinstance(response, dict):
             self.send_response(HTTPStatus.OK)
+            self.send_header('Access-Control-Allow-Origin', '*')
             self.send_header('Content-Type', 'application/javascript')
             self.end_headers()
 
@@ -64,6 +67,7 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
             status_code, message = response
 
             self.send_response(status_code)
+            self.send_header('Access-Control-Allow-Origin', '*')
             self.send_header('Content-Type', 'text/plain')
             self.end_headers()
 
@@ -72,6 +76,7 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
 
         # unknown response
         self.send_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+        self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Content-Type', 'text/plain')
         self.end_headers()
 

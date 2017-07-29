@@ -2,7 +2,7 @@
   <div class="card">
     <div class="card-block">
       <h4 class="card-title">
-        hue-bridge
+        <router-link :to="{name: 'node-detail', params: {id: node.id}}">hue-bridge</router-link>
         <i class="fa fa-refresh fa-spin" v-if="node.loading"></i>
       </h4>
       <h6 class="card-subtitle mb-2 text-muted">{{ node.host }}</h6>

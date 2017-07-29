@@ -6,6 +6,7 @@ import VueResource from 'vue-resource'
 import store from './store/index'
 import Dashboard from './components/Dashboard.vue'
 import Network from './components/Network.vue'
+import NodeDetail from './components/node/NodeDetail.vue'
 
 // configure Vue plugins
 Vue.use(Vuex)
@@ -16,7 +17,8 @@ Vue.use(VueResource)
 const router = new VueRouter({
   routes: [
     {name: 'dashboard', path: '/', component: Dashboard},
-    {name: 'network', path: '/network', component: Network}
+    {name: 'network', path: '/network', component: Network},
+    {name: 'node-detail', path: '/node/:id', component: NodeDetail}
   ]
 })
 

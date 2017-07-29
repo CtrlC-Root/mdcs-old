@@ -6,7 +6,7 @@ from http import HTTPStatus
 
 def node_detail(node, method, args):
     # XXX see notes below for health field
-    return {'config': node.config, 'health': 'ok'}
+    return {'name': node.name, 'config': node.config, 'health': 'ok'}
 
 
 def node_health(node, method, args):

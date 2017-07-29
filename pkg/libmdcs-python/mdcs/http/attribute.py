@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import uuid
 from http import HTTPStatus
 
 from mdcs.generic.attribute import AttributeFlags

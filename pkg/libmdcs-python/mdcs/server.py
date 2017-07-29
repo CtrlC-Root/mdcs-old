@@ -3,6 +3,7 @@
 import socket
 import threading
 
+from mdcs.generic import Node
 from mdcs.http import NodeHTTPServer
 from mdcs.tcp import NodeTCPServer
 
@@ -12,16 +13,14 @@ class NodeServer:
     A server that provides the APIs for interacting with a Node.
     """
 
-    def __init__(self, node, host, http_port, tcp_port):
-        self.node = node
-
-        # XXX this doesn't feel right
-        self.node.config = {
+    def __init__(self, host, http_port, tcp_port):
+        # create the node
+        self.node = Node(config={
             'httpHost': host,
             'httpPort': http_port,
             'tcpHost': host,
             'tcpPort': tcp_port
-        }
+        })
 
         # create the HTTP server
         self.http_server = NodeHTTPServer(self.node, host, http_port)

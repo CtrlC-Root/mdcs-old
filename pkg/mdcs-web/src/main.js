@@ -22,15 +22,27 @@ const store = new Vuex.Store({
   },
   mutations: {
     addNode: function (state, node) {
-      state.nodes.push({
+      state.nodes.push(Object.assign({
         id: state.nextNodeId,
-        host: node.host,
-        httpPort: node.httpPort,
-        tcpPort: node.tcpPort,
-        devices: node.devices
-      });
+        loading: false,
+        host: '',
+        httpPort: NaN,
+        tcpPort: NaN,
+        devices: []
+      }, node));
 
       state.nextNodeId++;
+    },
+    updateNode: function (state, node) {
+      // TODO: is there a more efficient way given Vue's reactivity constraints?
+      // https://vuejs.org/v2/guide/reactivity.html
+      var index = state.nodes.findIndex(function (item) {
+        return item.id == node.id;
+      });
+
+      var existing = state.nodes[index];
+      state.nodes.splice(index, 1);
+      state.nodes.push(Object.assign({}, existing, node));
     },
     removeNode: function (state, node) {
       state.nodes = state.nodes.filter(function (item) {
@@ -40,20 +52,17 @@ const store = new Vuex.Store({
   },
   actions: {
     refreshNode: function (context, node) {
-      console.log('>>>> http://' + node.host + ':' + node.httpPort + '/devices');
-      Vue.http.get('http://' + node.host + ':' + node.httpPort + '/devices').then((response) => {
+      context.commit('updateNode', {id: node.id, loading: true});
+      Vue.http.get(`http://${node.host}:${node.httpPort}/devices`).then((response) => {
         // success callback
         return response.json()
       }, (response) => {
         // TODO error callback
         return [];
       }).then((data) => {
-        context.commit('removeNode', node);
-        context.commit('addNode', {
+        context.commit('updateNode', {
           id: node.id,
-          host: node.host,
-          httpPort: node.httpPort,
-          tcpPort: node.tcpPort,
+          loading: false,
           devices: data.devices
         });
       });

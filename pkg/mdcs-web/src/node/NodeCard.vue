@@ -1,7 +1,10 @@
 <template>
   <div class="card">
     <div class="card-block">
-      <h4 class="card-title">hue-bridge</h4>
+      <h4 class="card-title">
+        hue-bridge
+        <i class="fa fa-refresh fa-spin" v-if="node.loading"></i>
+      </h4>
       <h6 class="card-subtitle mb-2 text-muted">{{ node.host }}</h6>
     </div>
     <ul class="list-group list-group-flush">

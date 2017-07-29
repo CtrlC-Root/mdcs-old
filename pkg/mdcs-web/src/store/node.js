@@ -1,7 +1,6 @@
 import Vue from 'vue'
 
 const state = {
-  nextId: 0,
   all: []
 };
 
@@ -12,29 +11,28 @@ const getters = {
       return null;
     }
 
-    return state.all[state.nextId - 1];
+    return state.all[state.all.length - 1];
   }
 };
 
 const mutations = {
   addNode: function (state, node) {
+    // TODO: verify node.name exists and is unique
     state.all.push(Object.assign({
-      id: state.nextId,
       loading: false,
+      name: '',
       host: '',
       httpPort: NaN,
       tcpPort: NaN,
-      devices: []
+      devices: [],
     }, node));
-
-    state.nextId++;
   },
 
   updateNode: function (state, node) {
     // TODO: is there a more efficient way given Vue's reactivity constraints?
     // https://vuejs.org/v2/guide/reactivity.html
     var index = state.all.findIndex(function (item) {
-      return item.id == node.id;
+      return item.name == node.name;
     });
 
     var existing = state.all[index];
@@ -44,7 +42,7 @@ const mutations = {
 
   removeNode: function (state, node) {
     state.all = state.all.filter(function (item) {
-      return item.id != node.id;
+      return item.name != node.name;
     });
   }
 };
@@ -61,6 +59,7 @@ const actions = {
       return {};
     }).then((data) => {
       context.commit('addNode', {
+        name: data.name,
         loading: true,
         host: nodeUrl.hostname,
         httpPort: data.config.httpPort,
@@ -72,7 +71,7 @@ const actions = {
   },
 
   refreshNode: function (context, node) {
-    context.commit('updateNode', {id: node.id, loading: true});
+    context.commit('updateNode', {name: node.name, loading: true});
     Vue.http.get(`http://${node.host}:${node.httpPort}/devices`).then((response) => {
       // success
       return response.json();
@@ -81,7 +80,7 @@ const actions = {
       return [];
     }).then((data) => {
       context.commit('updateNode', {
-        id: node.id,
+        name: node.name,
         loading: false,
         devices: data.devices
       });

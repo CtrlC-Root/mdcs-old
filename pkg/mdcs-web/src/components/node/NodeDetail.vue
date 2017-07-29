@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h3 class="display-3 text-center">Node: {{ node.host }}</h3>
+    <h3 class="display-3 text-center">{{ node.name }}</h3>
     <ul>
       <li v-for="device in node.devices">{{ device }}</li>
     </ul>
@@ -15,9 +15,9 @@ export default {
   },
   computed: {
     node () {
-      var nodeId = parseInt(this.$route.params.id);
+      var nodeName = this.$route.params.name;
       return this.$store.state.node.all.find(function (item) {
-        return item.id == nodeId;
+        return item.name == nodeName;
       });
     }
   },

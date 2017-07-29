@@ -18,7 +18,7 @@ const router = new VueRouter({
   routes: [
     {name: 'dashboard', path: '/', component: Dashboard},
     {name: 'network', path: '/network', component: Network},
-    {name: 'node-detail', path: '/node/:id', component: NodeDetail}
+    {name: 'node-detail', path: '/node/:name', component: NodeDetail}
   ]
 })
 

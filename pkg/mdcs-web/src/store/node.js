@@ -5,6 +5,17 @@ const state = {
   all: []
 };
 
+const getters = {
+  lastNode: function (state) {
+    if (state.all.length == 0) {
+      // XXX better way to handle this?
+      return null;
+    }
+
+    return state.all[state.nextId - 1];
+  }
+};
+
 const mutations = {
   addNode: function (state, node) {
     state.all.push(Object.assign({
@@ -39,13 +50,34 @@ const mutations = {
 };
 
 const actions = {
+  connectNode: function (context, params) {
+    var nodeUrl = new URL(params.nodeUrl);
+    Vue.http.get(params.nodeUrl).then((response) => {
+      // success
+      return response.json();
+    }, (response) => {
+      // TODO error
+      console.log(response);
+      return {};
+    }).then((data) => {
+      context.commit('addNode', {
+        loading: true,
+        host: nodeUrl.hostname,
+        httpPort: data.config.httpPort,
+        tcpPort: data.config.tcpPort
+      });
+
+      context.dispatch('refreshNode', context.getters.lastNode);
+    });
+  },
+
   refreshNode: function (context, node) {
     context.commit('updateNode', {id: node.id, loading: true});
     Vue.http.get(`http://${node.host}:${node.httpPort}/devices`).then((response) => {
-      // success callback
-      return response.json()
+      // success
+      return response.json();
     }, (response) => {
-      // TODO error callback
+      // TODO error
       return [];
     }).then((data) => {
       context.commit('updateNode', {
@@ -59,6 +91,7 @@ const actions = {
 
 export default {
   state: state,
+  getters: getters,
   mutations: mutations,
   actions: actions
 };

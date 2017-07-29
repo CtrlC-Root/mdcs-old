@@ -54,12 +54,8 @@ export default {
   },
   methods: {
     connectNode: function () {
-      console.log("TODO: connect to new node: " + this.nodeUrl);
-      this.$store.commit('addNode', {
-        host: '127.0.0.1',
-        httpPort: 5510,
-        tcpPort: 5511,
-        devices: []
+      this.$store.dispatch('connectNode', {
+        nodeUrl: this.nodeUrl
       });
 
       this.nodeUrl = '';

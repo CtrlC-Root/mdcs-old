@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     nodes () {
-      return this.$store.state.nodes;
+      return this.$store.state.node.all;
     }
   },
   methods: {

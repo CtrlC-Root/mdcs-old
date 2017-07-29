@@ -20,7 +20,7 @@ const store = new Vuex.Store({
     nodes: []
   },
   mutations: {
-    addNode (state, node) {
+    addNode: function (state, node) {
       state.nodes.push({
         host: node.host,
         httpPort: node.httpPort,

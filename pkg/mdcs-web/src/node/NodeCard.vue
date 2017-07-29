@@ -2,11 +2,11 @@
   <div class="card">
     <div class="card-block">
       <h4 class="card-title">hue-bridge</h4>
-      <h6 class="card-subtitle mb-2 text-muted">{{ url }}</h6>
+      <h6 class="card-subtitle mb-2 text-muted">{{ node.host }}</h6>
     </div>
     <ul class="list-group list-group-flush">
-      <li class="list-group-item">HTTP API: {{ httpPort }}/tcp</li>
-      <li class="list-group-item">TCP API: {{ tcpPort }}/tcp</li>
+      <li class="list-group-item">HTTP API: {{ node.httpPort }}/tcp</li>
+      <li class="list-group-item">TCP API: {{ node.tcpPort }}/tcp</li>
       <li class="list-group-item">{{ deviceCount }} devices</li>
     </ul>
     <div class="card-footer">
@@ -19,12 +19,10 @@
 <script>
 export default {
   name: 'node-card',
+  props: ['node'],
   data () {
     return {
-      url: '',
-      httpPort: NaN,
-      tcpPort: NaN,
-      deviceCount: 0
+      deviceCount: NaN
     }
   },
   methods: {

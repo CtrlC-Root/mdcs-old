@@ -6,7 +6,7 @@
     <div class="row">
       <!-- Node Cards -->
       <div class="col-sm-12 col-md-6 col-lg-4 my-2" v-for="node in nodes">
-        <node-card />
+        <node-card :node="node"/>
       </div>
 
       <!-- Connect to Node Card -->
@@ -14,7 +14,7 @@
         <div class="card card-template">
           <div class="card-block">
             <h4 class="card-title">Add Node</h4>
-            <form>
+            <form v-on:submit.prevent="connectNode">
               <div class="form-group">
                 <label for="nodeUrl">HTTP API URL</label>
                 <input type="text"
@@ -24,7 +24,7 @@
                   v-model="nodeUrl">
               </div>
               <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Connect" v-on:click="connectNode">
+                <input type="submit" class="btn btn-primary" value="Connect">
               </div>
             </form>
           </div>
@@ -44,13 +44,23 @@ export default {
   },
   data () {
     return {
-      'nodeUrl': '',
-      'nodes': [{'url': 'http://127.0.0.1:5510/'}]
+      'nodeUrl': ''
+    }
+  },
+  computed: {
+    nodes () {
+      return this.$store.state.nodes;
     }
   },
   methods: {
     connectNode: function () {
       console.log("TODO: connect to new node: " + this.nodeUrl);
+      this.$store.commit('addNode', {
+        host: '127.0.0.1',
+        httpPort: 5510,
+        tcpPort: 5511
+      });
+
       this.nodeUrl = '';
     }
   }

@@ -14,6 +14,22 @@ Vue.use(VueResource)
 // configure Vue default settings
 Vue.http.options.root = 'http://127.0.0.1:8000'
 
+// create the data store
+const store = new Vuex.Store({
+  state: {
+    nodes: []
+  },
+  mutations: {
+    addNode (state, node) {
+      state.nodes.push({
+        host: node.host,
+        httpPort: node.httpPort,
+        tcpPort: node.tcpPort
+      });
+    }
+  }
+});
+
 // create the Vue router
 const router = new VueRouter({
   routes: [
@@ -24,6 +40,7 @@ const router = new VueRouter({
 
 // create the Vue application
 const app = new Vue({
+  store,
   router: router,
   http: {
     root: 'http://127.0.0.1:8000/'

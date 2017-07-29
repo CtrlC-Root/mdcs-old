@@ -30,7 +30,7 @@ export default {
       console.log("TODO: refresh node");
     },
     disconnect: function () {
-      console.log("TODO: disconnect node");
+      this.$store.commit('removeNode', {id: this.node.id});
     }
   }
 }

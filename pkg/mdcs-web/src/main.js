@@ -17,14 +17,23 @@ Vue.http.options.root = 'http://127.0.0.1:8000'
 // create the data store
 const store = new Vuex.Store({
   state: {
+    nextNodeId: 0,
     nodes: []
   },
   mutations: {
     addNode: function (state, node) {
       state.nodes.push({
+        id: state.nextNodeId,
         host: node.host,
         httpPort: node.httpPort,
         tcpPort: node.tcpPort
+      });
+
+      state.nextNodeId++;
+    },
+    removeNode: function (state, node) {
+      state.nodes = state.nodes.filter(function (item) {
+        return item.id != node.id;
       });
     }
   }

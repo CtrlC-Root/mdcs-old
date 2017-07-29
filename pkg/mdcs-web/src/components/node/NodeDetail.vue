@@ -1,8 +1,10 @@
 <template>
   <div class="container">
-    <h3 class="display-3 text-center">{{ node.name }}</h3>
+    <h3 class="display-3 text-center">Node: {{ node.name }}</h3>
     <ul>
-      <li v-for="device in node.devices">{{ device }}</li>
+      <li v-for="device in node.devices">
+        <router-link :to="{name: 'device-detail', params: {name: device}}">{{ device }}</router-link>
+      </li>
     </ul>
   </div>
 </template>

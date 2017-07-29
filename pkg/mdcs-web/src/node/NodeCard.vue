@@ -21,16 +21,19 @@ export default {
   name: 'node-card',
   props: ['node'],
   data () {
-    return {
-      deviceCount: NaN
+    return {}
+  },
+  computed: {
+    deviceCount: function () {
+      return this.node.devices.length
     }
   },
   methods: {
     refresh: function () {
-      console.log("TODO: refresh node");
+      this.$store.dispatch('refreshNode', this.node);
     },
     disconnect: function () {
-      this.$store.commit('removeNode', {id: this.node.id});
+      this.$store.commit('removeNode', this.node);
     }
   }
 }

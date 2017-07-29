@@ -26,7 +26,8 @@ const store = new Vuex.Store({
         id: state.nextNodeId,
         host: node.host,
         httpPort: node.httpPort,
-        tcpPort: node.tcpPort
+        tcpPort: node.tcpPort,
+        devices: node.devices
       });
 
       state.nextNodeId++;
@@ -34,6 +35,27 @@ const store = new Vuex.Store({
     removeNode: function (state, node) {
       state.nodes = state.nodes.filter(function (item) {
         return item.id != node.id;
+      });
+    }
+  },
+  actions: {
+    refreshNode: function (context, node) {
+      console.log('>>>> http://' + node.host + ':' + node.httpPort + '/devices');
+      Vue.http.get('http://' + node.host + ':' + node.httpPort + '/devices').then((response) => {
+        // success callback
+        return response.json()
+      }, (response) => {
+        // TODO error callback
+        return [];
+      }).then((data) => {
+        context.commit('removeNode', node);
+        context.commit('addNode', {
+          id: node.id,
+          host: node.host,
+          httpPort: node.httpPort,
+          tcpPort: node.tcpPort,
+          devices: data.devices
+        });
       });
     }
   }

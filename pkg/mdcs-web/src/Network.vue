@@ -58,7 +58,8 @@ export default {
       this.$store.commit('addNode', {
         host: '127.0.0.1',
         httpPort: 5510,
-        tcpPort: 5511
+        tcpPort: 5511,
+        devices: []
       });
 
       this.nodeUrl = '';

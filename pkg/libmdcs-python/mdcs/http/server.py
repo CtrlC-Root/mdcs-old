@@ -9,6 +9,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException
 
+from .node import node_detail, node_health
 from .device import device_list, device_detail
 from .attribute import attribute_detail
 from .action import action_detail
@@ -96,6 +97,8 @@ class NodeHTTPServer(HTTPServer):
 
         # create the views
         self.views = {
+            'node_detail': node_detail,
+            'node_health': node_health,
             'device_list': device_list,
             'device_detail': device_detail,
             'attribute_detail': attribute_detail,
@@ -105,7 +108,8 @@ class NodeHTTPServer(HTTPServer):
         # create the URL dispatch rules
         self.urls = None
         self.routes = Map([
-            Rule('/', methods=['GET'], endpoint='status'),
+            Rule('/', methods=['GET'], endpoint='node_detail'),
+            Rule('/health', methods=['GET'], endpoint='node_health'),
 
             Rule('/devices', methods=['GET'], endpoint='device_list'),
             Rule('/devices/<device>', methods=['GET'], endpoint='device_detail'),

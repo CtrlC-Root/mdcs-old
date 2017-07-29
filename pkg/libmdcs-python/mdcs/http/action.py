@@ -19,4 +19,6 @@ def action_detail(node, method, args):
     return {
         'device': device.name,
         'action': action.path,
+        'input_schema': action.input_schema,
+        'output_schema': action.output_schema
     }

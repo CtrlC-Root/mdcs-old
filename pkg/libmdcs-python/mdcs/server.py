@@ -15,6 +15,14 @@ class NodeServer:
     def __init__(self, node, host, http_port, tcp_port):
         self.node = node
 
+        # XXX this doesn't feel right
+        self.node.config = {
+            'httpHost': host,
+            'httpPort': http_port,
+            'tcpHost': host,
+            'tcpPort': tcp_port
+        }
+
         # create the HTTP server
         self.http_server = NodeHTTPServer(self.node, host, http_port)
         self.http_server_thread = threading.Thread(target=self.http_server.run)

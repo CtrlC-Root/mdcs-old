@@ -8,15 +8,13 @@ class Node:
     A control system node.
     """
 
-    def __init__(self):
+    def __init__(self, config={}):
         """
         Create a new node.
         """
 
-        # create a unique identifier
         self.uuid = uuid.uuid4()
-
-        # keep track of connected devices
+        self.config = config
         self.devices = {}
 
     def add_device(self, device):

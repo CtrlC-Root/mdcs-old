@@ -6,11 +6,12 @@ const state = {
 
 const getters = {
   lastNode: function (state) {
+    // corner case: no last node
     if (state.all.length == 0) {
-      // XXX better way to handle this?
       return null;
     }
 
+    // return last node added to the list
     return state.all[state.all.length - 1];
   }
 };

@@ -13,15 +13,19 @@
       <div class="col-sm-12 col-md-6 col-lg-4 my-2">
         <div class="card card-template">
           <div class="card-block">
-            <h4 class="card-title">Add Node</h4>
+            <h4 class="card-title">
+              Add Node
+              <i class="fa fa-refresh fa-spin" v-if="loading"></i>
+            </h4>
             <form v-on:submit.prevent="connectNode">
-              <div class="form-group">
-                <label for="nodeUrl">HTTP API URL</label>
+              <div class="form-group" v-bind:class="{ 'has-danger': error }">
+                <label class="form-control-label" for="nodeUrl">HTTP API URL</label>
                 <input type="text"
                   class="form-control"
                   id="nodeUrl"
                   placeholder="http://127.0.0.1:5510/"
                   v-model="nodeUrl">
+                <div class="form-control-feedback" v-if="error">{{ error }}</div>
               </div>
               <div class="form-group">
                 <input type="submit" class="btn btn-primary" value="Connect">
@@ -44,7 +48,9 @@ export default {
   },
   data () {
     return {
-      'nodeUrl': ''
+      nodeUrl: '',
+      error: '',
+      loading: false
     }
   },
   computed: {
@@ -54,15 +60,18 @@ export default {
   },
   methods: {
     connectNode: function () {
+      this.loading = true;
       this.$store.dispatch('connectNode', {
         nodeUrl: this.nodeUrl
+      }).then((node) => {
+        this.error = '';
+        this.nodeUrl = '';
+      }, (error) => {
+        this.error = 'Failed to connect!';
+      }).then(() => {
+        this.loading = false;
       });
-
-      this.nodeUrl = '';
     }
   }
 }
 </script>
-
-<style>
-</style>

@@ -49,35 +49,37 @@ const mutations = {
 
 const actions = {
   connectNode: function (context, params) {
-    var nodeUrl = new URL(params.nodeUrl);
-    Vue.http.get(params.nodeUrl).then((response) => {
-      // success
+    // retrieve node configuration
+    return Vue.http.get(params.nodeUrl).then((response) => {
       return response.json();
-    }, (response) => {
-      // TODO error
-      console.log(response);
-      return {};
     }).then((data) => {
-      context.commit('addNode', {
+      // create initial node object
+      var parsedUrl = new URL(params.nodeUrl);
+      return {
         name: data.name,
-        loading: true,
-        host: nodeUrl.hostname,
+        host: parsedUrl.hostname,
         httpPort: data.config.httpPort,
         tcpPort: data.config.tcpPort
+      };
+    }).then((node) => {
+      // retrieve node devices
+      return Vue.http.get(`http://${node.host}:${node.httpPort}/devices`).then((response) => {
+        return response.json();
+      }).then((data) => {
+        return Object.assign(node, {
+          devices: data.devices
+        });
       });
-
-      context.dispatch('refreshNode', context.getters.lastNode);
+    }).then((node) => {
+      context.commit('addNode', node);
+      return node;
     });
   },
 
   refreshNode: function (context, node) {
     context.commit('updateNode', {name: node.name, loading: true});
-    Vue.http.get(`http://${node.host}:${node.httpPort}/devices`).then((response) => {
-      // success
+    return Vue.http.get(`http://${node.host}:${node.httpPort}/devices`).then((response) => {
       return response.json();
-    }, (response) => {
-      // TODO error
-      return [];
     }).then((data) => {
       context.commit('updateNode', {
         name: node.name,

@@ -24,7 +24,7 @@ export default {
   name: 'node-card',
   props: ['node'],
   data () {
-    return {}
+    return {};
   },
   computed: {
     deviceCount: function () {

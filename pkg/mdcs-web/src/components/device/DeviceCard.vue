@@ -22,7 +22,7 @@
 <script>
 export default {
   name: 'device-card',
-  props: ['node', 'deviceName'],
+  props: ['nodeName', 'deviceName'],
   created () {
     this.refresh();
   },
@@ -33,6 +33,14 @@ export default {
       attributeCount: NaN,
       actionCount: NaN
     };
+  },
+  computed: {
+    node () {
+      var nodeName = this.nodeName;
+      return this.$store.state.node.all.find(function (item) {
+        return item.name == nodeName;
+      });
+    }
   },
   methods: {
     refresh: function () {

@@ -1,12 +1,14 @@
 <template>
   <div class="container">
-    <h3 class="display-3 text-center">Device: TODO</h3>
+    <h3 class="display-3 text-center">Device: {{ deviceName }}</h3>
+
     <table class="table table-striped">
       <thead>
         <tr>
           <th>Attribute</th>
           <th>Flags</th>
           <th>Schema</th>
+          <th>Controls</th>
         </tr>
       </thead>
       <tbody>
@@ -14,6 +16,32 @@
           <th scope="row">{{ attribute }}</th>
           <td>READ, WRITE</td>
           <td>{'type': 'integer'}</td>
+          <td></td>
+        </tr>
+        <tr v-if="attributes.length == 0">
+          <td colspan="4">No attributes.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Input Schema</th>
+          <th>Output Schema</th>
+          <th>Controls</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="action in actions">
+          <th scope="row">{{ action }}</th>
+          <td>{'type': 'integer'}</td>
+          <td>{'type': 'null'}</td>
+          <td></td>
+        </tr>
+        <tr v-if="actions.length == 0">
+          <td colspan="4">No actions.</td>
         </tr>
       </tbody>
     </table>

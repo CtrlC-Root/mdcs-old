@@ -10,8 +10,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">brightness</th>
+        <tr v-for="attribute in attributes">
+          <th scope="row">{{ attribute }}</th>
           <td>READ, WRITE</td>
           <td>{'type': 'integer'}</td>
         </tr>
@@ -23,11 +23,46 @@
 <script>
 export default {
   name: 'device-detail',
-  data () {
-    return {}
+  created () {
+    this.refresh();
   },
-  computed: {},
-  methods: {}
+  data () {
+    return {
+      'error': false,
+      'loading': true,
+      'attributes': [],
+      'actions': []
+    };
+  },
+  computed: {
+    node () {
+      var nodeName = this.$route.params.node;
+      return this.$store.state.node.all.find(function (item) {
+        return item.name == nodeName;
+      });
+    },
+    deviceName () {
+      return this.$route.params.device;
+    }
+  },
+  methods: {
+    refresh () {
+      this.loading = true;
+      this.$http.get(`http://${this.node.host}:${this.node.httpPort}/d/${this.deviceName}`).then((response) => {
+        return response.json();
+      }).then((data) => {
+        this.attributes = data.attributes;
+        this.actions = data.actions;
+        this.error = false;
+      }).catch((response) => {
+        this.attributs = [];
+        this.actions = [];
+        this.error = true;
+      }).then(() => {
+        this.loading = false;
+      });
+    }
+  }
 }
 </script>
 

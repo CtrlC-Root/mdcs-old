@@ -21,11 +21,11 @@ export default {
     'device-card': DeviceCard
   },
   data () {
-    return {}
+    return {};
   },
   computed: {
     node () {
-      var nodeName = this.$route.params.name;
+      var nodeName = this.$route.params.node;
       return this.$store.state.node.all.find(function (item) {
         return item.name == nodeName;
       });

@@ -2,7 +2,9 @@
   <div class="card">
     <div class="card-block">
       <h4 class="card-title">
-        <router-link :to="{name: 'device-detail', params: {name: deviceName}}">{{ deviceName }}</router-link>
+        <router-link :to="{name: 'device-detail', params: {node: node.name, device: deviceName}}">
+          {{ deviceName }}
+        </router-link>
         <i class="fa fa-refresh fa-spin" v-if="loading"></i>
         <i class="fa fa-exclamation-triangle" v-if="error"></i>
       </h4>

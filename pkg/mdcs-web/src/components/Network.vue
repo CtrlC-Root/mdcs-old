@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import NodeCard from './node/NodeCard.vue'
+import NodeCard from './node/NodeCard.vue';
 
 export default {
   name: 'network',

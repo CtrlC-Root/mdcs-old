@@ -22,11 +22,17 @@
 <script>
 export default {
   name: 'node-card',
-  props: ['node'],
+  props: ['nodeName'],
   data () {
     return {};
   },
   computed: {
+    node () {
+      var nodeName = this.nodeName;
+      return this.$store.state.node.all.find(function (item) {
+        return item.name == nodeName;
+      });
+    },
     deviceCount: function () {
       return this.node.devices.length
     }

@@ -6,7 +6,7 @@
     <div class="row">
       <!-- Node Cards -->
       <div class="col-sm-12 col-md-6 col-lg-4 my-2" v-for="node in nodes">
-        <node-card :node="node"/>
+        <node-card :nodeName="node.name"/>
       </div>
 
       <!-- Connect to Node Card -->

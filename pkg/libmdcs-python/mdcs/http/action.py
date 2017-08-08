@@ -14,10 +14,4 @@ def action_detail(node, method, args):
     if args['path'] not in device.actions:
         return (HTTPStatus.NOT_FOUND, 'action not found')
 
-    action = device.actions[args['path']]
-    return {
-        'device': device.name,
-        'action': action.path,
-        'input_schema': action.input_schema,
-        'output_schema': action.output_schema
-    }
+    return device.actions[args['path']]

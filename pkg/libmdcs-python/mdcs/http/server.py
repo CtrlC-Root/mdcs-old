@@ -2,6 +2,7 @@
 
 import json
 import socket
+import inspect
 import urllib.parse
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -9,6 +10,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException
 
+from .json import JSONEncoder
 from .node import node_detail, node_health
 from .device import device_list, device_detail
 from .attribute import attribute_detail
@@ -55,16 +57,7 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
         response = view(self.server.node, self.command, args)
 
         # process the response
-        if isinstance(response, dict):
-            self.send_response(HTTPStatus.OK)
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.send_header('Content-Type', 'application/javascript')
-            self.end_headers()
-
-            self.wfile.write(json.dumps(response).encode('utf-8'))
-            return
-
-        elif isinstance(response, tuple) and len(response) == 2:
+        if isinstance(response, tuple) and len(response) == 2:
             status_code, message = response
 
             self.send_response(status_code)
@@ -75,13 +68,25 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(message.encode('utf-8'))
             return
 
-        # unknown response
-        self.send_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+        try:
+            # encode to JSON
+            json_value = JSONEncoder().encode(response)
+
+        except:
+            # TODO handle different exceptions appropriately
+            print(e)
+            self.send_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            return
+
+        # send the JSON data
+        self.send_response(HTTPStatus.OK)
         self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Content-Type', 'text/plain')
+        self.send_header('Content-Type', 'application/javascript')
         self.end_headers()
 
-        self.wfile.write("unknown response".encode('utf-8'))
+        self.wfile.write(json_value.encode('utf-8'))
 
 
 class NodeHTTPServer(HTTPServer):

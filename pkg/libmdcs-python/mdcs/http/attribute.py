@@ -16,10 +16,4 @@ def attribute_detail(node, method, args):
     if args['path'] not in device.attributes:
         return (HTTPStatus.NOT_FOUND, 'attribute not found')
 
-    attribute = device.attributes[args['path']]
-    return {
-        'device': device.name,
-        'attribute': attribute.path,
-        'flags': [flag.name for flag in AttributeFlags if flag in attribute.flags],
-        'schema': attribute.schema,
-    }
+    return device.attributes[args['path']]

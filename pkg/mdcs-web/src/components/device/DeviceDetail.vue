@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h3 class="display-3 text-center">Device: {{ deviceName }}</h3>
+    <h3 class="display-3 text-center">Device: {{ device.name }}</h3>
 
     <table class="table table-striped">
       <thead>
@@ -12,13 +12,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="attribute in attributes">
-          <th scope="row">{{ attribute }}</th>
-          <td>READ, WRITE</td>
-          <td>{'type': 'integer'}</td>
-          <td></td>
+        <tr v-for="attribute in device.attributes">
+          <th scope="row">{{ attribute.path }}</th>
+          <td>{{ attribute.flags.join(', ') }}</td>
+          <td>{{ attribute.schema }}</td>
+          <td>TODO</td>
         </tr>
-        <tr v-if="attributes.length == 0">
+        <tr v-if="device.attributes.length == 0">
           <td colspan="4">No attributes.</td>
         </tr>
       </tbody>
@@ -34,13 +34,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="action in actions">
-          <th scope="row">{{ action }}</th>
-          <td>{'type': 'integer'}</td>
-          <td>{'type': 'null'}</td>
-          <td></td>
+        <tr v-for="action in device.actions">
+          <th scope="row">{{ action.path }}</th>
+          <td>{{ action.inputSchema }}</td>
+          <td>{{ action.outputSchema }}</td>
+          <td>TODO</td>
         </tr>
-        <tr v-if="actions.length == 0">
+        <tr v-if="device.actions.length == 0">
           <td colspan="4">No actions.</td>
         </tr>
       </tbody>
@@ -51,16 +51,8 @@
 <script>
 export default {
   name: 'device-detail',
-  created () {
-    this.refresh();
-  },
   data () {
-    return {
-      'error': false,
-      'loading': true,
-      'attributes': [],
-      'actions': []
-    };
+    return {};
   },
   computed: {
     node () {
@@ -69,25 +61,10 @@ export default {
         return item.name == nodeName;
       });
     },
-    deviceName () {
-      return this.$route.params.device;
-    }
-  },
-  methods: {
-    refresh () {
-      this.loading = true;
-      this.$http.get(`http://${this.node.host}:${this.node.httpPort}/d/${this.deviceName}`).then((response) => {
-        return response.json();
-      }).then((data) => {
-        this.attributes = data.attributes;
-        this.actions = data.actions;
-        this.error = false;
-      }).catch((response) => {
-        this.attributs = [];
-        this.actions = [];
-        this.error = true;
-      }).then(() => {
-        this.loading = false;
+    device () {
+      var deviceName = this.$route.params.device;
+      return this.node.devices.find(function (device) {
+        return device.name == deviceName;
       });
     }
   }

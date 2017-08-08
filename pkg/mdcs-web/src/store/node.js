@@ -68,7 +68,7 @@ const actions = {
         return response.json();
       }).then((data) => {
         return Object.assign(node, {
-          devices: data.devices
+          devices: data
         });
       });
     }).then((node) => {

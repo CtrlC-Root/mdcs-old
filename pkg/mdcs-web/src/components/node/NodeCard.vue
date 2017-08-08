@@ -10,7 +10,7 @@
     <ul class="list-group list-group-flush">
       <li class="list-group-item">HTTP API: {{ node.httpPort }}/tcp</li>
       <li class="list-group-item">TCP API: {{ node.tcpPort }}/tcp</li>
-      <li class="list-group-item">{{ deviceCount }} devices</li>
+      <li class="list-group-item">{{ node.devices.length }} devices</li>
     </ul>
     <div class="card-footer">
       <button class="btn btn-primary" v-on:click="refresh">Refresh</button>
@@ -22,20 +22,9 @@
 <script>
 export default {
   name: 'node-card',
-  props: ['nodeName'],
+  props: ['node'],
   data () {
     return {};
-  },
-  computed: {
-    node () {
-      var nodeName = this.nodeName;
-      return this.$store.state.node.all.find(function (item) {
-        return item.name == nodeName;
-      });
-    },
-    deviceCount: function () {
-      return this.node.devices.length
-    }
   },
   methods: {
     refresh: function () {

@@ -6,7 +6,7 @@
     <div class="row">
       <!-- Device Cards -->
       <div class="col-sm-12 col-md-6 col-lg-4 my-2" v-for="device in node.devices">
-        <device-card :nodeName="node.name" :deviceName="device"/>
+        <device-card :node="node" :device="device"/>
       </div>
     </div>
   </div>

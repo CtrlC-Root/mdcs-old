@@ -41,12 +41,12 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
                 data_size = int(request.headers['Content-Length'])
                 request.data = self.rfile.read(data_size)
 
-            # TODO determine the appropriate view
+            # determine the appropriate view
             route_name, route_variables = self.server.route_map.parse(request.path)
             view_class = self.server.view_map[route_name]
 
-            # TODO run the view
-            view = view_class()
+            # run the view
+            view = view_class(context={'node': self.server.node})
             response = view.handle_request(request)
 
         except RouteNotFound:

@@ -5,6 +5,9 @@ from .response import Response
 
 
 class View:
+    def __init__(self, context={}):
+        self.context = context
+
     def handle_request(self, request):
         # check if the view supports the method
         handler_name = request.method.lower()

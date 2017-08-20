@@ -10,6 +10,7 @@ class Request:
         self.path = url_parts.path
         self.host, *extra = url_parts.netloc.split(':')
         self.port = int(extra[0]) if extra else 80
+        self.method = method
 
         # parse query paramters
         self.params = {}

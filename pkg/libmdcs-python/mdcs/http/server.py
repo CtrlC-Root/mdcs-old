@@ -1,4 +1,3 @@
-import json
 import socket
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -7,6 +6,7 @@ from .json import JSONEncoder
 from .request import Request
 from .response import Response
 from .route import Route, RouteMap, RouteNotFound
+from .views import NodeDetail, NodeHealth
 
 
 class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -43,17 +43,14 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
 
             # TODO determine the appropriate view
             route_name, route_variables = self.server.route_map.parse(request.path)
+            view_class = self.server.view_map[route_name]
 
             # TODO run the view
-            response = Response(
-                headers={'Content-Type': 'application/json'},
-                content="{'hello': 'world'}")
+            view = view_class()
+            response = view.handle_request(request)
 
         except RouteNotFound:
-            response = Response(
-                headers={'Content-Type': 'text/plain'},
-                status_code=HTTPStatus.NOT_FOUND,
-                content="route not found")
+            response = Response(HTTPStatus.NOT_FOUND)
 
         except RuntimeError as e:
             response = Response(
@@ -84,6 +81,19 @@ class NodeHTTPServer(HTTPServer):
 
         # store the server settings
         self.node = node
+
+        # create the view map
+        self.view_map = {
+            'node_detail': NodeDetail,
+            'node_health': NodeHealth,
+
+            # 'device_list': DeviceList,
+            # 'device_detail': DeviceDetail,
+            # 'attribute_detail': AttributeDetail,
+            # 'attribute_value': AttributeValue,
+            # 'action_detail': ActionDetail,
+            # 'action_run': ActionRun
+        }
 
         # create the route map
         self.route_map = RouteMap(routes={

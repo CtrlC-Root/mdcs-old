@@ -85,7 +85,7 @@ const actions = {
       context.commit('updateNode', {
         name: node.name,
         loading: false,
-        devices: data.devices
+        devices: data
       });
     });
   }

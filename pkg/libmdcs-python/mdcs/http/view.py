@@ -15,7 +15,8 @@ class View:
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
 
         # run the method handler
-        response = getattr(self, handler_name)(request)
+        handler = getattr(self, handler_name)
+        response = handler(request, **self.context)
 
         # return Response objects directly
         if isinstance(response, Response):
@@ -24,6 +25,13 @@ class View:
         # create the response from a status code
         if isinstance(response, HTTPStatus):
             return Response(response)
+
+        # create the response from a tuple of status code and message
+        if isinstance(response, tuple) and len(response) == 2:
+            return Response(
+                headers={'Content-Type': 'text/plain'},
+                status_code=response[0],
+                content=response[1])
 
         # create the response from JSON serialized data
         return Response(

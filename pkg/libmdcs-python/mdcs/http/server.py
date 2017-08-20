@@ -2,11 +2,11 @@ import socket
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from .json import JSONEncoder
 from .request import Request
 from .response import Response
 from .route import Route, RouteMap, RouteNotFound
 from .views import NodeDetail, NodeHealth
+from .views import DeviceList, DeviceDetail, AttributeDetail, AttributeValue, ActionDetail, ActionRun
 
 
 class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -46,7 +46,8 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
             view_class = self.server.view_map[route_name]
 
             # run the view
-            view = view_class(context={'node': self.server.node})
+            route_variables['node'] = self.server.node
+            view = view_class(context=route_variables)
             response = view.handle_request(request)
 
         except RouteNotFound:
@@ -87,12 +88,12 @@ class NodeHTTPServer(HTTPServer):
             'node_detail': NodeDetail,
             'node_health': NodeHealth,
 
-            # 'device_list': DeviceList,
-            # 'device_detail': DeviceDetail,
-            # 'attribute_detail': AttributeDetail,
-            # 'attribute_value': AttributeValue,
-            # 'action_detail': ActionDetail,
-            # 'action_run': ActionRun
+            'device_list': DeviceList,
+            'device_detail': DeviceDetail,
+            'attribute_detail': AttributeDetail,
+            'attribute_value': AttributeValue,
+            'action_detail': ActionDetail,
+            'action_run': ActionRun
         }
 
         # create the route map

@@ -4,17 +4,22 @@ The Modular Distributed Control System is a framework and set of components buil
 
 ## Framework
 
-TODO
+Reusable libraries for implementing components.
+
+* `libmdcs-python`: common library for Python services and clients
 
 ## Components
 
-TODO
+Standalone components.
 
 * `bridge-hue`: bridge node for Philips Hue lights
+* `node`: general node with plugins for hardware
+* `mdcs-console`: console client for nodes
+* `mdcs-web`: web interface for nodes
 
 ## Quick Start
 
-Create a virtualenv and install packages and their requirements.
+Create a virtualenv and install the desired packages and their requirements.
 
 ```
 $ virtualenv --python=$(which python3) mdcs

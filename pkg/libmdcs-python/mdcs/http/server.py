@@ -13,7 +13,7 @@ from werkzeug.exceptions import HTTPException
 from .json import JSONEncoder
 from .node import node_detail, node_health
 from .device import device_list, device_detail
-from .attribute import attribute_detail
+from .attribute import attribute_detail, attribute_value
 from .action import action_detail
 
 
@@ -107,6 +107,7 @@ class NodeHTTPServer(HTTPServer):
             'device_list': device_list,
             'device_detail': device_detail,
             'attribute_detail': attribute_detail,
+            'attribute_value': attribute_value,
             'action_detail': action_detail
         }
 
@@ -119,11 +120,13 @@ class NodeHTTPServer(HTTPServer):
             Rule('/devices', methods=['GET'], endpoint='device_list'),
             Rule('/devices/<device>', methods=['GET'], endpoint='device_detail'),
             Rule('/devices/<device>/attributes/<path>', methods=['GET'], endpoint='attribute_detail'),
+            Rule('/devices/<device>/attribute/<path>/value', methods=['GET', 'PUT'], endpoint='attribute_value'),
             Rule('/devices/<device>/actions/<path>', methods=['GET'], endpoint='action_detail'),
 
             Rule('/d', methods=['GET'], endpoint='device_list'),
             Rule('/d/<device>', methods=['GET'], endpoint='device_detail'),
             Rule('/d/<device>/at/<path>', methods=['GET'], endpoint='attribute_detail'),
+            Rule('/d/<device>/at/<path>/v', methods=['GET', 'PUT'], endpoint='attribute_value'),
             Rule('/d/<device>/ac/<path>', methods=['GET'], endpoint='action_detail'),
         ])
 
@@ -139,14 +142,14 @@ class NodeHTTPServer(HTTPServer):
 
     def run(self):
         try:
+            # bind and activate the HTTP server
+            self.server_bind()
+            self.server_activate()
+
             # create the route adapter
             self.urls = self.routes.bind(
                 server_name='{0}:{1}'.format(self.host, self.port),
                 url_scheme='http')
-
-            # bind and activate the HTTP server
-            self.server_bind()
-            self.server_activate()
 
             # process HTTP requests until stopped
             self.serve_forever()

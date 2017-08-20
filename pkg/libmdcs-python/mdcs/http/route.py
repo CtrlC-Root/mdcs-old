@@ -102,7 +102,7 @@ class RouteMap:
     def parse(self, url):
         for name, route in self.routes.items():
             variables = route.parse(url)
-            if variables:
+            if variables is not None:
                 return name, variables
 
         raise RouteNotFound(self, url)

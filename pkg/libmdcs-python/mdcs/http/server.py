@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import json
 import socket
 import inspect
@@ -11,10 +9,6 @@ from werkzeug.routing import Map, Rule
 from werkzeug.exceptions import HTTPException
 
 from .json import JSONEncoder
-from .node import node_detail, node_health
-from .device import device_list, device_detail
-from .attribute import attribute_detail, attribute_value
-from .action import action_detail
 
 
 class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -101,15 +95,7 @@ class NodeHTTPServer(HTTPServer):
         self.node = node
 
         # create the views
-        self.views = {
-            'node_detail': node_detail,
-            'node_health': node_health,
-            'device_list': device_list,
-            'device_detail': device_detail,
-            'attribute_detail': attribute_detail,
-            'attribute_value': attribute_value,
-            'action_detail': action_detail
-        }
+        self.views = {}
 
         # create the URL dispatch rules
         self.urls = None

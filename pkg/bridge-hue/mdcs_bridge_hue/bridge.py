@@ -47,6 +47,9 @@ def main():
         #name = light_data['uniqueid'][:-3].replace(':', '-')
         server.node.add_device(LightDevice('hue-light-{0}'.format(light_id), args.bridge, args.user, light_id))
 
+    # group 0 always exists
+    server.node.add_device(GroupDevice('hue-group-0', args.bridge, args.user, 0))
+
     # retrieve available groups from the Hue bridge and create devices
     response = requests.get("http://{0}/api/{1}/groups".format(args.bridge, args.user))
     if response.status_code != HTTPStatus.OK:

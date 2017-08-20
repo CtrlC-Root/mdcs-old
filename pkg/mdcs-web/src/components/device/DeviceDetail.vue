@@ -15,8 +15,10 @@
         <tr v-for="attribute in device.attributes">
           <th scope="row">{{ attribute.path }}</th>
           <td>{{ attribute.flags.join(', ') }}</td>
-          <td>{{ attribute.schema }}</td>
-          <td>TODO</td>
+          <td class="w-50">{{ attribute.schema }}</td>
+          <td>
+            <button class="btn btn-primary"><i class="fa fa-star"></i></button>
+          </td>
         </tr>
         <tr v-if="device.attributes.length == 0">
           <td colspan="4">No attributes.</td>
@@ -36,9 +38,11 @@
       <tbody>
         <tr v-for="action in device.actions">
           <th scope="row">{{ action.path }}</th>
-          <td>{{ action.inputSchema }}</td>
-          <td>{{ action.outputSchema }}</td>
-          <td>TODO</td>
+          <td class="w-25">{{ action.inputSchema }}</td>
+          <td class="w-25">{{ action.outputSchema }}</td>
+          <td>
+            <button class="btn btn-primary"><i class="fa fa-star"></i></button>
+          </td>
         </tr>
         <tr v-if="device.actions.length == 0">
           <td colspan="4">No actions.</td>

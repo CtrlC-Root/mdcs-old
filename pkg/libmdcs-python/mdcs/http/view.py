@@ -18,6 +18,10 @@ class View:
         handler = getattr(self, handler_name)
         response = handler(request, **self.context)
 
+        # create an empty response if necessary
+        if response is None:
+            return Response()
+
         # return Response objects directly
         if isinstance(response, Response):
             return response

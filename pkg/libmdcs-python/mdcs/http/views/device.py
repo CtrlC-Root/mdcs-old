@@ -43,6 +43,21 @@ class AttributeValue(View):
 
         return attribute.read()
 
+    def put(self, request, node, device, path):
+        if device not in node.devices:
+            return (HTTPStatus.NOT_FOUND, "device not found")
+
+        device = node.devices[device]
+        if path not in device.attributes:
+            return (HTTPStatus.NOT_FOUND, "attribute not found")
+
+        attribute = device.attributes[path]
+        if not attribute.writable:
+            raise (HTTPStatus.BAD_REQUEST, "attribute cannot be modified")
+
+        attribute.write(request.json)
+        return HTTPStatus.NO_CONTENT
+
 
 class ActionDetail(View):
     def get(self, request, node, device, path):

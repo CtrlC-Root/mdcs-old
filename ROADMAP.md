@@ -7,14 +7,14 @@
   - [ ] Node server structured logging.
   - [ ] Node server robust exception handling.
   - [ ] Node server HTTP API interface
-    - [ ] Retrieve node status and configuration.
+    - [x] Retrieve node name and configuration.
     - [ ] Check if the node is healthy (HAProxy or ELB compatible).
     - [x] Retrieve a list of devices.
     - [x] Retrieve a list of device attributes and actions.
     - [x] Retrieve information about an attribute.
-    - [ ] Retrieve information about an action.
-    - [ ] Read an attribute value.
-    - [ ] Write an attribute value.
+    - [x] Retrieve information about an action.
+    - [x] Read an attribute value.
+    - [x] Write an attribute value.
     - [ ] Run an action.
   - [ ] Node server TCP API interface
     - [x] Read an attribute value.

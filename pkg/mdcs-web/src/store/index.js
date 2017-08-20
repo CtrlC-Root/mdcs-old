@@ -1,7 +1,9 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-import NodeModule from './node'
+import createPersistedState from 'vuex-persistedstate';
+
+import NodeModule from './node';
 
 // enable the Vuex module
 Vue.use(Vuex)
@@ -14,5 +16,6 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     node: NodeModule
-  }
+  },
+  plugins: [createPersistedState()]
 });

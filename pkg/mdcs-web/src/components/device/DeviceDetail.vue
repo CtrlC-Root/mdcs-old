@@ -2,22 +2,27 @@
   <div class="container">
     <h3 class="display-3 text-center">Device: {{ device.name }}</h3>
 
+    <!-- Attributes -->
     <table class="table table-striped">
       <thead>
         <tr>
           <th>Attribute</th>
           <th>Flags</th>
-          <th>Schema</th>
-          <th>Controls</th>
+          <th>Value</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="attribute in device.attributes">
-          <th scope="row">{{ attribute.path }}</th>
-          <td>{{ attribute.flags.join(', ') }}</td>
-          <td class="w-50">{{ attribute.schema }}</td>
-          <td>
-            <button class="btn btn-primary"><i class="fa fa-star"></i></button>
+          <th scope="row" class="w-25">{{ attribute.path }}</th>
+          <td class="w-25">{{ attribute.flags.join(', ') }}</td>
+          <td class="w-50">
+            <div class="input-group">
+              <input type="text" class="form-control">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="button">Set</button>
+                <button class="btn btn-secondary" type="button"><i class="fa fa-refresh"></i></button>
+              </span>
+            </div>
           </td>
         </tr>
         <tr v-if="device.attributes.length == 0">
@@ -26,29 +31,7 @@
       </tbody>
     </table>
 
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Action</th>
-          <th>Input Schema</th>
-          <th>Output Schema</th>
-          <th>Controls</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="action in device.actions">
-          <th scope="row">{{ action.path }}</th>
-          <td class="w-25">{{ action.inputSchema }}</td>
-          <td class="w-25">{{ action.outputSchema }}</td>
-          <td>
-            <button class="btn btn-primary"><i class="fa fa-star"></i></button>
-          </td>
-        </tr>
-        <tr v-if="device.actions.length == 0">
-          <td colspan="4">No actions.</td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- TODO: Actions -->
   </div>
 </template>
 

@@ -39,7 +39,7 @@ class AttributeValue(View):
 
         attribute = device.attributes[path]
         if not attribute.readable:
-            raise (HTTPStatus.BAD_REQUEST, "attribute cannot be read")
+            return (HTTPStatus.BAD_REQUEST, "attribute cannot be read")
 
         return attribute.read()
 
@@ -53,7 +53,7 @@ class AttributeValue(View):
 
         attribute = device.attributes[path]
         if not attribute.writable:
-            raise (HTTPStatus.BAD_REQUEST, "attribute cannot be modified")
+            return (HTTPStatus.BAD_REQUEST, "attribute cannot be modified")
 
         attribute.write(request.json)
         return HTTPStatus.NO_CONTENT

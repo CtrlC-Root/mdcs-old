@@ -62,3 +62,5 @@ and schema definitions.
 * Data Storage: TODO
 * Automation: TODO
 * Monitoring: TODO
+
+![](components.png)

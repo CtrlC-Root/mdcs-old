@@ -2,10 +2,10 @@
 
 ## Goals
 
-* Modular.
+* Modular
   * Components should be small and easy to replace.
   * All control plane functionality should be provided through HTTP APIs.
-* Distributed.
+* Distributed
   * No centralized services. Components should be useful on their own.
   * No single points of failure for the overall system. Components should fail independently.
 * Soft Real Time
@@ -58,7 +58,7 @@ and schema definitions.
 
 * Control: components that interface with hardware or software
   * Node: A daemon that exposes devices for locally connected hardware.
-  * Bridge: A daemon that exposes devices for a remote service.
+  * Bridge: A specialized node daemon that exposes devices for a remote service.
 * Data Storage: TODO
 * Automation: TODO
 * Monitoring: TODO

@@ -1,23 +1,38 @@
 # Node
 
-TODO
+Nodes are responsible for interfacing with local hardware and software. Bridges, which are specialized nodes, are
+responsible for interfacing with remote network services. Nodes provide an HTTP API for management and a TCP API for
+high performance data access.
 
-## Network
+## HTTP API
 
-TODO: node advertisement and discovery
+The HTTP API is typically available over TCP port 5510.
 
-## API
+### Node
 
-TODO: RESTish HTTP API
-
-TODO: devices, attributes
-TODO2: data types, monitoring attributes for changes
+TODO: config, health
 
 ### Devices
 
-TODO: get list of devices, get device info, get device config, update device config
-TODO2: create device, remove device
+TODO
 
 ### Attributes
 
-TODO: get list of attributes and data types, get attribute value, set attribute value
+TODO
+
+### Actions
+
+TODO
+
+## TCP API
+
+The TCP API is typically available over TCP port 5511. It only supports data access operations such as reading or
+writing attribute values and running actions.
+
+### Attributes
+
+TODO: read, write
+
+### Actions
+
+TODO: run

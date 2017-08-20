@@ -1,6 +1,7 @@
 import json
 import urllib.parse
 
+
 class Request:
     def __init__(self, url='', headers={}, method='GET', data=None):
         # parse url

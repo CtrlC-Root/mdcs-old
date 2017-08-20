@@ -6,6 +6,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from .json import JSONEncoder
 from .request import Request
 from .response import Response
+from .route import Route, RouteMap, RouteNotFound
 
 
 class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -29,21 +30,36 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
         self.do_GENERIC()
 
     def do_GENERIC(self):
-        # parse the request
-        request = Request(
-            url="http://{0}:{1}{2}".format(self.server.host, self.server.port, self.path),
-            headers=dict(self.headers.items()),
-            method=self.command)
+        try:
+            # parse the request
+            request = Request(
+                url="http://{0}:{1}{2}".format(self.server.host, self.server.port, self.path),
+                headers=dict(self.headers.items()),
+                method=self.command)
 
-        if 'Content-Length' in request.headers:
-            data_size = int(request.headers['Content-Length'])
-            request.data = self.rfile.read(data_size)
+            if 'Content-Length' in request.headers:
+                data_size = int(request.headers['Content-Length'])
+                request.data = self.rfile.read(data_size)
 
-        # TODO locate the appropriate view
-        # TODO run the view
-        response = Response(
-            headers={'Content-Type': 'application/javascript'},
-            content="{'hello': 'world'}")
+            # TODO determine the appropriate view
+            route_name, route_variables = self.server.route_map.parse(request.path)
+
+            # TODO run the view
+            response = Response(
+                headers={'Content-Type': 'application/json'},
+                content="{'hello': 'world'}")
+
+        except RouteNotFound:
+            response = Response(
+                headers={'Content-Type': 'text/plain'},
+                status_code=HTTPStatus.NOT_FOUND,
+                content="route not found")
+
+        except RuntimeError as e:
+            response = Response(
+                headers={'Content-Type': 'text/plain'},
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                content=str(e))
 
         # XXX update response with CORS policy
         response.headers['Access-Control-Allow-Origin'] = '*'
@@ -68,6 +84,19 @@ class NodeHTTPServer(HTTPServer):
 
         # store the server settings
         self.node = node
+
+        # create the route map
+        self.route_map = RouteMap(routes={
+            'node_detail': '/',
+            'node_health': '/health',
+
+            'device_list':      '/d',
+            'device_detail':    '/d/<device>',
+            'attribute_detail': '/d/<device>/at/<path>',
+            'attribute_value':  '/d/<device>/at/<path>/v',
+            'action_detail':    '/d/<device>/ac/<path>',
+            'action_run':       '/d/<device>/ac/<path>/r',
+        })
 
     @property
     def host(self):

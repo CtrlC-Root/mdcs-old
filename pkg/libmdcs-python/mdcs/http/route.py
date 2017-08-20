@@ -2,6 +2,21 @@ import re
 from collections import namedtuple
 
 
+class RouteError(RuntimeError):
+    pass
+
+
+class InvalidRoutePattern(RouteError):
+    pass
+
+
+class RouteNotFound(RouteError):
+    def __init__(self, route_map, url):
+        super().__init__("route not found for URL: {0}".format(url))
+        self.route_map = route_map
+        self.url = url
+
+
 class Route:
     """
     A route that matches URLs using a pattern that can include dynamic variables.
@@ -27,6 +42,10 @@ class Route:
 
         # process pattern components
         for part in pattern.split(cls.PATTERN_SEPARATOR):
+            # ignore empty parts
+            if not part:
+                continue
+
             # pass non-variable parts through
             match = cls.PATTERN_VARIABLE.match(part)
             if not match:
@@ -39,14 +58,15 @@ class Route:
             var_type = groups['type'] or 'str'
 
             if var_type not in cls.PATTERN_TYPES:
-                raise RuntimeError("invalid variable type: {0}".format(var_type))
+                raise InvalidRoutePattern("invalid variable type: {0}".format(var_type))
 
             # substitue a part that will extract the variable value
             parts.append("(?P<{0}>{1})".format(var_name, cls.PATTERN_TYPES[var_type].regex))
             variables[var_name] = cls.PATTERN_TYPES[var_type]
 
-        # compile the combined regular expression
-        return re.compile(cls.PATTERN_SEPARATOR.join(parts)), variables
+        # return the combined regular expression and variable map
+        regex = re.compile("^/{0}$".format(cls.PATTERN_SEPARATOR.join(parts)))
+        return regex, variables
 
     def __init__(self, pattern):
         self.pattern = pattern
@@ -67,3 +87,22 @@ class Route:
 
         # return type cast variable values
         return values
+
+
+class RouteMap:
+    """
+    A collection of routes.
+    """
+
+    def __init__(self, routes={}):
+        self.routes = {}
+        for name, pattern in routes.items():
+            self.routes[name] = Route(pattern)
+
+    def parse(self, url):
+        for name, route in self.routes.items():
+            variables = route.parse(url)
+            if variables:
+                return name, variables
+
+        raise RouteNotFound(self, url)

@@ -1,14 +1,11 @@
 import json
 import socket
-import inspect
-import urllib.parse
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from werkzeug.routing import Map, Rule
-from werkzeug.exceptions import HTTPException
-
 from .json import JSONEncoder
+from .request import Request
+from .response import Response
 
 
 class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -16,71 +13,49 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
     A handler for node HTTP API requests.
     """
 
+    def do_HEAD(self):
+        self.do_GENERIC()
+
     def do_GET(self):
-        """
-        TODO.
-        """
+        self.do_GENERIC()
 
-        # XXX
-        try:
-            request_url = urllib.parse.urlparse(self.path)
-            endpoint, args = self.server.urls.match(
-                path_info=request_url.path,
-                method=self.command,
-                query_args=request_url.query)
+    def do_POST(self):
+        self.do_GENERIC()
 
-        except HTTPException as e:
-            # TODO handle different exceptions appropriately
-            print(e)
-            self.send_response(HTTPStatus.INTERNAL_SERVER_ERROR)
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            return
+    def do_PUT(self):
+        self.do_GENERIC()
 
-        # retrieve and execute the view
-        if endpoint not in self.server.views:
-            self.send_response(HTTPStatus.INTERNAL_SERVER_ERROR)
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.send_header('Content-Type', 'text/plain')
-            self.end_headers()
+    def do_DELETE(self):
+        self.do_GENERIC()
 
-            self.wfile.write("endpoint not implemented".encode('utf-8'))
-            return
+    def do_GENERIC(self):
+        # parse the request
+        request = Request(
+            url="http://{0}:{1}{2}".format(self.server.host, self.server.port, self.path),
+            headers=dict(self.headers.items()),
+            method=self.command)
 
-        view = self.server.views[endpoint]
-        response = view(self.server.node, self.command, args)
+        if 'Content-Length' in request.headers:
+            data_size = int(request.headers['Content-Length'])
+            request.data = self.rfile.read(data_size)
 
-        # process the response
-        if isinstance(response, tuple) and len(response) == 2:
-            status_code, message = response
+        # TODO locate the appropriate view
+        # TODO run the view
+        response = Response(
+            headers={'Content-Type': 'application/javascript'},
+            content="{'hello': 'world'}")
 
-            self.send_response(status_code)
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.send_header('Content-Type', 'text/plain')
-            self.end_headers()
+        # XXX update response with CORS policy
+        response.headers['Access-Control-Allow-Origin'] = '*'
 
-            self.wfile.write(message.encode('utf-8'))
-            return
+        # write the response
+        self.send_response(response.status_code)
+        for name, value in response.headers.items():
+            self.send_header(name, value)
 
-        try:
-            # encode to JSON
-            json_value = JSONEncoder().encode(response)
-
-        except:
-            # TODO handle different exceptions appropriately
-            print(e)
-            self.send_response(HTTPStatus.INTERNAL_SERVER_ERROR)
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            return
-
-        # send the JSON data
-        self.send_response(HTTPStatus.OK)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Content-Type', 'application/javascript')
         self.end_headers()
-
-        self.wfile.write(json_value.encode('utf-8'))
+        if response.content:
+            self.wfile.write(response.content.encode('utf-8'))
 
 
 class NodeHTTPServer(HTTPServer):
@@ -93,28 +68,6 @@ class NodeHTTPServer(HTTPServer):
 
         # store the server settings
         self.node = node
-
-        # create the views
-        self.views = {}
-
-        # create the URL dispatch rules
-        self.urls = None
-        self.routes = Map([
-            Rule('/', methods=['GET'], endpoint='node_detail'),
-            Rule('/health', methods=['GET'], endpoint='node_health'),
-
-            Rule('/devices', methods=['GET'], endpoint='device_list'),
-            Rule('/devices/<device>', methods=['GET'], endpoint='device_detail'),
-            Rule('/devices/<device>/attributes/<path>', methods=['GET'], endpoint='attribute_detail'),
-            Rule('/devices/<device>/attribute/<path>/value', methods=['GET', 'PUT'], endpoint='attribute_value'),
-            Rule('/devices/<device>/actions/<path>', methods=['GET'], endpoint='action_detail'),
-
-            Rule('/d', methods=['GET'], endpoint='device_list'),
-            Rule('/d/<device>', methods=['GET'], endpoint='device_detail'),
-            Rule('/d/<device>/at/<path>', methods=['GET'], endpoint='attribute_detail'),
-            Rule('/d/<device>/at/<path>/v', methods=['GET', 'PUT'], endpoint='attribute_value'),
-            Rule('/d/<device>/ac/<path>', methods=['GET'], endpoint='action_detail'),
-        ])
 
     @property
     def host(self):
@@ -131,11 +84,6 @@ class NodeHTTPServer(HTTPServer):
             # bind and activate the HTTP server
             self.server_bind()
             self.server_activate()
-
-            # create the route adapter
-            self.urls = self.routes.bind(
-                server_name='{0}:{1}'.format(self.host, self.port),
-                url_scheme='http')
 
             # process HTTP requests until stopped
             self.serve_forever()

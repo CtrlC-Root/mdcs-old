@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <div class="card-block">
+    <div class="card-body">
       <h4 class="card-title">
         <router-link :to="{name: 'node-detail', params: {node: node.name}}">{{ node.name }}</router-link>
         <i class="fa fa-refresh fa-spin" v-if="node.loading"></i>

@@ -12,7 +12,7 @@
       <!-- Connect to Node Card -->
       <div class="col-sm-12 col-md-6 col-lg-4 my-2">
         <div class="card card-template">
-          <div class="card-block">
+          <div class="card-body">
             <h4 class="card-title">
               Add Node
               <i class="fa fa-refresh fa-spin" v-if="loading"></i>

@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <div class="card-block">
+    <div class="card-body">
       <h4 class="card-title">
         <router-link :to="{name: 'device-detail', params: {node: node.name, device: device.name}}">
           {{ device.name }}

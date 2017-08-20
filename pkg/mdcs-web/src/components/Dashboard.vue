@@ -7,7 +7,7 @@
       <!-- Control Cards -->
       <div class="col-sm-12 col-md-6 col-lg-4 my-2">
         <div class="card">
-          <div class="card-block">
+          <div class="card-body">
             <h4 class="card-title">
               Office Brightness
               <button type="button" class="close" aria-label="Close">
@@ -22,7 +22,7 @@
 
       <div class="col-sm-12 col-md-6 col-lg-4 my-2">
         <div class="card">
-          <div class="card-block">
+          <div class="card-body">
             <h4 class="card-title">
               Apartment Lights
               <button type="button" class="close" aria-label="Close">
@@ -31,10 +31,10 @@
             </h4>
             <h6 class="card-subtitle mb-2 text-muted">hue-group-0:on</h6>
             <div class="btn-group" role="group" data-toggle="buttons" aria-label="Toggle State">
-              <label class="btn btn-secondary active">
+              <label class="btn btn-primary active">
                 <input type="radio" autocomplete="off"> On
               </label>
-              <label class="btn btn-secondary">
+              <label class="btn btn-primary">
                 <input type="radio" autocomplete="off"> Off
               </label>
             </div>
@@ -44,7 +44,7 @@
 
       <div class="col-sm-12 col-md-6 col-lg-4 my-2">
         <div class="card">
-          <div class="card-block">
+          <div class="card-body">
             <h4 class="card-title">
               Group Name
               <button type="button" class="close" aria-label="Close">
@@ -55,7 +55,7 @@
             <div class="input-group">
               <input class="form-control" type="text" value="Office">
               <span class="input-group-btn">
-                <button class="btn btn-secondary" type="button">Set</button>
+                <button class="btn btn-primary" type="button">Set</button>
               </span>
             </div>
           </div>

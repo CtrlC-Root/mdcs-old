@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import io
+import time
 import json
 from socketserver import TCPServer, BaseRequestHandler
 
@@ -98,7 +99,7 @@ class NodeTCPRequestHandler(BaseRequestHandler):
                 attribute.write(value)
                 data_reader.close()
 
-                return {'when': 1200}
+                return {'when': int(round(time.time() * 1000))}
 
             # read attribute value
             else:
@@ -118,7 +119,7 @@ class NodeTCPRequestHandler(BaseRequestHandler):
                 data = data_buffer.read()
                 data_writer.close()
 
-                return {'when': 1200, 'value': data}
+                return {'when': int(round(time.time() * 1000)), 'value': data}
 
         # command is an action run
         elif 'action' in command:

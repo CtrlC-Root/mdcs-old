@@ -39,10 +39,10 @@
   - [ ] Write an attribute value.
   - [ ] Run an action.
 - [ ] Web Client
-  - [ ] Retrieve a list of devices.
-  - [ ] Retrieve a list of device attributes and actions.
-  - [ ] Show information about an attribute.
-  - [ ] Show information about an action.
+  - [x] Retrieve a list of devices.
+  - [x] Retrieve a list of device attributes and actions.
+  - [x] Show information about an attribute.
+  - [x] Show information about an action.
   - [ ] Read an attribute value.
   - [ ] Write an attribute value.
   - [ ] Run an action.

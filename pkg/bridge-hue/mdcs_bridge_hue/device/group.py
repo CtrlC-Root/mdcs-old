@@ -143,6 +143,7 @@ class GroupDevice(Device):
 
     def read_class(self):
         data = self.get_data()
+        data.setdefault('class', 'Other') # TODO: group 0 doesn't provide a class???
         return data['class']
 
     def read_on(self):

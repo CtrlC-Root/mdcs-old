@@ -18,14 +18,15 @@
               <i class="fa fa-refresh fa-spin" v-if="loading"></i>
             </h4>
             <form v-on:submit.prevent="connectNode">
-              <div class="form-group" v-bind:class="{ 'has-danger': error }">
+              <div class="form-group">
                 <label class="form-control-label" for="nodeUrl">HTTP API URL</label>
                 <input type="text"
                   class="form-control"
                   id="nodeUrl"
                   placeholder="http://127.0.0.1:5510/"
+                  v-bind:class="{'is-invalid': error}"
                   v-model="nodeUrl">
-                <div class="form-control-feedback" v-if="error">{{ error }}</div>
+                <div class="invalid-feedback" v-if="error">{{ error }}</div>
               </div>
               <div class="form-group">
                 <input type="submit" class="btn btn-primary" value="Connect">

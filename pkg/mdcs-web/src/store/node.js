@@ -64,7 +64,7 @@ const actions = {
       };
     }).then((node) => {
       // retrieve node devices
-      return Vue.http.get(`http://${node.host}:${node.httpPort}/devices`).then((response) => {
+      return Vue.http.get(`http://${node.host}:${node.httpPort}/d`).then((response) => {
         return response.json();
       }).then((data) => {
         return Object.assign(node, {
@@ -79,7 +79,7 @@ const actions = {
 
   refreshNode: function (context, node) {
     context.commit('updateNode', {name: node.name, loading: true});
-    return Vue.http.get(`http://${node.host}:${node.httpPort}/devices`).then((response) => {
+    return Vue.http.get(`http://${node.host}:${node.httpPort}/d`).then((response) => {
       return response.json();
     }).then((data) => {
       context.commit('updateNode', {

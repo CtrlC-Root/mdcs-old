@@ -14,6 +14,9 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
     A handler for node HTTP API requests.
     """
 
+    def do_OPTIONS(self):
+        self.do_GENERIC()
+
     def do_HEAD(self):
         self.do_GENERIC()
 
@@ -59,8 +62,12 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
                 content=str(e))
 
-        # XXX update response with CORS policy
-        response.headers['Access-Control-Allow-Origin'] = '*'
+        # XXX update response headers with CORS policy
+        response.headers.update({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': ','.join(view.allowed_methods),
+            'Access-Control-Allow-Headers': request.headers.setdefault('Access-Control-Request-Headers', '*')
+        })
 
         # write the response
         self.send_response(response.status_code)

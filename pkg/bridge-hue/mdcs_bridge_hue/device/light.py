@@ -39,13 +39,6 @@ class LightDevice(Device):
             None))
 
         self.add_attribute(DelegatedAttribute(
-            'product',
-            AttributeFlags.READ,
-            {'type': 'string'},
-            self.read_product,
-            None))
-
-        self.add_attribute(DelegatedAttribute(
             'firmware',
             AttributeFlags.READ,
             {'type': 'string'},
@@ -136,10 +129,6 @@ class LightDevice(Device):
     def read_model(self):
         data = self.get_data()
         return data['modelid']
-
-    def read_product(self):
-        data = self.get_data()
-        return data['productid']
 
     def read_firmware(self):
         data = self.get_data()

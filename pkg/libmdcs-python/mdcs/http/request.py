@@ -32,7 +32,8 @@ class Request:
 
     @property
     def json(self):
-        if self.content_type != 'application/json':
+        # XXX there has to be a better way
+        if not self.content_type.startswith('application/json'):
             raise RuntimeError("request does not contain JSON data")
 
         return json.loads(self.data)

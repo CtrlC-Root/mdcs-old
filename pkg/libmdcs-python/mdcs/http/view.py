@@ -5,8 +5,25 @@ from .response import Response
 
 
 class View:
+    HTTP_METHODS = ['OPTIONS', 'HEAD', 'GET', 'POST', 'PUT', 'DELETE']
+
     def __init__(self, context={}):
         self.context = context
+
+    @property
+    def allowed_methods(self):
+        allowed_methods = []
+        for method in self.HTTP_METHODS:
+            handler_name = method.lower()
+            if hasattr(self, handler_name):
+                allowed_methods.append(method)
+
+        return allowed_methods
+
+    def options(self, request, **kwargs):
+        return Response(
+            headers={'Allow': ','.join(self.allowed_methods)},
+            status_code=HTTPStatus.OK)
 
     def handle_request(self, request):
         # check if the view supports the method

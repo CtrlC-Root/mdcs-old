@@ -16,13 +16,10 @@
           <th scope="row" class="w-25">{{ attribute.path }}</th>
           <td class="w-25">{{ attribute.flags.join(', ') }}</td>
           <td class="w-50">
-            <div class="input-group">
-              <input type="text" class="form-control">
-              <span class="input-group-btn">
-                <button class="btn btn-primary" type="button">Set</button>
-                <button class="btn btn-secondary" type="button"><i class="fa fa-refresh"></i></button>
-              </span>
-            </div>
+            <boolean-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema.type == 'boolean'"/>
+            <integer-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema.type == 'int'"/>
+            <string-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema.type == 'string'"/>
+            <enum-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema.type == 'enum'"/>
           </td>
         </tr>
         <tr v-if="device.attributes.length == 0">
@@ -36,8 +33,19 @@
 </template>
 
 <script>
+import BooleanField from './../input/BooleanField.vue';
+import IntegerField from './../input/IntegerField.vue';
+import StringField from './../input/StringField.vue';
+import EnumField from './../input/EnumField.vue';
+
 export default {
   name: 'device-detail',
+  components: {
+    'boolean-field': BooleanField,
+    'integer-field': IntegerField,
+    'string-field': StringField,
+    'enum-field': EnumField
+  },
   data () {
     return {};
   },

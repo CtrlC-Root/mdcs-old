@@ -2,7 +2,7 @@
   <div class="input-group">
     <input type="text"
       class="form-control"
-      v-bind:value="value"
+      v-model="value"
       v-bind:class="{'is-invalid': error}"
       v-bind:readonly="!writable || loading">
 
@@ -56,7 +56,7 @@ export default {
     },
     write () {
       this.loading = true;
-      return this.$http.put(this.valueUrl, this.value).then((response) => {
+      return this.$http.put(this.valueUrl, JSON.stringify(parseInt(this.value))).then((response) => {
         this.error = '';
       }).catch((response) => {
         this.error = 'Failed to write value!';

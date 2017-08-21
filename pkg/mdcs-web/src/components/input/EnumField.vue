@@ -1,6 +1,6 @@
 <template>
   <div class="input-group">
-    <select class="form-control" v-bind:disabled="!writable || loading" v-bind:value="value" v-bind:class="{'is-invalid': error}">
+    <select class="form-control" v-bind:disabled="!writable || loading" v-model="value" v-bind:class="{'is-invalid': error}">
       <option v-for="symbol in attribute.schema.symbols">{{ symbol }}</option>
     </select>
     <span class="input-group-btn">

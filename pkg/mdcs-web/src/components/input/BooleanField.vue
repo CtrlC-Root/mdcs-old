@@ -1,12 +1,20 @@
 <template>
   <div>
-    <div class="btn-group">
-      <label class="btn" v-bind:class="{'btn-primary': value == 'on', 'btn-secondary': value == 'off'}">
-        <input type="radio" v-bind:id="attribute.path" value="on" autocomplete="off" v-model="value"> On
-      </label>
-      <label class="btn" v-bind:class="{'btn-danger': value == 'off', 'btn-secondary': value == 'on'}">
-        <input type="radio" v-bind:id="attribute.path" value="off" autocomplete="off" v-model="value"> Off
-      </label>
+    <div class="btn-group" role="group">
+      <button
+        type="button"
+        class="btn"
+        v-bind:class="{'btn-primary': value == 'on', 'btn-secondary': value == 'off'}"
+        v-on:click="turnOn">
+        On
+      </button>
+      <button
+        type="button"
+        class="btn"
+        v-bind:class="{'btn-danger': value == 'off', 'btn-secondary': value == 'on'}"
+        v-on:click="turnOff">
+        Off
+      </button>
     </div>
     <i class="fa fa-refresh fa-spin" v-if="loading"></i>
   </div>
@@ -25,11 +33,6 @@ export default {
       'error': '',
       'value': ''
     };
-  },
-  watch: {
-    value: function () {
-      this.write();
-    }
   },
   computed: {
     valueUrl () {
@@ -61,13 +64,25 @@ export default {
     },
     write () {
       this.loading = true;
-      return this.$http.put(this.valueUrl, this.value == 'on').then((response) => {
+      return this.$http.put(this.valueUrl, JSON.stringify(this.value == 'on')).then((response) => {
         this.error = '';
       }).catch((response) => {
         this.error = 'Failed to write value!';
       }).then(() => {
         this.loading = false;
       });
+    },
+    turnOn () {
+      if (this.writable) {
+        this.value = 'on';
+        this.write();
+      }
+    },
+    turnOff () {
+      if (this.writable) {
+        this.value = 'off';
+        this.write();
+      }
     }
   }
 }

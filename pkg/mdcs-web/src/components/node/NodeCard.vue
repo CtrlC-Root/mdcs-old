@@ -5,7 +5,7 @@
         <router-link :to="{name: 'node-detail', params: {node: node.name}}">{{ node.name }}</router-link>
         <i class="fa fa-refresh fa-spin" v-if="node.loading"></i>
       </h4>
-      <h6 class="card-subtitle mb-2 text-muted">{{ node.host }}</h6>
+      <h6 class="card-subtitle mb-2 text-muted">Host: {{ node.host }}</h6>
     </div>
     <ul class="list-group list-group-flush">
       <li class="list-group-item">HTTP API: {{ node.httpPort }}/tcp</li>

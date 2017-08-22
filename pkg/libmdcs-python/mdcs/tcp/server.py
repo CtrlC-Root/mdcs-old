@@ -6,6 +6,7 @@ from avro.ipc import Responder, FramedReader, FramedWriter
 from avro.schema import AvroException
 
 from .schema import API_PROTOCOL
+from .avro import serialize_value, unserialize_value
 
 
 class NodeResponder(Responder):
@@ -39,8 +40,9 @@ class NodeResponder(Responder):
                         'attribute': attribute.path
                     }
 
-                # TODO: read the value
-                return {'value': bytes([0xDE, 0xAD, 0xBE, 0xEF]), 'time': int(round(time.time() * 1000))}
+                # read the value
+                value = attribute.read()
+                return {'value': serialize_value(attribute.schema, value), 'time': int(round(time.time() * 1000))}
 
             # check if we can write to the attribute
             if not attribute.writable:
@@ -50,12 +52,13 @@ class NodeResponder(Responder):
                     'attribute': attribute.path
                 }
 
-            # XXX retrieve the new value
-            data = request['data']
-            value = data['value']
+            # write the value
+            data = request['data']['value']
+            value = unserialize_value(attribute.schema, data)
+            attribute.write(value)
 
-            # TODO: write the value
-            return {'value': bytes([0xDE, 0xAD, 0xBE, 0xEF]), 'time': int(round(time.time() * 1000))}
+            # XXX client should be able to ask us to re-read the value and return it (set-and-get)
+            return {'value': data, 'time': int(round(time.time() * 1000))}
 
         elif message.name == 'run':
             # TODO: run the action

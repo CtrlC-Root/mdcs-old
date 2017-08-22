@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 
-import io
 import json
 import time
 import argparse
 
-import avro.io
 import avro.ipc
 import avro.schema
-import avro.datafile
 
 from mdcs.tcp import API_PROTOCOL, TCPTransceiver
+from mdcs.tcp.avro import serialize_value, unserialize_value
 
 
 def main():
@@ -28,13 +26,8 @@ def main():
 
     # XXX serialize attribute value using hard-coded schema
     # XXX ideally we would get this using the HTTP API from the server
-    value_schema = avro.schema.Parse(json.dumps({'type': 'boolean'}))
-    value_buffer = io.BytesIO()
-    value_writer = avro.datafile.DataFileWriter(value_buffer, avro.io.DatumWriter(), value_schema)
-    value_writer.append(bool(input('on: ').strip().lower() in ['yes', 'true']))
-
-    value_writer.flush()
-    value_data = value_buffer.getvalue()
+    schema = avro.schema.Parse(json.dumps({'type': 'boolean'}))
+    value = bool(input('on: ').strip().lower() in ['yes', 'true'])
 
     # XXX
     client = TCPTransceiver(args.host, args.tcp_port)
@@ -47,7 +40,7 @@ def main():
             'attribute': 'on'
         },
         'data': {
-            'value': value_buffer.getvalue(),
+            'value': serialize_value(schema, value),
             'time': int(round(time.time() * 1000))
         }
     })

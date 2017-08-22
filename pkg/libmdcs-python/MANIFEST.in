@@ -1,1 +1,2 @@
 recursive-include mdcs *.json
+recursive-include mdcs *.avpr

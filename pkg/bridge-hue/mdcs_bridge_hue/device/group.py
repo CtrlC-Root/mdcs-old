@@ -20,7 +20,7 @@ class GroupDevice(Device):
         self.add_attribute(DelegatedAttribute(
             'name',
             AttributeFlags.READ | AttributeFlags.WRITE,
-            {'type': 'string'},
+            'string',
             self.read_name,
             self.write_name))
 
@@ -66,14 +66,14 @@ class GroupDevice(Device):
         self.add_attribute(DelegatedAttribute(
             'on',
             AttributeFlags.READ | AttributeFlags.WRITE,
-            {'type': 'boolean'},
+            'boolean',
             self.read_on,
             self.write_on))
 
         self.add_attribute(DelegatedAttribute(
             'brightness',
             AttributeFlags.READ | AttributeFlags.WRITE,
-            {'type': 'int'},
+            'int',
             self.read_brightness,
             self.write_brightness))
 

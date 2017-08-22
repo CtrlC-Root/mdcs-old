@@ -20,49 +20,49 @@ class LightDevice(Device):
         self.add_attribute(DelegatedAttribute(
             'name',
             AttributeFlags.READ | AttributeFlags.WRITE,
-            {'type': 'string'},
+            'string',
             self.read_name,
             self.write_name))
 
         self.add_attribute(DelegatedAttribute(
             'manufacturer',
             AttributeFlags.READ,
-            {'type': 'string'},
+            'string',
             self.read_manufacturer,
             None))
 
         self.add_attribute(DelegatedAttribute(
             'model',
             AttributeFlags.READ,
-            {'type': 'string'},
+            'string',
             self.read_model,
             None))
 
         self.add_attribute(DelegatedAttribute(
             'firmware',
             AttributeFlags.READ,
-            {'type': 'string'},
+            'string',
             self.read_firmware,
             None))
 
         self.add_attribute(DelegatedAttribute(
             'reachable',
             AttributeFlags.READ,
-            {'type': 'boolean'},
+            'boolean',
             self.read_reachable,
             None))
 
         self.add_attribute(DelegatedAttribute(
             'on',
             AttributeFlags.READ | AttributeFlags.WRITE,
-            {'type': 'boolean'},
+            'boolean',
             self.read_on,
             self.write_on))
 
         self.add_attribute(DelegatedAttribute(
             'brightness',
             AttributeFlags.READ | AttributeFlags.WRITE,
-            {'type': 'int'},
+            'int',
             self.read_brightness,
             self.write_brightness))
 

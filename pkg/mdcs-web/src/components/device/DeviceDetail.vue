@@ -16,9 +16,9 @@
           <th scope="row" class="w-25">{{ attribute.path }}</th>
           <td class="w-25">{{ attribute.flags.join(', ') }}</td>
           <td class="w-50">
-            <boolean-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema.type == 'boolean'"/>
-            <integer-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema.type == 'int'"/>
-            <string-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema.type == 'string'"/>
+            <boolean-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema == 'boolean'"/>
+            <integer-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema == 'int'"/>
+            <string-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema == 'string'"/>
             <enum-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema.type == 'enum'"/>
           </td>
         </tr>

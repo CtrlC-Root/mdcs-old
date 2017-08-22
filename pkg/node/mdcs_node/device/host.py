@@ -17,14 +17,14 @@ class HostDevice(Device):
         self.add_attribute(DelegatedAttribute(
             'hostname',
             AttributeFlags.READ,
-            {'type': 'string'},
+            'string',
             self.read_hostname,
             None))
 
         self.add_attribute(DelegatedAttribute(
             'cpu.count',
             AttributeFlags.READ,
-            {'type': 'integer'},
+            'int',
             self.read_cpu_count,
             None))
 
@@ -48,21 +48,21 @@ class HostDevice(Device):
         self.add_attribute(DelegatedAttribute(
             'memory.total',
             AttributeFlags.READ,
-            {'type': 'integer'},
+            'int',
             self.read_memory_total,
             None))
 
         self.add_attribute(DelegatedAttribute(
             'memory.used',
             AttributeFlags.READ,
-            {'type': 'integer'},
+            'int',
             self.read_memory_used,
             None))
 
         self.add_attribute(DelegatedAttribute(
             'memory.free',
             AttributeFlags.READ,
-            {'type': 'integer'},
+            'int',
             self.read_memory_free,
             None))
 

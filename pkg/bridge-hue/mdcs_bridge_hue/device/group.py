@@ -27,14 +27,19 @@ class GroupDevice(Device):
         self.add_attribute(DelegatedAttribute(
             'type',
             AttributeFlags.READ,
-            {'type': 'enum', 'symbols': ['Luminaire', 'LightSource', 'LightGroup', 'Room']},
+            {'name': 'type', 'type': 'enum', 'symbols': [
+                'Luminaire',
+                'LightSource',
+                'LightGroup',
+                'Room'
+            ]},
             self.read_type,
             None))
 
         self.add_attribute(DelegatedAttribute(
             'class',
             AttributeFlags.READ,
-            {'type': 'enum', 'symbols': [
+            {'name': 'class', 'type': 'enum', 'symbols': [
                 'Living room',
                 'Kitchen',
                 'Dining',

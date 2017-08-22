@@ -3,14 +3,12 @@
 import io
 import json
 import time
-import socket
 import argparse
 
 import avro.io
 import avro.ipc
 import avro.schema
 import avro.datafile
-import pkg_resources
 
 from mdcs.tcp import API_PROTOCOL, TCPTransceiver
 

@@ -1,3 +1,4 @@
+import json
 from enum import IntFlag
 
 import avro.schema
@@ -21,7 +22,7 @@ class Attribute:
     def __init__(self, path, flags, schema):
         self.path = path
         self.flags = flags
-        self.schema = avro.schema.Parse(schema)
+        self.schema = avro.schema.Parse(json.dumps(schema))
 
     @property
     def dynamic(self):

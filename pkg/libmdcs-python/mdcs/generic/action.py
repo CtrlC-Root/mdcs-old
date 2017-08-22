@@ -1,3 +1,5 @@
+import json
+
 import avro.schema
 
 
@@ -8,8 +10,8 @@ class Action:
 
     def __init__(self, path, input_schema, output_schema):
         self.path = path
-        self.input_schema = avro.schema.Parse(input_schema)
-        self.output_schema = avro.schema.Parse(output_schema)
+        self.input_schema = avro.schema.Parse(json.dumps(input_schema))
+        self.output_schema = avro.schema.Parse(json.dumps(output_schema))
 
     def run(self, input_data):
         """

@@ -27,39 +27,47 @@ class GroupDevice(Device):
         self.add_attribute(DelegatedAttribute(
             'type',
             AttributeFlags.READ,
-            {'name': 'type', 'type': 'enum', 'symbols': [
-                'Luminaire',
-                'LightSource',
-                'LightGroup',
-                'Room'
-            ]},
+            {
+                'name': 'type',
+                'type': 'enum',
+                'symbols': [
+                    'Luminaire',
+                    'LightSource',
+                    'LightGroup',
+                    'Room'
+                ]
+            },
             self.read_type,
             None))
 
         self.add_attribute(DelegatedAttribute(
             'class',
             AttributeFlags.READ,
-            {'name': 'class', 'type': 'enum', 'symbols': [
-                'Living room',
-                'Kitchen',
-                'Dining',
-                'Bedroom',
-                'Kids bedroom',
-                'Bathroom',
-                'Nursery',
-                'Recreation',
-                'Office',
-                'Gym',
-                'Hallway',
-                'Toilet',
-                'Front door',
-                'Garage',
-                'Terrace',
-                'Garden',
-                'Driveway',
-                'Carport',
-                'Other'
-            ]},
+            {
+                'name': 'class',
+                'type': 'enum',
+                'symbols': [
+                    'Living room',
+                    'Kitchen',
+                    'Dining',
+                    'Bedroom',
+                    'Kids bedroom',
+                    'Bathroom',
+                    'Nursery',
+                    'Recreation',
+                    'Office',
+                    'Gym',
+                    'Hallway',
+                    'Toilet',
+                    'Front door',
+                    'Garage',
+                    'Terrace',
+                    'Garden',
+                    'Driveway',
+                    'Carport',
+                    'Other'
+                ]
+            },
             self.read_class,
             None))
 

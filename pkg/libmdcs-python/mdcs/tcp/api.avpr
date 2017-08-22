@@ -73,7 +73,9 @@
   "messages": {
     "read": {
       "doc": "read attribute value",
-      "request": [{"name": "target", "type": "AttributeIdentifier"}],
+      "request": [
+          {"name": "target", "type": "AttributeIdentifier"}
+      ],
       "response": "AttributeValue",
       "errors": ["ServerError", "AttributeError"]
     },

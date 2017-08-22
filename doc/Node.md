@@ -16,4 +16,4 @@ The TCP API is typically available over TCP port 5511. It only supports data acc
 writing attribute values and running actions.
 
 * [Avro Documentation](http://avro.apache.org/docs/current/spec.html#Protocol+Declaration)
-* [TCP API Protocol](../blob/master/pkg/libmdcs-python/mdcs/tcp/api.avpr)
+* [TCP API Protocol](../../pkg/libmdcs-python/mdcs/tcp/api.avpr)

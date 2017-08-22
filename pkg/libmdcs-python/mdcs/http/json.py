@@ -12,15 +12,15 @@ class JSONEncoder(json.JSONEncoder):
         if isinstance(obj, Action):
             return {
                 'path': obj.path,
-                'inputSchema': obj.input_schema,
-                'outputSchema': obj.output_schema
+                'inputSchema': obj.input_schema.to_json(),
+                'outputSchema': obj.output_schema.to_json()
             }
 
         if isinstance(obj, Attribute):
             return {
                 'path': obj.path,
                 'flags': [flag.name for flag in AttributeFlags if flag in obj.flags],
-                'schema': obj.schema
+                'schema': obj.schema.to_json()
             }
 
         if isinstance(obj, Device):

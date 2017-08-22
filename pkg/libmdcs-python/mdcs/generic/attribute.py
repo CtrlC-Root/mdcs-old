@@ -1,6 +1,6 @@
-#!/usr/bin/env python
-
 from enum import IntFlag
+
+import avro.schema
 
 
 class AttributeFlags(IntFlag):
@@ -21,7 +21,7 @@ class Attribute:
     def __init__(self, path, flags, schema):
         self.path = path
         self.flags = flags
-        self.schema = schema
+        self.schema = avro.schema.Parse(schema)
 
     @property
     def dynamic(self):

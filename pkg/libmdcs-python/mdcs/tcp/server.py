@@ -102,6 +102,7 @@ class NodeTCPServer(TCPServer):
 
     def __init__(self, node, host, port):
         super().__init__((host, port), NodeTCPRequestHandler, bind_and_activate=False)
+        self.allow_reuse_address = True # XXX should be an option?
 
         # store the server settings
         self.node = node

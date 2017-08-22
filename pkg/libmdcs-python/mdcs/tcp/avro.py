@@ -1,7 +1,36 @@
 import socket
 from io import BytesIO
 
+from avro.io import DatumReader, DatumWriter
 from avro.ipc import Transceiver, FramedReader, FramedWriter
+from avro.datafile import DataFileReader, DataFileWriter
+
+
+def serialize_value(schema, value):
+    """
+    Serialize a value to binary using the given Avro schema.
+    """
+
+    data_buffer = BytesIO()
+    writer = DataFileWriter(data_buffer, DatumWriter(), schema)
+    writer.append(value)
+    writer.flush()
+    writer.close()
+
+    return data_buffer.getvalue()
+
+
+def unserialize_value(schema, data):
+    """
+    Unserialize a value from binary using the given Avro schema.
+    """
+
+    data_buffer = BytesIO(data)
+    reader = DataFileReader(data_buffer, DatumReader())
+    value = next(reader, None)
+    reader.close()
+
+    return value
 
 
 class TCPTransceiver(Transceiver):

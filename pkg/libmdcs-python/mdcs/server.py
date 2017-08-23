@@ -1,11 +1,10 @@
-#!/usr/bin/env python
-
 import socket
-import threading
 
 from mdcs.generic import Node
 from mdcs.http import NodeHTTPServer
 from mdcs.tcp import NodeTCPServer
+
+from .task import Task
 
 
 class NodeServer:
@@ -13,9 +12,12 @@ class NodeServer:
     A server that provides the APIs for interacting with a Node.
     """
 
-    def __init__(self, host, http_port, tcp_port):
-        # create the node
-        self.node = Node(config={
+    def __init__(self, node, host, http_port, tcp_port):
+        self.node = node
+        self._tasks = []
+
+        # update the node configuration with the server settings
+        self.node.config.update({
             'httpHost': host,
             'httpPort': http_port,
             'tcpHost': host,
@@ -23,59 +25,67 @@ class NodeServer:
         })
 
         # create the HTTP server
-        self.http_server = NodeHTTPServer(self.node, host, http_port)
-        self.http_server_thread = threading.Thread(target=self.http_server.run)
+        self._http_server = NodeHTTPServer(self.node, host, http_port)
+        self.add_task(Task("HTTP API", self._http_server.run, stop=self._http_server.shutdown))
 
         # create the TCP server
-        self.tcp_server = NodeTCPServer(self.node, host, tcp_port)
-        self.tcp_server_thread = threading.Thread(target=self.tcp_server.run)
+        self._tcp_server = NodeTCPServer(self.node, host, tcp_port)
+        self.add_task(Task("TCP API", self._tcp_server.run, stop=self._tcp_server.shutdown))
 
     @property
     def http_host(self):
-        return self.http_server.host
+        return self._http_server.host
 
     @property
     def http_port(self):
-        return self.http_server.port
+        return self._http_server.port
 
     @property
     def http_socket(self):
-        return self.http_server.socket
+        return self._http_server.socket
 
     @property
     def tcp_host(self):
-        return self.tcp_server.host
+        return self._tcp_server.host
 
     @property
     def tcp_port(self):
-        return self.tcp_server.port
+        return self._tcp_server.port
 
     @property
     def tcp_socket(self):
-        return self.tcp_server.socket
+        return self._tcp_server.socket
+
+    def add_task(self, task):
+        """
+        Add a task to the server and start or stop it as necessary to match the server state.
+        """
+
+        start_task = self.running and (not task.running)
+        stop_task = (not self.running) and task.running
+
+        self._tasks.append(task)
+        if start_task:
+            task.start()
+
+        elif stop_task:
+            task.stop()
 
     @property
     def running(self):
         """
-        Server is running when any thread is still alive.
+        Server is running when any task is still running.
         """
 
-        return any([
-            self.http_server_thread.is_alive(),
-            self.tcp_server_thread.is_alive()
-        ])
+        return any(map(lambda t: t.running, self._tasks))
 
     @property
     def healthy(self):
         """
-        Server is healthy when all the threads are alive or dead.
+        Server is healthy when all the tasks are running or stopped.
         """
 
-        thread_states = set([
-            self.http_server_thread.is_alive(),
-            self.tcp_server_thread.is_alive()
-        ])
-
+        thread_states = set(map(lambda t: t.running, self._tasks))
         return len(thread_states) == 1
 
     def start(self):
@@ -86,11 +96,8 @@ class NodeServer:
         if self.running:
             raise RuntimeError("server is already running")
 
-        if not self.tcp_server_thread.is_alive():
-            self.tcp_server_thread.start()
-
-        if not self.http_server_thread.is_alive():
-            self.http_server_thread.start()
+        for task in self._tasks:
+            task.start()
 
     def stop(self):
         """
@@ -100,10 +107,5 @@ class NodeServer:
         if not self.running:
             raise RuntimeError("server is not running")
 
-        if self.http_server_thread.is_alive():
-            self.http_server.shutdown()
-            self.http_server_thread.join()
-
-        if self.tcp_server_thread.is_alive():
-            self.tcp_server.shutdown()
-            self.tcp_server_thread.join()
+        for task in self._tasks:
+            task.stop()

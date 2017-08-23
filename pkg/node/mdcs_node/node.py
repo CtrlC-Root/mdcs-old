@@ -28,11 +28,14 @@ def main():
 
     args = parser.parse_args()
 
-    # create the node server
-    server = NodeServer(host=args.host, http_port=args.http_port, tcp_port=args.tcp_port)
+    # create the node
+    node = Node()
 
     # create static devices
-    server.node.add_device(HostDevice())
+    node.add_device(HostDevice())
+
+    # create the node server
+    server = NodeServer(node=node, host=args.host, http_port=args.http_port, tcp_port=args.tcp_port)
 
     # create the daemon context
     def handle_signal(signal_number, stack_frame):

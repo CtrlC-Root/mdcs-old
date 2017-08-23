@@ -12,6 +12,7 @@ class NodeTCPRequestHandler(BaseRequestHandler):
         Process requests from a TCP API client.
         """
 
+        # TODO: fix this code to gracefully handle clients that prematurely close (i.e. len(recv_buffer) == 0)
         # TODO: modify this to handle multiple consecutive requests instead of one per connection
 
         # receive the request data

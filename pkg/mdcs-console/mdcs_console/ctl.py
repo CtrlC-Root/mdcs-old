@@ -13,6 +13,46 @@ from mdcs.tcp import API_PROTOCOL, TCPTransceiver
 from mdcs.tcp.avro import serialize_value, unserialize_value
 
 
+def list_devices(args):
+    """
+    List available devices.
+    """
+
+    # retrieve devices
+    response = requests.get("http://{host}:{http_port}/d".format(**vars(args)))
+    if response.status_code != HTTPStatus.OK:
+        print("error retrieving devices from bridge: {0}".format(response))
+        sys.exit(1)
+
+    devices = response.json()
+
+    # display device names
+    for device in devices:
+        print(device['name'])
+
+
+def show_device(args):
+    """
+    Show device attributes and actions.
+    """
+
+    # retrieve devices
+    response = requests.get("http://{host}:{http_port}/d/{device}".format(**vars(args)))
+    if response.status_code != HTTPStatus.OK:
+        print("error retrieving device information from bridge: {0}".format(response))
+        sys.exit(1)
+
+    device = response.json()
+
+    # display attributes
+    for attribute in device['attributes']:
+        print("Attribute:", attribute['path'])
+
+    # display actions
+    for action in device['actions']:
+        print("Action:   ", action['path'])
+
+
 def read_attribute(args):
     """
     Read an attribute value.
@@ -86,12 +126,19 @@ def main():
     parser.add_argument('--tcp-port', type=int, default=5511, help="TCP API port")
     subparsers = parser.add_subparsers()
 
-    parser_read = subparsers.add_parser('read')
+    parser_list_devices = subparsers.add_parser('list-devices', description=list_devices.__doc__)
+    parser_list_devices.set_defaults(handler=list_devices)
+
+    parser_show_device = subparsers.add_parser('show-device', description=show_device.__doc__)
+    parser_show_device.set_defaults(handler=show_device)
+    parser_show_device.add_argument('device', type=str, help="device name")
+
+    parser_read = subparsers.add_parser('read', description=read_attribute.__doc__)
     parser_read.set_defaults(handler=read_attribute)
     parser_read.add_argument('device', type=str, help="device name")
     parser_read.add_argument('attribute', type=str, help="attribute name")
 
-    parser_write = subparsers.add_parser('write')
+    parser_write = subparsers.add_parser('write', description=write_attribute.__doc__)
     parser_write.set_defaults(handler=write_attribute)
     parser_write.add_argument('device', type=str, help="device name")
     parser_write.add_argument('attribute', type=str, help="attribute name")

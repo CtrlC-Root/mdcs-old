@@ -33,8 +33,17 @@ def main():
 
     args = parser.parse_args()
 
+    # retrieve bridge configuration
+    response = requests.get("http://{0}/api/{1}/config".format(args.bridge, args.user))
+    if response.status_code != HTTPStatus.OK:
+        print("error retrieving config from bridge: {0}".format(response))
+        sys.exit(1)
+
+    config = response.json()
+    bridge_id = config['bridgeid']
+
     # create the node
-    node = Node()
+    node = Node(config={'hueBridge': args.bridge, 'hueUser': args.user})
 
     # retrieve available lights from the Hue bridge and create devices
     response = requests.get("http://{0}/api/{1}/lights".format(args.bridge, args.user))
@@ -44,11 +53,11 @@ def main():
 
     lights = response.json()
     for light_id, light_data in lights.items():
-        #name = light_data['uniqueid'][:-3].replace(':', '-')
-        node.add_device(LightDevice('hue-light-{0}'.format(light_id), args.bridge, args.user, light_id))
+        name = "hue-{0}-light-{1}".format(bridge_id, light_id)
+        node.add_device(LightDevice(name, args.bridge, args.user, light_id))
 
     # group 0 always exists
-    node.add_device(GroupDevice('hue-group-0', args.bridge, args.user, 0))
+    node.add_device(GroupDevice("hue-{0}-group-0".format(bridge_id), args.bridge, args.user, 0))
 
     # retrieve available groups from the Hue bridge and create devices
     response = requests.get("http://{0}/api/{1}/groups".format(args.bridge, args.user))
@@ -58,8 +67,8 @@ def main():
 
     groups = response.json()
     for group_id, group_data in groups.items():
-        #name = light_data['uniqueid'][:-3].replace(':', '-')
-        node.add_device(GroupDevice('hue-group-{0}'.format(group_id), args.bridge, args.user, group_id))
+        name = "hue-{0}-group-{1}".format(bridge_id, group_id)
+        node.add_device(GroupDevice(name, args.bridge, args.user, group_id))
 
     # create the node server
     server = NodeServer(node=node, host=args.host, http_port=args.http_port, tcp_port=args.tcp_port)

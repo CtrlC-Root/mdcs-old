@@ -20,9 +20,14 @@
     - [x] Read an attribute value.
     - [x] Write an attribute value.
     - [ ] Run an action.
-    - [ ] Investigate using Avro IPC framework?
   - [ ] Node server Multicast UDP interface:
     - [ ] Design the protocol.
+    - [ ] Node heartbeat.
+    - [ ] Device added?
+    - [ ] Device removed?
+    - [ ] Device modified (attribute or action added or removed)?
+    - [ ] Attribute value changed.
+    - [ ] TODO: finish this sublist.
 - [ ] Python Node:
   - [ ] Investigate Python plugins.
     * https://stackoverflow.com/a/37233643/937006
@@ -31,13 +36,14 @@
     * https://pyudev.readthedocs.io/en/latest/
     * https://python-evdev.readthedocs.io/en/latest/
   - [ ] Design the architecture.
+  - [ ] TODO: finish this sublist.
 - [ ] Console Client:
-  - [ ] Retrieve a list of devices.
-  - [ ] Retrieve a list of device attributes and actions.
+  - [x] Retrieve a list of devices.
+  - [x] Retrieve a list of device attributes and actions.
   - [ ] Retrieve information about an attribute.
   - [ ] Retrieve information about an action.
-  - [ ] Read an attribute value.
-  - [ ] Write an attribute value.
+  - [x] Read an attribute value.
+  - [x] Write an attribute value.
   - [ ] Run an action.
 - [ ] Web Client:
   - [x] Retrieve a list of devices.

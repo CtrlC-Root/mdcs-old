@@ -13,11 +13,15 @@ class Task:
     """
 
     def __init__(self, name, run, start=None, stop=None):
-        self.name = name
+        self._name = name
         self._run = run
         self._start = start
         self._stop = stop
         self._thread = None
+
+    @property
+    def name(self):
+        return self._name
 
     @property
     def running(self):

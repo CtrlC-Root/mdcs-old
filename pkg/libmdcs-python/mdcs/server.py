@@ -17,7 +17,7 @@ class NodeServer:
         self._tasks = []
 
         # update the node configuration with the server settings
-        self.node.config.update({
+        self.node.update_config({
             'httpHost': host,
             'httpPort': http_port,
             'tcpHost': host,

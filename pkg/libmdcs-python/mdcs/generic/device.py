@@ -13,33 +13,49 @@ class Device:
         """
 
         # store the device settings
-        self.name = name or str(uuid.uuid4())
-        self.config = config
+        self._name = name or str(uuid.uuid4())
+        self._config = config
 
         # device state and actions
-        self.attributes = {}
-        self.actions = {}
+        self._attributes = {}
+        self._actions = {}
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def config(self):
+        return self._config
+
+    @property
+    def attributes(self):
+        return self._attributes
 
     def add_attribute(self, attribute):
-        if attribute.path in self.attributes or attribute.path in self.actions:
+        if attribute.path in self._attributes or attribute.path in self._actions:
             raise KeyError("attribute path is not unique")
 
-        self.attributes[attribute.path] = attribute
+        self._attributes[attribute.path] = attribute
 
     def remove_attribute(self, attribute):
-        if attribute.path not in self.attributes:
+        if attribute.path not in self._attributes:
             raise KeyError("attribute not found")
 
-        del self.attributes[attribute.path]
+        del self._attributes[attribute.path]
+
+    @property
+    def actions(self):
+        return self._actions
 
     def add_action(self, action):
-        if action.path in self.attributes or action.path in self.actions:
+        if action.path in self._attributes or action.path in self._actions:
             raise KeyError("action path is not unique")
 
-        self.actions[action.path] = action
+        self._actions[action.path] = action
 
     def remove_action(self, action):
-        if action.path not in self.actions:
+        if action.path not in self._actions:
             raise KeyError("action not found")
 
-        self.actions[action.path] = action
+        self._actions[action.path] = action

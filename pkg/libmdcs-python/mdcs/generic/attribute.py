@@ -20,21 +20,33 @@ class Attribute:
     """
 
     def __init__(self, path, flags, schema):
-        self.path = path
-        self.flags = flags
-        self.schema = avro.schema.Parse(json.dumps(schema))
+        self._path = path
+        self._flags = flags
+        self._schema = avro.schema.Parse(json.dumps(schema))
+
+    @property
+    def path(self):
+        return self._path
+
+    @property
+    def flags(self):
+        return self._flags
+
+    @property
+    def schema(self):
+        return self._schema
 
     @property
     def dynamic(self):
-        return AttributeFlags.DYNAMIC in self.flags
+        return AttributeFlags.DYNAMIC in self._flags
 
     @property
     def readable(self):
-        return AttributeFlags.READ in self.flags
+        return AttributeFlags.READ in self._flags
 
     @property
     def writable(self):
-        return AttributeFlags.WRITE in self.flags
+        return AttributeFlags.WRITE in self._flags
 
     def read(self):
         """
@@ -74,11 +86,11 @@ class DelegatedAttribute(Attribute):
 
     def __init__(self, path, flags, schema, read_handler, write_handler):
         super().__init__(path, flags, schema)
-        self.read_handler = read_handler
-        self.write_handler = write_handler
+        self._read_handler = read_handler
+        self._write_handler = write_handler
 
     def read(self):
-        return self.read_handler()
+        return self._read_handler()
 
     def write(self, value):
-        return self.write_handler(value)
+        return self._write_handler(value)

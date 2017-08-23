@@ -15,7 +15,6 @@ def serialize_value(schema, value):
     writer = DataFileWriter(data_buffer, DatumWriter(), schema)
     writer.append(value)
     writer.flush()
-    writer.close()
 
     return data_buffer.getvalue()
 

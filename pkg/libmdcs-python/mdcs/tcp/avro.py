@@ -45,15 +45,15 @@ class TCPTransceiver(Transceiver):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((self.host, self.port))
 
+        # create a buffered file for reading from the socket
+        self.rfile = self.socket.makefile('rb', -1)
+
     @property
     def remote_name(self):
         return self.socket.getsockname()
 
     def ReadMessage(self):
-        recv_data = self.socket.recv(65535) # XXX lol wut
-        recv_buffer = BytesIO(recv_data)
-
-        reader = FramedReader(recv_buffer)
+        reader = FramedReader(self.rfile)
         message = reader.Read()
 
         return message
@@ -66,4 +66,5 @@ class TCPTransceiver(Transceiver):
         self.socket.send(send_buffer.getvalue())
 
     def Close(self):
+        self.rfile.close()
         self.socket.close()

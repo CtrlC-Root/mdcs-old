@@ -1,12 +1,12 @@
 from io import BytesIO
-from socketserver import TCPServer, BaseRequestHandler
+from socketserver import TCPServer, StreamRequestHandler
 
 from avro.ipc import FramedReader, FramedWriter
 
 from .responder import NodeResponder
 
 
-class NodeTCPRequestHandler(BaseRequestHandler):
+class NodeTCPRequestHandler(StreamRequestHandler):
     def handle(self):
         """
         Process requests from a TCP API client.
@@ -15,12 +15,8 @@ class NodeTCPRequestHandler(BaseRequestHandler):
         # TODO: fix this code to gracefully handle clients that prematurely close (i.e. len(recv_buffer) == 0)
         # TODO: modify this to handle multiple consecutive requests instead of one per connection
 
-        # receive the request data
-        recv_data = self.request.recv(65535) # XXX lol what
-        recv_buffer = BytesIO(recv_data)
-
         # read the request data
-        reader = FramedReader(recv_buffer)
+        reader = FramedReader(self.rfile)
         request_data = reader.Read()
 
         # process the request
@@ -28,12 +24,8 @@ class NodeTCPRequestHandler(BaseRequestHandler):
         response_data = responder.Respond(request_data)
 
         # write the response data
-        send_buffer = BytesIO()
-        writer = FramedWriter(send_buffer)
+        writer = FramedWriter(self.wfile)
         writer.Write(response_data)
-
-        # send the response data
-        self.request.send(send_buffer.getvalue())
 
 
 class NodeTCPServer(TCPServer):
@@ -60,13 +52,13 @@ class NodeTCPServer(TCPServer):
 
     def run(self):
         try:
-            # bind and activate the TCP server
+            # bind and activate the server
             self.server_bind()
             self.server_activate()
 
-            # process TCP requests until stopped
+            # process requests until stopped
             self.serve_forever()
 
         finally:
-            # close the TCP server
+            # close the server
             self.server_close()

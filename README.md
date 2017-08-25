@@ -12,10 +12,10 @@ Reusable libraries for implementing components.
 
 Standalone components.
 
+* `node`: general purpose node with plugin system
+* `node-console`: console client for nodes
+* `node-web`: web interface for nodes
 * `bridge-hue`: bridge node for Philips Hue lights
-* `node`: general node with plugins for hardware
-* `mdcs-console`: console client for nodes
-* `mdcs-web`: web interface for nodes
 
 ## Quick Start
 
@@ -29,7 +29,7 @@ $ popd
 $ pushd pkg/bridge-hue
 $ make reqs
 $ popd
-$ pushd pkg/mdcs-console
+$ pushd pkg/node-console
 $ make reqs
 $ popd
 ```
@@ -37,11 +37,14 @@ $ popd
 Start the Hue bridge.
 
 ```
-$ mdcs-bridge-hue
+$ mdcs-bridge-hue --bridge 192.168.X.X --user 'bridge_api_username_here'
 ```
 
-Run the console client.
+Retrieve a list of devices, retrieve device attributes, read an attribute value, and write an attribute value.
 
 ```
-$ mdcsctl
+$ mdcsctl list-devices
+$ mdcsctl show-device hue-AABBCCDDEEFF-group-0
+$ mdcsctl read hue-AABBCCDDEEFF-group-0 name
+$ mdcsctl write hue-AABBCCDDEEFF-group-0 on true
 ```

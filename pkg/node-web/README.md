@@ -1,4 +1,4 @@
-# mdcs-web
+# node-web
 
 A web client for interacting with control system nodes.
 

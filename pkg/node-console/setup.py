@@ -3,9 +3,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='mdcs-console',
+    name='node-console',
     version='0.1',
-    description='mdcs console client',
+    description='mdcs node console client',
     author='Alexandru Barbur',
     author_email='root.ctrlc@gmail.com',
     url='https://github.com/mdcs/pkg/mdcsctl',

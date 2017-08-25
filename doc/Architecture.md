@@ -56,11 +56,11 @@ Here's an example using some common household items:
 The control system is made up of smaller components that work together. Most of the components share common libraries
 and schema definitions.
 
-* Control: components that interface with hardware or software
-  * Node: A daemon that exposes devices for locally connected hardware.
-  * Bridge: A specialized node daemon that exposes devices for a remote service.
-* Data Storage: TODO
-* Automation: TODO
-* Monitoring: TODO
-
 ![](components.png)
+
+* Control: components that interface with hardware or software
+  * [Node](Node.md): A daemon that exposes devices for local hardware or software.
+  * [Bridge](Node.md): A specialized node daemon that exposes devices for a remote service.
+* Data Storage: components that record device attribute values
+* Automation: components that automate tasks using devices
+* Monitoring: components that monitor devices

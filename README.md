@@ -1,21 +1,22 @@
 # mdcs
 
-The Modular Distributed Control System is a framework and set of components built with the framework for assembling a soft real-time distributed control system.
+The Modular Distributed Control System is a framework and set of components built with the framework for assembling a
+soft real-time distributed control system.
 
 ## Framework
 
 Reusable libraries for implementing components.
 
-* `libmdcs-python`: common library for Python services and clients
+* [libmdcs-python](pkg/libmdcs-python/README.md): common library for Python services and clients
 
 ## Components
 
 Standalone components.
 
-* `node`: general purpose node with plugin system
-* `node-console`: console client for nodes
-* `node-web`: web interface for nodes
-* `bridge-hue`: bridge node for Philips Hue lights
+* [node](pkg/node/README.md): general purpose node with plugin system
+* [node-console](pkg/node-console/README.md): console client for nodes
+* [node-web](pkg/node-web/README.md): web interface for nodes
+* [bridge-hue](pkg/bridge-hue/README.md): bridge node for Philips Hue lights
 
 ## Quick Start
 

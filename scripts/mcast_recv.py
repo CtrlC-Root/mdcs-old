@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # https://pymotw.com/2/socket/multicast.html
+# https://en.wikipedia.org/wiki/Multicast_address
 
 import sys
 import struct

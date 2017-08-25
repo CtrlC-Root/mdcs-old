@@ -2,6 +2,12 @@
 
 A bridge node that interfaces with Philips Hue lights.
 
+## Documentation
+
+Relevant links to project documentation for this component:
+
+* [Node](../../doc/Node.md)
+
 ## References
 
 * https://developers.meethue.com/

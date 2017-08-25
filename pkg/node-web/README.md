@@ -17,6 +17,12 @@ npm run build
 
 For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
+## Documentation
+
+Relevant links to project documentation for this component:
+
+* [Node](../../doc/Node.md)
+
 ## References
 
 * https://vuejs.org/v2/guide/

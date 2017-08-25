@@ -28,7 +28,7 @@ class Route:
     PATTERN_VARIABLE = re.compile(r"<(?P<name>[a-zA-Z0-9]+)(:(?P<type>[a-zA-Z0-9]+))?>")
     PATTERN_TYPES = {
         'int': VariableType(r"[0-9]+", int),
-        'str': VariableType(r"[0-9a-zA-Z_-]+", str)
+        'str': VariableType(r"[0-9a-zA-Z_\.\-]+", str)
     }
 
     @classmethod

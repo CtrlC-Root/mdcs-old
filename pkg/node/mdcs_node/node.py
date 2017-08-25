@@ -24,6 +24,8 @@ def main():
     parser.add_argument('--host', type=str, default='0.0.0.0', help="bind to IP address or hostname")
     parser.add_argument('--http-port', type=int, default=5510, help="HTTP API port")
     parser.add_argument('--tcp-port', type=int, default=5511, help="TCP API port")
+    parser.add_argument('--mcast-port', type=int, default=5512, help="Multicast API port")
+    parser.add_argument('--mcast-group', type=str, default='224.0.0.128', help="Multicast API group")
     parser.add_argument('--daemon', action='store_true', help="run as daemon in background")
 
     args = parser.parse_args()
@@ -35,17 +37,28 @@ def main():
     node.add_device(HostDevice())
 
     # create the node server
-    server = NodeServer(node=node, host=args.host, http_port=args.http_port, tcp_port=args.tcp_port)
+    server = NodeServer(
+        node=node,
+        host=args.host,
+        http_port=args.http_port,
+        tcp_port=args.tcp_port,
+        mcast_port=args.mcast_port,
+        mcast_group=args.mcast_group)
 
     # create the daemon context
     def handle_signal(signal_number, stack_frame):
         server.stop()
 
     context = daemon.DaemonContext(
-        files_preserve=[server.http_socket.fileno(), server.tcp_socket.fileno()],
+        files_preserve=[
+            server.http_socket.fileno(),
+            server.tcp_socket.fileno(),
+            server.multicast_socket.fileno()
+        ],
         signal_map={
             signal.SIGTERM: handle_signal,
-            signal.SIGINT: handle_signal})
+            signal.SIGINT: handle_signal
+        })
 
     if not args.daemon:
         # run the process in the foreground

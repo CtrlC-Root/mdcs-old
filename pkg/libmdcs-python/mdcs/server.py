@@ -1,9 +1,9 @@
 import socket
 
-from mdcs.generic import Node
-from mdcs.http import NodeHTTPServer
-from mdcs.tcp import NodeTCPServer
-
+from .generic import Node
+from .http import NodeHTTPServer
+from .tcp import NodeTCPServer
+from .multicast import NodeMulticastServer
 from .task import Task
 
 
@@ -12,7 +12,7 @@ class NodeServer:
     A server that provides the APIs for interacting with a Node.
     """
 
-    def __init__(self, node, host, http_port, tcp_port):
+    def __init__(self, node, host, http_port, tcp_port, mcast_port, mcast_group):
         self.node = node
         self._tasks = []
 
@@ -21,7 +21,10 @@ class NodeServer:
             'httpHost': host,
             'httpPort': http_port,
             'tcpHost': host,
-            'tcpPort': tcp_port
+            'tcpPort': tcp_port,
+            'multicastHost': host,
+            'multicastPort': mcast_port,
+            'multicastGroup': mcast_group
         })
 
         # create the HTTP server
@@ -31,6 +34,10 @@ class NodeServer:
         # create the TCP server
         self._tcp_server = NodeTCPServer(self.node, host, tcp_port)
         self.add_task(Task("TCP API", self._tcp_server.run, stop=self._tcp_server.shutdown))
+
+        # create the multicast server
+        self._multicast_server = NodeMulticastServer(self.node, host, mcast_port, mcast_group)
+        self.add_task(Task("Multicast API", self._multicast_server.run, stop=self._multicast_server.shutdown))
 
     @property
     def http_host(self):
@@ -55,6 +62,22 @@ class NodeServer:
     @property
     def tcp_socket(self):
         return self._tcp_server.socket
+
+    @property
+    def multicast_host(self):
+        return self._multicast_server.host
+
+    @property
+    def multicast_port(self):
+        return self._multicast_server.port
+
+    @property
+    def multicast_group(self):
+        return self._multicast_server.group
+
+    @property
+    def multicast_socket(self):
+        return self._multicast_server.socket
 
     def add_task(self, task):
         """

@@ -28,12 +28,14 @@ class HostDevice(Device):
             self.read_cpu_count,
             None))
 
+        # XXX: split this attribute into per-core cpu.X.usage attributes or offer both?
         self.add_attribute(DelegatedAttribute(
             'cpu.usage',
             AttributeFlags.READ,
             {
                 'type': 'array',
                 'items': {
+                    'name': 'cpu_core_usage',
                     'type': 'record',
                     'fields': [
                         {'name': 'user', 'type': 'float'},
@@ -48,23 +50,39 @@ class HostDevice(Device):
         self.add_attribute(DelegatedAttribute(
             'memory.total',
             AttributeFlags.READ,
-            'int',
+            'long',
             self.read_memory_total,
+            None))
+
+        self.add_attribute(DelegatedAttribute(
+            'memory.available',
+            AttributeFlags.READ,
+            'long',
+            self.read_memory_available,
             None))
 
         self.add_attribute(DelegatedAttribute(
             'memory.used',
             AttributeFlags.READ,
-            'int',
+            'long',
             self.read_memory_used,
             None))
 
         self.add_attribute(DelegatedAttribute(
             'memory.free',
             AttributeFlags.READ,
-            'int',
+            'long',
             self.read_memory_free,
             None))
+
+        # TODO: add properties for disk usage?
+        # https://pythonhosted.org/psutil/#disks
+
+        # TODO: add properties for network usage?
+        # https://pythonhosted.org/psutil/#network
+
+        # TODO: definitely add properties for sensors
+        # https://pythonhosted.org/psutil/#sensors
 
     def read_hostname(self):
         return socket.gethostname()
@@ -73,12 +91,15 @@ class HostDevice(Device):
         return psutil.cpu_count(logical=True)
 
     def read_cpu_usage(self):
-        return map(
+        return list(map(
             lambda d: {'user': d.user, 'system': d.system, 'idle': d.idle},
-            psutil.cpu_times(percpu=True))
+            psutil.cpu_times(percpu=True)))
 
     def read_memory_total(self):
         return psutil.virtual_memory().total
+
+    def read_memory_available(self):
+        return psutil.virtual_memory().available
 
     def read_memory_used(self):
         return psutil.virtual_memory().used

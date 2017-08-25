@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import json
 import argparse
 from http import HTTPStatus

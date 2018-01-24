@@ -42,9 +42,6 @@ class NodeMulticastServer(UDPServer):
         return self._group
 
     def run(self):
-        # XXX: why does self.server_bind() fail???
-        ## import pdb; pdb.set_trace()
-
         try:
             # bind and activate the server
             self.server_bind()

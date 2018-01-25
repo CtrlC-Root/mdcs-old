@@ -1,14 +1,20 @@
+import time
 import struct
 import socket
 from io import BytesIO
 from socketserver import UDPServer, DatagramRequestHandler
+
+from avro.io import DatumWriter
+from avro.ipc import FramedReader, FramedWriter
+from avro.datafile import DataFileWriter
+
+from .schema import EVENT_SCHEMA
 
 
 class NodeMulticastRequestHandler(DatagramRequestHandler):
     def handle(self):
         # TODO: implement this
         print("multicast data from: {0}".format(self.client_address))
-        self.wfile.write("ack".encode('utf-8'))
 
 
 class NodeMulticastServer(UDPServer):
@@ -67,3 +73,34 @@ class NodeMulticastServer(UDPServer):
 
             # close the server
             self.server_close()
+
+    def broadcast_event(self, data):
+        """
+        Send an event to all members of the multicast group.
+        """
+
+        # create the event message
+        # XXX break out config values as properties on the Node object instead of pulling from dict
+        message = {
+            'sent': int(round(time.time() * 1000)),
+            'node': {
+                'name': self.node.name,
+                'http_host': self.node.config['httpHost'],
+                'http_port': self.node.config['httpPort'],
+                'tcp_host': self.node.config['tcpHost'],
+                'tcp_port': self.node.config['tcpPort']
+            },
+            'data': data
+        }
+
+        # encode the data into an Avro message
+        event_buffer = BytesIO()
+        writer = DataFileWriter(event_buffer, DatumWriter(), EVENT_SCHEMA)
+        writer.append(message)
+
+        writer.flush()
+        event_buffer.seek(0)
+        event_data = event_buffer.read()
+
+        # send a multicast message
+        self.socket.sendto(event_data, (self._group, self.port))

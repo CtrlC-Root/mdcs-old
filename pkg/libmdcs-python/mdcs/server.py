@@ -122,6 +122,8 @@ class NodeServer:
         for task in self._tasks:
             task.start()
 
+        self._multicast_server.broadcast_event({"state": "STARTED"})
+
     def stop(self):
         """
         Stop the server.
@@ -130,5 +132,6 @@ class NodeServer:
         if not self.running:
             raise RuntimeError("server is not running")
 
+        self._multicast_server.broadcast_event({"state": "STOPPED"})
         for task in self._tasks:
             task.stop()

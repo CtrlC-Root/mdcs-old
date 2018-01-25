@@ -12,6 +12,7 @@ multicast_group = ('224.0.0.128', 5512)
 
 # Create the datagram socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 # Set a timeout so the socket does not block indefinitely when trying to receive data.
 sock.settimeout(0.2)

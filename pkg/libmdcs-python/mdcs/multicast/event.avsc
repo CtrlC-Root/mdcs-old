@@ -1,40 +1,57 @@
 {
-  "name": "event",
+  "name": "Event",
   "type": "record",
   "fields": [
     {"name": "sent", "type": "long", "logicalType": "timestamp-millis"},
     {
       "name": "node",
       "doc": "node information",
-      "type": "record",
-      "fields": [
-        {"name": "name", "type": "string", "doc": "node name"},
-        {"name": "http_host", "type": "string", "doc": "HTTP API address"},
-        {"name": "http_port", "type": "int", "doc": "HTTP API port"},
-        {"name": "tcp_host", "type": "string", "doc": "TCP API address"},
-        {"name": "tcp_port", "type": "int", "doc": "TCP API port"}
-      ]
+      "type": {
+        "name": "NodeInfo",
+        "type": "record",
+        "fields": [
+          {"name": "name", "type": "string", "doc": "node name"},
+          {"name": "http_host", "type": "string", "doc": "HTTP API address"},
+          {"name": "http_port", "type": "int", "doc": "HTTP API port"},
+          {"name": "tcp_host", "type": "string", "doc": "TCP API address"},
+          {"name": "tcp_port", "type": "int", "doc": "TCP API port"}
+        ]
+      }
     },
     {
       "name": "data",
       "type": [
         {
-          "name": "node_state",
+          "name": "NodeEvent",
           "type": "record",
           "fields": [
-            {"name": "state", "type": "enum", "symbols": ["STARTED", "HEARTBEAT", "STOPPED"]}
+            {
+              "name": "state",
+              "type": {
+                "name": "NodeState",
+                "type": "enum",
+                "symbols": ["STARTED", "HEARTBEAT", "STOPPED"]
+              }
+            }
           ]
         },
         {
-          "name": "device_state",
+          "name": "DeviceEvent",
           "type": "record",
           "fields": [
             {"name": "device", "type": "string", "doc": "device name"},
-            {"name": "state", "type": "enum", "symbols": ["CONNECTED", "DISCONNECTED"]}
+            {
+              "name": "state",
+              "type": {
+                "name": "DeviceState",
+                "type": "enum",
+                "symbols": ["CONNECTED", "DISCONNECTED"]
+              }
+            }
           ]
         },
         {
-          "name": "attribute_value",
+          "name": "AttributeEvent",
           "type": "record",
           "fields": [
             {"name": "device", "type": "string", "doc": "device name"},

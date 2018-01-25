@@ -10,3 +10,4 @@ Python common library.
 * http://layer0.authentise.com/getting-started-with-avro-and-python-3.html
 * http://avro.apache.org/docs/current/gettingstartedpython.html
 * http://avro.apache.org/docs/current/spec.html
+* https://json-schema-validator.herokuapp.com/avro.jsp

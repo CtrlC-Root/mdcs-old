@@ -4,12 +4,12 @@ from mdcs.http.view import View
 
 
 class DeviceList(View):
-    def get(self, request, node):
+    def get(self, request, config, node):
         return list(node.devices.values())
 
 
 class DeviceDetail(View):
-    def get(self, request, node, device):
+    def get(self, request, config, node, device):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 
@@ -17,7 +17,7 @@ class DeviceDetail(View):
 
 
 class AttributeDetail(View):
-    def get(self, request, node, device, path):
+    def get(self, request, config, node, device, path):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 
@@ -29,7 +29,7 @@ class AttributeDetail(View):
 
 
 class AttributeValue(View):
-    def get(self, request, node, device, path):
+    def get(self, request, config, node, device, path):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 
@@ -43,7 +43,7 @@ class AttributeValue(View):
 
         return attribute.read()
 
-    def put(self, request, node, device, path):
+    def put(self, request, config, node, device, path):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 
@@ -60,7 +60,7 @@ class AttributeValue(View):
 
 
 class ActionDetail(View):
-    def get(self, request, node, device, path):
+    def get(self, request, config, node, device, path):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 
@@ -72,7 +72,7 @@ class ActionDetail(View):
 
 
 class ActionRun(View):
-    def post(self, request, node, device, path):
+    def post(self, request, config, node, device, path):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 

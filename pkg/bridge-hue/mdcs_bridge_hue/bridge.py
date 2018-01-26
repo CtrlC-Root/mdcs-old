@@ -12,7 +12,7 @@ from http import HTTPStatus
 import requests
 
 from mdcs.generic import Node
-from mdcs import NodeServer
+from mdcs import NodeServerConfig, NodeServer
 
 from .device import LightDevice, GroupDevice
 
@@ -74,13 +74,15 @@ def main():
         node.add_device(GroupDevice(name, args.bridge, args.user, group_id))
 
     # create the node server
-    server = NodeServer(
-        node=node,
-        host=args.host,
+    server_config = NodeServerConfig(
+        public_host=args.host,
+        bind_host=args.host,
         http_port=args.http_port,
         tcp_port=args.tcp_port,
         mcast_port=args.mcast_port,
         mcast_group=args.mcast_group)
+
+    server = NodeServer(config=server_config, node=node)
 
     # create the daemon context
     def handle_signal(signal_number, stack_frame):

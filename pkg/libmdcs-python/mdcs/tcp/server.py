@@ -33,11 +33,12 @@ class NodeTCPServer(TCPServer):
     A server that provides the TCP API for interacting with a Node.
     """
 
-    def __init__(self, node, host, port):
-        super().__init__((host, port), NodeTCPRequestHandler, bind_and_activate=False)
+    def __init__(self, config, node):
+        super().__init__((config.tcp_host, config.tcp_port), NodeTCPRequestHandler, bind_and_activate=False)
         self.allow_reuse_address = True # XXX should be an option?
 
         # store the server settings
+        self.config = config
         self.node = node
 
     @property

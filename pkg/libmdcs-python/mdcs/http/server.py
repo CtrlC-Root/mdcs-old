@@ -49,7 +49,9 @@ class NodeHTTPRequestHandler(BaseHTTPRequestHandler):
             view_class = self.server.view_map[route_name]
 
             # run the view
+            route_variables['config'] = self.server.config
             route_variables['node'] = self.server.node
+
             view = view_class(context=route_variables)
             response = view.handle_request(request)
 
@@ -84,11 +86,12 @@ class NodeHTTPServer(HTTPServer):
     A server that provides the HTTP API for interacting with a Node.
     """
 
-    def __init__(self, node, host, port):
-        super().__init__((host, port), NodeHTTPRequestHandler, bind_and_activate=False)
+    def __init__(self, config, node):
+        super().__init__((config.http_host, config.http_port), NodeHTTPRequestHandler, bind_and_activate=False)
         self.allow_reuse_address = True # XXX should be an option?
 
         # store the server settings
+        self.config = config
         self.node = node
 
         # create the view map

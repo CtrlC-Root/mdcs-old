@@ -13,8 +13,8 @@ from .schema import EVENT_SCHEMA
 
 class NodeMulticastRequestHandler(DatagramRequestHandler):
     def handle(self):
-        # TODO: implement this
-        print("multicast data from: {0}".format(self.client_address))
+        # TODO: anything here?
+        pass
 
 
 class NodeMulticastServer(UDPServer):
@@ -22,16 +22,16 @@ class NodeMulticastServer(UDPServer):
     A server that provides the TCP API for interacting with a Node.
     """
 
-    def __init__(self, node, host, port, group):
-        super().__init__((host, port), NodeMulticastRequestHandler, bind_and_activate=False)
+    def __init__(self, config, node):
+        super().__init__((config.mcast_host, config.mcast_port), NodeMulticastRequestHandler, bind_and_activate=False)
         self.allow_reuse_address = True # XXX should be an option?
-        self._group = group
-
-        # create the group membership request
-        self._group_member = struct.pack('4sL', socket.inet_aton(self._group), socket.INADDR_ANY)
 
         # store the server settings
+        self.config = config
         self.node = node
+
+        # create the group membership request
+        self._group_member = struct.pack('4sL', socket.inet_aton(self.group), socket.INADDR_ANY)
 
     @property
     def host(self):
@@ -45,7 +45,7 @@ class NodeMulticastServer(UDPServer):
 
     @property
     def group(self):
-        return self._group
+        return self.config.mcast_group
 
     def run(self):
         try:
@@ -85,10 +85,9 @@ class NodeMulticastServer(UDPServer):
             'sent': int(round(time.time() * 1000)),
             'node': {
                 'name': self.node.name,
-                'http_host': self.node.config['httpHost'],
-                'http_port': self.node.config['httpPort'],
-                'tcp_host': self.node.config['tcpHost'],
-                'tcp_port': self.node.config['tcpPort']
+                'host': self.config.public_host,
+                'http_port': self.config.http_port,
+                'tcp_port': self.config.tcp_port
             },
             'data': data
         }
@@ -103,4 +102,4 @@ class NodeMulticastServer(UDPServer):
         event_data = event_buffer.read()
 
         # send a multicast message
-        self.socket.sendto(event_data, (self._group, self.port))
+        self.socket.sendto(event_data, (self.group, self.port))

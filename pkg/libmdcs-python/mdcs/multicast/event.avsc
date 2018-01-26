@@ -11,9 +11,8 @@
         "type": "record",
         "fields": [
           {"name": "name", "type": "string", "doc": "node name"},
-          {"name": "http_host", "type": "string", "doc": "HTTP API address"},
+          {"name": "host", "type": "string", "doc": "public host address"},
           {"name": "http_port", "type": "int", "doc": "HTTP API port"},
-          {"name": "tcp_host", "type": "string", "doc": "TCP API address"},
           {"name": "tcp_port", "type": "int", "doc": "TCP API port"}
         ]
       }

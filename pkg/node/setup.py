@@ -13,7 +13,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'mdcs >= 0.1',
-        'psutil >= 5.2.0'
+        'psutil >= 5.2.0',
+        'python-daemon >= 2.0.0'
     ],
 
     entry_points={

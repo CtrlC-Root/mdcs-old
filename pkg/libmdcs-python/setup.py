@@ -13,7 +13,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'python-daemon >= 2.0.0',
         'werkzeug >= 0.12.0',
         'avro-python3 >= 1.8.0'
     ]

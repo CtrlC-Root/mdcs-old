@@ -1,2 +1,3 @@
 mdcs
 requests==2.18.1
+python-daemon==2.1.2

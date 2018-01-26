@@ -48,6 +48,9 @@ class NodeMulticastServer(UDPServer):
         return self.config.mcast_group
 
     def run(self):
+        # XXX disable looping multicast traffic back to this machine
+        # self.socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 0)
+
         try:
             # bind and activate the server
             self.server_bind()

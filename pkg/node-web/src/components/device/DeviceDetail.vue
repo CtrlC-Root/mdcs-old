@@ -17,7 +17,7 @@
           <td class="w-25">{{ attribute.flags.join(', ') }}</td>
           <td class="w-50">
             <boolean-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema == 'boolean'"/>
-            <integer-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema == 'int'"/>
+            <integer-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema == 'int' || attribute.schema == 'long'"/>
             <string-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema == 'string'"/>
             <enum-field :node="node" :device="device" :attribute="attribute" v-if="attribute.schema.type == 'enum'"/>
           </td>

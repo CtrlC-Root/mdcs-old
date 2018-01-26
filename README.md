@@ -17,6 +17,7 @@ Standalone components.
 * [node-console](pkg/node-console/README.md): console client for nodes
 * [node-web](pkg/node-web/README.md): web interface for nodes
 * [bridge-hue](pkg/bridge-hue/README.md): bridge node for Philips Hue lights
+* [registry](pkg/registry/README.md): node and device registry
 
 ## Quick Start
 

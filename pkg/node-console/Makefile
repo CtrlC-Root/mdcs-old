@@ -1,6 +1,5 @@
 # project settings
 TOP := $(shell pwd)
-PROJECT := mdcsctl
 PACKAGE := mdcsctl
 BINARY := $(PACKAGE)
 

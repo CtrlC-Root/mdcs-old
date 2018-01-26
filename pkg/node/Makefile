@@ -1,6 +1,5 @@
 # project settings
 TOP := $(shell pwd)
-PROJECT := node-python
 PACKAGE := mdcs_node
 BINARY := mdcs-node
 

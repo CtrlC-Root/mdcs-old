@@ -1,6 +1,5 @@
 # project settings
 TOP := $(shell pwd)
-PROJECT := libmdcs-python
 PACKAGE := mdcs
 
 #

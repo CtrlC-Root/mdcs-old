@@ -1,6 +1,5 @@
 # project settings
 TOP := $(shell pwd)
-PROJECT := bridge-hue
 PACKAGE := mdcs_bridge_hue
 BINARY := mdcs-bridge-hue
 

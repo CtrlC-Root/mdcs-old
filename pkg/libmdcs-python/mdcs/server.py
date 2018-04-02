@@ -85,15 +85,15 @@ class NodeServer:
         self._tasks = []
 
         # create the HTTP server
-        self._http_server = NodeHTTPServer(config, self.node)
+        self._http_server = NodeHTTPServer(self.config, self.node)
         self.add_task(Task("HTTP API", self._http_server.run, stop=self._http_server.shutdown))
 
         # create the TCP server
-        self._tcp_server = NodeTCPServer(config, self.node)
+        self._tcp_server = NodeTCPServer(self.config, self.node)
         self.add_task(Task("TCP API", self._tcp_server.run, stop=self._tcp_server.shutdown))
 
         # create the multicast server
-        self._multicast_server = NodeMulticastServer(config, self.node)
+        self._multicast_server = NodeMulticastServer(self.config, self.node)
         self.add_task(Task("Multicast API", self._multicast_server.run, stop=self._multicast_server.shutdown))
 
     @property

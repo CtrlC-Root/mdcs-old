@@ -88,7 +88,7 @@ class NodeHTTPServer(HTTPServer):
 
     def __init__(self, config, node):
         super().__init__((config.http_host, config.http_port), NodeHTTPRequestHandler, bind_and_activate=False)
-        self.allow_reuse_address = True # XXX should be an option?
+        self.allow_reuse_address = True
 
         # store the server settings
         self.config = config

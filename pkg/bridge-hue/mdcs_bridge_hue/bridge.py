@@ -2,10 +2,8 @@
 
 import sys
 import time
-import json
 import daemon
 import signal
-import lockfile
 import argparse
 from http import HTTPStatus
 

@@ -19,12 +19,12 @@ class NodeMulticastRequestHandler(DatagramRequestHandler):
 
 class NodeMulticastServer(UDPServer):
     """
-    A server that provides the TCP API for interacting with a Node.
+    A server that provides the Multicast API for interacting with a Node.
     """
 
     def __init__(self, config, node):
         super().__init__((config.mcast_host, config.mcast_port), NodeMulticastRequestHandler, bind_and_activate=False)
-        self.allow_reuse_address = True # XXX should be an option?
+        self.allow_reuse_address = True
 
         # store the server settings
         self.config = config
@@ -83,7 +83,6 @@ class NodeMulticastServer(UDPServer):
         """
 
         # create the event message
-        # XXX break out config values as properties on the Node object instead of pulling from dict
         message = {
             'sent': int(round(time.time() * 1000)),
             'node': {

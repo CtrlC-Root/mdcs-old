@@ -35,7 +35,7 @@ class NodeTCPServer(TCPServer):
 
     def __init__(self, config, node):
         super().__init__((config.tcp_host, config.tcp_port), NodeTCPRequestHandler, bind_and_activate=False)
-        self.allow_reuse_address = True # XXX should be an option?
+        self.allow_reuse_address = True
 
         # store the server settings
         self.config = config

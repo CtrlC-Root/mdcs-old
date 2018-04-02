@@ -1,20 +1,49 @@
 import struct
 import socket
 from io import BytesIO
-from socketserver import UDPServer, DatagramRequestHandler
+from socketserver import UDPServer, BaseRequestHandler
 
 from avro.io import DatumWriter
 from avro.ipc import FramedReader, FramedWriter
 from avro.datafile import DataFileWriter
 
+from mdcs.tcp.avro import serialize_value, unserialize_value
 from mdcs.multicast.schema import EVENT_SCHEMA
 
 
-class RegistryMulticastRequestHandler(DatagramRequestHandler):
+class RegistryMulticastRequestHandler(BaseRequestHandler):
+    def setup(self):
+        self.registry = self.server.registry
+        self.packet, self.socket = self.request
+
     def handle(self):
-        # TODO: parse messages
-        # TODO: update registry
-        pass
+        try:
+            # parse the event message
+            message = unserialize_value(EVENT_SCHEMA, self.packet)
+
+            # check if it's a node event
+            if {'node', 'config', 'state'}.issubset(message):
+                if message['state'] == 'STARTED':
+                    print("adding node {0} with config: {1}".format(message['node'], message['config']))
+                    self.registry.add_node(**message['config'], name=message['node'])
+
+                elif message['state'] == 'STOPPED':
+                    print("removing node {0}".format(message['node']))
+                    self.registry.remove_node(message['node'])
+
+            # check if it's a device event
+            elif {'node', 'device', 'state'}.issubset(message):
+                if message['state'] == 'CONNECTED':
+                    print("adding node {0} device {1}".format(message['node'], message['device']))
+                    self.registry.add_device(message['device'], message['node'])
+
+                elif message['state'] == 'DISCONNECTED':
+                    print("removing node {0} device {1}".format(message['node'], message['device']))
+                    self.registry.remove_device(message['device'])
+
+        except:
+            # TODO: log this or something
+            pass
 
 
 class RegistryMulticastServer(UDPServer):
@@ -80,3 +109,20 @@ class RegistryMulticastServer(UDPServer):
 
             # close the server
             self.server_close()
+
+    def broadcast_event(self, message):
+        """
+        Send an event message to all members of the multicast group.
+        """
+
+        # encode the data into an Avro message
+        event_buffer = BytesIO()
+        writer = DataFileWriter(event_buffer, DatumWriter(), EVENT_SCHEMA)
+        writer.append(message)
+
+        writer.flush()
+        event_buffer.seek(0)
+        event_data = event_buffer.read()
+
+        # send a multicast message
+        self.socket.sendto(event_data, (self.group, self.port))

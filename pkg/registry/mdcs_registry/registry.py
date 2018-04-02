@@ -1,2 +1,6 @@
-def main():
-    print("TODO")
+class Registry:
+    """
+    TODO
+    """
+
+    pass

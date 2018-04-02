@@ -18,7 +18,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'mdcs-registry=mdcs_registry.registry:main'
+            'mdcs-registry=mdcs_registry.daemon:main'
         ]
     }
 )

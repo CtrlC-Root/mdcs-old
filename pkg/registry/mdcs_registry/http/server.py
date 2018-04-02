@@ -85,7 +85,7 @@ class RegistryHTTPServer(HTTPServer):
     A server that provides the HTTP API for interacting with a Registry.
     """
 
-    def __init__(self, config, node):
+    def __init__(self, config, registry):
         super().__init__((config.http_host, config.http_port), RegistryHTTPRequestHandler, bind_and_activate=False)
         self.allow_reuse_address = True
 

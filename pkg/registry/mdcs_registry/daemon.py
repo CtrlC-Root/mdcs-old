@@ -30,7 +30,7 @@ def main():
     registry = Registry()
 
     # create the registry server
-    server_config = NodeServerConfig(
+    server_config = RegistryServerConfig(
         public_host=args.host,
         bind_host=args.host,
         http_port=args.http_port,

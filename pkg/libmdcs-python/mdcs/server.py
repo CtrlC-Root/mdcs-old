@@ -151,7 +151,22 @@ class NodeServer:
         for task in self._tasks:
             task.start()
 
-        self._multicast_server.broadcast_event({"state": "STARTED"})
+        self._multicast_server.broadcast_event({
+            'node': self.node.name,
+            'config': {
+                'host': self.config.public_host,
+                'http_port': self.config.http_port,
+                'tcp_port': self.config.tcp_port
+            },
+            'state': 'STARTED'
+        })
+
+        for name, device in self.node.devices.items():
+            self._multicast_server.broadcast_event({
+                'node': self.node.name,
+                'device': name,
+                'state': 'CONNECTED'
+            })
 
     def stop(self):
         """
@@ -161,6 +176,22 @@ class NodeServer:
         if not self.running:
             raise RuntimeError("server is not running")
 
-        self._multicast_server.broadcast_event({"state": "STOPPED"})
+        for name, device in self.node.devices.items():
+            self._multicast_server.broadcast_event({
+                'node': self.node.name,
+                'device': name,
+                'state': 'DISCONNECTED'
+            })
+
+        self._multicast_server.broadcast_event({
+            'node': self.node.name,
+            'config': {
+                'host': self.config.public_host,
+                'http_port': self.config.http_port,
+                'tcp_port': self.config.tcp_port
+            },
+            'state': 'STOPPED'
+        })
+
         for task in self._tasks:
             task.stop()

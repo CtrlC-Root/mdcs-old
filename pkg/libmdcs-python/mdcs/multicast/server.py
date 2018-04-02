@@ -2,7 +2,7 @@ import time
 import struct
 import socket
 from io import BytesIO
-from socketserver import UDPServer, DatagramRequestHandler
+from socketserver import UDPServer, BaseRequestHandler
 
 from avro.io import DatumWriter
 from avro.ipc import FramedReader, FramedWriter
@@ -11,7 +11,7 @@ from avro.datafile import DataFileWriter
 from .schema import EVENT_SCHEMA
 
 
-class NodeMulticastRequestHandler(DatagramRequestHandler):
+class NodeMulticastRequestHandler(BaseRequestHandler):
     def handle(self):
         # TODO: anything here?
         pass
@@ -77,22 +77,10 @@ class NodeMulticastServer(UDPServer):
             # close the server
             self.server_close()
 
-    def broadcast_event(self, data):
+    def broadcast_event(self, message):
         """
-        Send an event to all members of the multicast group.
+        Send an event message to all members of the multicast group.
         """
-
-        # create the event message
-        message = {
-            'sent': int(round(time.time() * 1000)),
-            'node': {
-                'name': self.node.name,
-                'host': self.config.public_host,
-                'http_port': self.config.http_port,
-                'tcp_port': self.config.tcp_port
-            },
-            'data': data
-        }
 
         # encode the data into an Avro message
         event_buffer = BytesIO()

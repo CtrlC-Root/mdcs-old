@@ -1,65 +1,57 @@
-{
-  "name": "Event",
-  "type": "record",
-  "fields": [
-    {"name": "sent", "type": "long", "logicalType": "timestamp-millis"},
-    {
-      "name": "node",
-      "doc": "node information",
-      "type": {
-        "name": "NodeInfo",
-        "type": "record",
-        "fields": [
-          {"name": "name", "type": "string", "doc": "node name"},
-          {"name": "host", "type": "string", "doc": "public host address"},
-          {"name": "http_port", "type": "int", "doc": "HTTP API port"},
-          {"name": "tcp_port", "type": "int", "doc": "TCP API port"}
-        ]
-      }
-    },
-    {
-      "name": "data",
-      "type": [
-        {
-          "name": "NodeEvent",
+[
+  {
+    "name": "NodeEvent",
+    "type": "record",
+    "fields": [
+      {"name": "node", "type": "string", "doc": "node name"},
+      {
+        "name": "config",
+        "doc": "node configuration",
+        "type": {
+          "name": "NodeConfig",
           "type": "record",
           "fields": [
-            {
-              "name": "state",
-              "type": {
-                "name": "NodeState",
-                "type": "enum",
-                "symbols": ["STARTED", "HEARTBEAT", "STOPPED"]
-              }
-            }
-          ]
-        },
-        {
-          "name": "DeviceEvent",
-          "type": "record",
-          "fields": [
-            {"name": "device", "type": "string", "doc": "device name"},
-            {
-              "name": "state",
-              "type": {
-                "name": "DeviceState",
-                "type": "enum",
-                "symbols": ["CONNECTED", "DISCONNECTED"]
-              }
-            }
-          ]
-        },
-        {
-          "name": "AttributeEvent",
-          "type": "record",
-          "fields": [
-            {"name": "device", "type": "string", "doc": "device name"},
-            {"name": "attribute", "type": "string", "doc": "attribute path"},
-            {"name": "value", "type": "bytes", "doc": "Avro encoded value"},
-            {"name": "when", "type": "long", "logicalType": "timestamp-millis", "doc": "value timestamp"}
+            {"name": "host", "type": "string", "doc": "public host address"},
+            {"name": "http_port", "type": "int", "doc": "HTTP API port"},
+            {"name": "tcp_port", "type": "int", "doc": "TCP API port"}
           ]
         }
-      ]
-    }
-  ]
-}
+      },
+      {
+        "name": "state",
+        "type": {
+          "name": "NodeState",
+          "type": "enum",
+          "symbols": ["STARTED", "STOPPED"]
+        }
+      }
+    ]
+  },
+  {
+    "name": "DeviceEvent",
+    "type": "record",
+    "fields": [
+      {"name": "node", "type": "string", "doc": "node name"},
+      {"name": "device", "type": "string", "doc": "device name"},
+      {
+        "name": "state",
+        "type": {
+          "name": "DeviceState",
+          "type": "enum",
+          "symbols": ["CONNECTED", "DISCONNECTED"]
+        }
+      }
+    ]
+  },
+  {
+    "name": "AttributeChangeEvent",
+    "type": "record",
+    "fields": [
+      {"name": "node", "type": "string", "doc": "node name"},
+      {"name": "device", "type": "string", "doc": "device name"},
+      {"name": "attribute", "type": "string", "doc": "attribute path"},
+      {"name": "value", "type": "bytes", "doc": "Avro encoded value"},
+      {"name": "when", "type": "long", "logicalType": "timestamp-millis", "doc": "value timestamp"}
+    ]
+  }
+]

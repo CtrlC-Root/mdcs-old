@@ -3,6 +3,10 @@ import urllib.parse
 
 
 class Request:
+    """
+    An HTTP request.
+    """
+
     def __init__(self, url='', headers={}, method='GET', data=None):
         # parse url
         url_parts = urllib.parse.urlparse(url)

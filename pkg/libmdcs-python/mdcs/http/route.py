@@ -2,24 +2,13 @@ import re
 from collections import namedtuple
 
 
-class RouteError(RuntimeError):
+class InvalidRoutePattern(RuntimeError):
     pass
 
 
-class InvalidRoutePattern(RouteError):
-    pass
-
-
-class RouteNotFound(RouteError):
-    def __init__(self, route_map, url):
-        super().__init__("route not found for URL: {0}".format(url))
-        self.route_map = route_map
-        self.url = url
-
-
-class Route:
+class RoutePattern:
     """
-    A route that matches URLs using a pattern that can include dynamic variables.
+    A route pattern that matches URLs and can include dynamic variables.
     """
 
     VariableType = namedtuple('Type', ['regex', 'function'])
@@ -73,6 +62,10 @@ class Route:
         self.regex, self.variables = self.parse_pattern(self.pattern)
 
     def parse(self, url):
+        """
+        Parse the given URL and return a dict of variable values. If the URL does not match the pattern return None.
+        """
+
         # match the url
         match = self.regex.match(url)
         if not match:
@@ -87,22 +80,3 @@ class Route:
 
         # return type cast variable values
         return values
-
-
-class RouteMap:
-    """
-    A collection of routes.
-    """
-
-    def __init__(self, routes={}):
-        self.routes = {}
-        for name, pattern in routes.items():
-            self.routes[name] = Route(pattern)
-
-    def parse(self, url):
-        for name, route in self.routes.items():
-            variables = route.parse(url)
-            if variables is not None:
-                return name, variables
-
-        raise RouteNotFound(self, url)

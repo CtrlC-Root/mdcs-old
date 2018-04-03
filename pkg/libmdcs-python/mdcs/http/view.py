@@ -5,6 +5,10 @@ from .response import Response
 
 
 class View:
+    """
+    A class that represents an HTTP application view.
+    """
+
     HTTP_METHODS = ['OPTIONS', 'HEAD', 'GET', 'POST', 'PUT', 'DELETE']
 
     def __init__(self, context={}):
@@ -12,6 +16,10 @@ class View:
 
     @property
     def allowed_methods(self):
+        """
+        A list of HTTP methods this view supports.
+        """
+
         allowed_methods = []
         for method in self.HTTP_METHODS:
             handler_name = method.lower()
@@ -21,11 +29,19 @@ class View:
         return allowed_methods
 
     def options(self, request, **kwargs):
+        """
+        Default implementation of the HTTP OPTIONS method.
+        """
+
         return Response(
             headers={'Allow': ','.join(self.allowed_methods)},
             status_code=HTTPStatus.OK)
 
     def handle_request(self, request):
+        """
+        Process a single HTTP request and return the response.
+        """
+
         # check if the view supports the method
         handler_name = request.method.lower()
         if not hasattr(self, handler_name):

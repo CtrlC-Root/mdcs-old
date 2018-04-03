@@ -2,6 +2,10 @@ from http import HTTPStatus
 
 
 class Response:
+    """
+    An HTTP response.
+    """
+
     def __init__(self, status_code=HTTPStatus.OK, headers={}, content=None):
         self.status_code = status_code
         self.headers = headers

@@ -2,6 +2,7 @@ import json
 
 from mdcs.generic import Action, Attribute, AttributeFlags, Device
 
+
 class JSONEncoder(json.JSONEncoder):
     """
     A JSON encoder for control system objects.

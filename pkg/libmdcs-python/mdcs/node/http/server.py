@@ -2,11 +2,14 @@ import socket
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from .request import Request
-from .response import Response
-from .route import Route, RouteMap, RouteNotFound
+from mdcs.http.request import Request
+from mdcs.http.response import Response
+from mdcs.http.route import Route, RouteMap, RouteNotFound
+
 from .views import NodeDetail, NodeHealth
-from .views import DeviceList, DeviceDetail, AttributeDetail, AttributeValue, ActionDetail, ActionRun
+from .views import DeviceList, DeviceDetail
+from .views import AttributeDetail, AttributeValue
+from .views import ActionDetail, ActionRun
 
 
 class NodeHTTPRequestHandler(BaseHTTPRequestHandler):

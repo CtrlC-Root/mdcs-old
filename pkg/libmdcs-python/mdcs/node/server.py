@@ -1,10 +1,11 @@
 import socket
 
-from .generic import Node
+from mdcs.generic import Node
+from mdcs.task import Task
+
 from .http import NodeHTTPServer
 from .tcp import NodeTCPServer
 from .multicast import NodeMulticastServer
-from .task import Task
 
 
 class NodeServerConfig:

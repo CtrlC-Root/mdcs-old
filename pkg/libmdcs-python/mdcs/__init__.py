@@ -1,3 +1,1 @@
-#!/usr/bin/env python
-
-from .server import NodeServerConfig, NodeServer
+from .node import NodeServerConfig, NodeServer

@@ -3,8 +3,8 @@ import time
 from avro.ipc import Responder
 from avro.schema import AvroException
 
-from .schema import API_PROTOCOL
-from .avro import serialize_value, unserialize_value
+from mdcs.tcp.schema import API_PROTOCOL
+from mdcs.tcp.avro import serialize_value, unserialize_value
 
 
 class NodeResponder(Responder):

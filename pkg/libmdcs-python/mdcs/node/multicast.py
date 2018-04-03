@@ -8,7 +8,7 @@ from avro.io import DatumWriter
 from avro.ipc import FramedReader, FramedWriter
 from avro.datafile import DataFileWriter
 
-from .schema import EVENT_SCHEMA
+from mdcs.multicast.schema import EVENT_SCHEMA
 
 
 class NodeMulticastRequestHandler(BaseRequestHandler):

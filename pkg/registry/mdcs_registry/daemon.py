@@ -20,8 +20,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', type=str, default='0.0.0.0', help="bind to IP address or hostname")
     parser.add_argument('--http-port', type=int, default=5520, help="HTTP API port")
-    parser.add_argument('--daemon', action='store_true', help="run as daemon in background")
     MulticastDiscoveryConfig.define_args(parser)
+
+    parser.add_argument('--daemon', action='store_true', help="run as daemon in background")
 
     args = parser.parse_args()
 

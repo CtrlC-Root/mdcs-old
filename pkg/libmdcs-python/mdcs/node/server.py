@@ -67,11 +67,8 @@ class NodeServer:
     """
 
     def __init__(self, config, node):
-        # store the configuration
         self.config = config
         self.node = node
-
-        # server tasks
         self._tasks = []
 
         # create the HTTP server

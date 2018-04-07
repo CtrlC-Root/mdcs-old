@@ -12,7 +12,7 @@ class NodeServerConfig:
     Configuration settings for a Node server.
     """
 
-    def __init__(self, public_host, bind_host, http_port, tcp_port, discovery=None):
+    def __init__(self, public_host, bind_host, http_port, tcp_port, discovery):
         self._public_host = public_host
 
         # HTTP API
@@ -55,11 +55,11 @@ class NodeServerConfig:
         Get settings in a dictionary suitable for JSON serialization.
         """
 
-        values = {'host': self.public_host, 'httpPort': self.http_port, 'tcpPort': self.tcp_port}
-        if self.discovery:
-            values['discovery'] = self.discovery.to_json()
-
-        return values
+        return {
+            'host': self.public_host,
+            'httpPort': self.http_port,
+            'tcpPort': self.tcp_port,
+            'discovery': self.discovery.to_json()}
 
 class NodeServer:
     """

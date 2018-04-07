@@ -7,7 +7,7 @@ import signal
 import argparse
 from http import HTTPStatus
 
-from .registry import Registry
+from mdcs.discovery import Registry
 from .server import RegistryServerConfig, RegistryServer
 
 

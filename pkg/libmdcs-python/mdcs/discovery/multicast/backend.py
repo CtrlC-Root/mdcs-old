@@ -18,7 +18,7 @@ def MulticastDiscoveryBackend(DiscoveryBackend):
         """
 
         server = MulticastPublishServer(self.config, self.publish)
-        return Task("Multicast Discovery Publish", server.run, stop=server.shutdown, files=[server.socket]))
+        return Task("Multicast Discovery Publish", server.run, stop=server.shutdown, files=[server.socket])
 
     def create_subscribe_task(self):
         """
@@ -26,4 +26,4 @@ def MulticastDiscoveryBackend(DiscoveryBackend):
         """
 
         server = MulticastSubscribeServer(self.config, self.discovered)
-        return Task("Multicast Discovery Subscribe", server.run, stop=server.shutdown, files=[server.socket]))
+        return Task("Multicast Discovery Subscribe", server.run, stop=server.shutdown, files=[server.socket])

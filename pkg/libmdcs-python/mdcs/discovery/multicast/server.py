@@ -2,10 +2,14 @@ import struct
 import socket
 from socketserver import UDPServer, BaseRequestHandler
 
+from mdcs.tcp.avro import serialize_value
 
-class NodeMulticastServer(UDPServer):
+from .schema import EVENT_SCHEMA
+
+
+class MulticastServer(UDPServer):
     """
-    A server that provides the Multicast API for interacting with a Node.
+    TODO.
     """
 
     def __init__(self, config, request_handler):
@@ -54,3 +58,11 @@ class NodeMulticastServer(UDPServer):
 
             # close the server
             self.server_close()
+
+    def send_message(self, message):
+        """
+        Send an event message to all members of the multicast group.
+        """
+
+        event_data = serialize_value(EVENT_SCHEMA, message)
+        self.socket.sendto(event_data, (self.group, self.port))

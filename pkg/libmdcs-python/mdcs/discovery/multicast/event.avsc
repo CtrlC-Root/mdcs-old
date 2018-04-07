@@ -23,8 +23,8 @@
             {"name": "tcp_port", "type": "int", "doc": "TCP API port"}
           ]
         }
-      }
-      {"name": "state", "type": "enum", "symbols": ["STARTED", "STOPPED", "HEARTBEAT"]}
+      },
+      {"name": "event", "type": "enum", "symbols": ["ONLINE", "OFFLINE"]}
     ]
   },
   {
@@ -33,7 +33,7 @@
     "fields": [
       {"name": "node", "type": "string", "doc": "node name"},
       {"name": "device", "type": "string", "doc": "device name"},
-      {"name": "state", "type": "enum", "symbols": ["CONNECTED", "DISCONNECTED"]}
+      {"name": "event", "type": "enum", "symbols": ["ONLINE", "OFFLINE"]}
     ]
   }
 ]

@@ -9,15 +9,15 @@ from .schema import EVENT_SCHEMA
 
 class MulticastServer(UDPServer):
     """
-    TODO.
+    A base class for implementing multicast network servers.
     """
 
     def __init__(self, config, request_handler):
-        super().__init__((config.pulic_host, config.port), request_handler, bind_and_activate=False)
+        super().__init__((config.public_host, config.port), request_handler, bind_and_activate=False)
         self.allow_reuse_address = True
 
         # create the group membership request
-        self._group_member = struct.pack('4sL', socket.inet_aton(self.group), socket.INADDR_ANY)
+        self._group_member = struct.pack('4sL', socket.inet_aton(config.group), socket.INADDR_ANY)
 
     @property
     def host(self):

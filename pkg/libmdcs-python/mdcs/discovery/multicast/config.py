@@ -47,7 +47,10 @@ class MulticastDiscoveryConfig(DiscoveryConfig):
         Create a configuration object from parsed command line arguments.
         """
 
-        return cls(public_host=args.mcast_host, group=args.mcast_group, port=args.mcast_port)
+        return cls(
+            public_host=args.discovery_mcast_host,
+            group=args.discovery_mcast_group,
+            port=args.discovery_mcast_port)
 
     def create_backend(self):
         """

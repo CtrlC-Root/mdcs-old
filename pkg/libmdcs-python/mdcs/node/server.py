@@ -92,14 +92,15 @@ class NodeServer:
         self.add_task(self._discovery_backend.create_publish_task())
 
         # publish the local node and it's devices
-        self._discovery_backend.add_node(
+        registry = self._discovery_backend.publish
+        registry.add_node(
             self.node.name,
             self.config.public_host,
             self.config.http_port,
             self.config.tcp_port)
 
         for device in self.node.devices:
-            self._discovery_backend.add_device(device, self.node.name)
+            registry.add_device(device, self.node.name)
 
     @property
     def files(self):

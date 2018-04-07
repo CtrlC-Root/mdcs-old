@@ -1,16 +1,14 @@
 from mdcs.task import Task
+from mdcs.discovery import DiscoveryBackend
 
 from .publish import MulticastPublishServer
 from .subscribe import MulticastSubscribeServer
 
 
-def MulticastDiscoveryBackend(DiscoveryBackend):
+class MulticastDiscoveryBackend(DiscoveryBackend):
     """
     Multicast network discovery backend.
     """
-
-    def __init__(self, config):
-        super().__init__(config)
 
     def create_publish_task(self):
         """

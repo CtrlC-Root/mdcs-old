@@ -47,7 +47,7 @@ class PublishRequestHandler(BaseRequestHandler):
 
 class MulticastPublishServer(MulticastServer):
     """
-    TODO.
+    A multicast network server that publishes the contents of a Registry.
     """
 
     def __init__(self, config, registry):

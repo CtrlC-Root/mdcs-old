@@ -43,7 +43,7 @@ class SubscribeRequestHandler(BaseRequestHandler):
 
 class MulticastSubscribeServer(MulticastServer):
     """
-    TODO.
+    A multicast network server that fills in the contents of a Registry.
     """
 
     def __init__(self, config, registry):

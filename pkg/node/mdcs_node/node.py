@@ -46,10 +46,7 @@ def main():
         server.stop()
 
     context = daemon.DaemonContext(
-        files_preserve=[
-            server.http_socket.fileno(),
-            server.tcp_socket.fileno()
-        ],
+        files_preserve=server.files,
         signal_map={
             signal.SIGTERM: handle_signal,
             signal.SIGINT: handle_signal

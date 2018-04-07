@@ -12,16 +12,29 @@ class Task:
     A named runnable task that wraps run, start, and stop functions.
     """
 
-    def __init__(self, name, run, start=None, stop=None):
+    def __init__(self, name, run, start=None, stop=None, files=[]):
         self._name = name
         self._run = run
         self._start = start
         self._stop = stop
+        self._files = files
         self._thread = None
 
     @property
     def name(self):
+        """
+        Task name. Used to identify the background thread.
+        """
+
         return self._name
+
+    @property
+    def files(self):
+        """
+        Open files that need to be preserved when daemonizing.
+        """
+
+        return self._files
 
     @property
     def running(self):
@@ -36,7 +49,7 @@ class Task:
             self._start()
 
         # start the thread
-        self._thread = threading.Thread(target=self._run)
+        self._thread = threading.Thread(target=self._run, name=self.name)
         self._thread.start()
 
     def stop(self):

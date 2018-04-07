@@ -58,25 +58,36 @@ class NodeServer:
     """
 
     def __init__(self, config, node):
+        # store the configuration
         self.config = config
         self.node = node
+
+        # server tasks
         self._tasks = []
 
         # create the HTTP server
         self._http_server = NodeHTTPServer(self.config, self.node)
-        self.add_task(Task("HTTP API", self._http_server.run, stop=self._http_server.shutdown))
+        self.add_task(Task(
+            "HTTP API",
+            self._http_server.run,
+            stop=self._http_server.shutdown,
+            files=[self._http_server.socket]))
 
         # create the TCP server
         self._tcp_server = NodeTCPServer(self.config, self.node)
-        self.add_task(Task("TCP API", self._tcp_server.run, stop=self._tcp_server.shutdown))
+        self.add_task(Task(
+            "TCP API",
+            self._tcp_server.run,
+            stop=self._tcp_server.shutdown,
+            files=[self._tcp_server.socket]))
 
     @property
-    def http_socket(self):
-        return self._http_server.socket
+    def files(self):
+        """
+        Open files that need to be preserved when daemonizing.
+        """
 
-    @property
-    def tcp_socket(self):
-        return self._tcp_server.socket
+        return [file for task_files in map(lambda t: t.files, self._tasks) for file in task_files]
 
     def add_task(self, task):
         """

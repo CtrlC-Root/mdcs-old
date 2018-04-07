@@ -51,13 +51,16 @@ class RegistryServer:
     A server that provides the APIs for interacting with a Registry.
     """
 
-    def __init__(self, config, registry):
+    def __init__(self, config):
         self.config = config
-        self.registry = registry
         self._tasks = []
 
+        # create the discovery backend and subscribe task
+        self._discovery_backend = self.config.discovery.create_backend()
+        self.add_task(self._discovery_backend.create_subscribe_task())
+
         # create the HTTP server
-        self._http_server = RegistryHTTPServer(self.config, self.registry)
+        self._http_server = RegistryHTTPServer(self.config, self._discovery_backend.discovered)
         self.add_task(Task(
             "HTTP API",
             self._http_server.run,

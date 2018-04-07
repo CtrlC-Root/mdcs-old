@@ -7,6 +7,7 @@ import signal
 import argparse
 
 from mdcs.generic import Node
+from mdcs.discovery import MulticastDiscoveryConfig
 from mdcs import NodeServerConfig, NodeServer
 
 from .device import HostDevice
@@ -23,6 +24,7 @@ def main():
     parser.add_argument('--http-port', type=int, default=5510, help="HTTP API port")
     parser.add_argument('--tcp-port', type=int, default=5511, help="TCP API port")
     parser.add_argument('--daemon', action='store_true', help="run as daemon in background")
+    MulticastDiscoveryConfig.define_args(parser)
 
     args = parser.parse_args()
 
@@ -37,7 +39,8 @@ def main():
         public_host=args.host,
         bind_host=args.host,
         http_port=args.http_port,
-        tcp_port=args.tcp_port)
+        tcp_port=args.tcp_port,
+        discovery=MulticastDiscoveryConfig.from_args(args))
 
     server = NodeServer(config=server_config, node=node)
 

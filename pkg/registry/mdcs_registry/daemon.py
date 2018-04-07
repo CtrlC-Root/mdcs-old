@@ -7,7 +7,7 @@ import signal
 import argparse
 from http import HTTPStatus
 
-from mdcs.discovery import Registry
+from mdcs.discovery import MulticastDiscoveryConfig
 from .server import RegistryServerConfig, RegistryServer
 
 
@@ -21,19 +21,18 @@ def main():
     parser.add_argument('--host', type=str, default='0.0.0.0', help="bind to IP address or hostname")
     parser.add_argument('--http-port', type=int, default=5520, help="HTTP API port")
     parser.add_argument('--daemon', action='store_true', help="run as daemon in background")
+    MulticastDiscoveryConfig.define_args(parser)
 
     args = parser.parse_args()
-
-    # create the registry
-    registry = Registry()
 
     # create the registry server
     server_config = RegistryServerConfig(
         public_host=args.host,
         bind_host=args.host,
-        http_port=args.http_port)
+        http_port=args.http_port,
+        discovery=MulticastDiscoveryConfig.from_args(args))
 
-    server = RegistryServer(config=server_config, registry=registry)
+    server = RegistryServer(config=server_config)
 
     # create the daemon context
     def handle_signal(signal_number, stack_frame):

@@ -87,6 +87,20 @@ class NodeServer:
             stop=self._tcp_server.shutdown,
             files=[self._tcp_server.socket]))
 
+        # create the discovery backend and publish task
+        self._discovery_backend = self.config.discovery.create_backend()
+        self.add_task(self._discovery_backend.create_publish_task())
+
+        # publish the local node and it's devices
+        self._discovery_backend.add_node(
+            self.node.name,
+            self.config.public_host,
+            self.config.http_port,
+            self.config.tcp_port)
+
+        for device in self.node.devices:
+            self._discovery_backend.add_device(device, self.node.name)
+
     @property
     def files(self):
         """

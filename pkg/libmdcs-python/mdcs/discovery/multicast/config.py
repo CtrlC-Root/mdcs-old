@@ -1,5 +1,7 @@
 from mdcs.discovery.generic import DiscoveryConfig
 
+from .backend import MulticastDiscoveryBackend
+
 
 class MulticastDiscoveryConfig(DiscoveryConfig):
     """
@@ -46,3 +48,10 @@ class MulticastDiscoveryConfig(DiscoveryConfig):
         """
 
         return cls(public_host=args.mcast_host, group=args.mcast_group, port=args.mcast_port)
+
+    def create_backend(self):
+        """
+        Create an instance of the discovery backend with this configuration.
+        """
+
+        return MulticastDiscoveryBackend(self)

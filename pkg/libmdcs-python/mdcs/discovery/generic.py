@@ -21,3 +21,40 @@ class DiscoveryConfig(metaclass=ABCMeta):
         """
 
         raise NotImplementedError()
+
+    def create_backend(self):
+        """
+        Create an instance of the discovery backend with this configuration.
+        """
+
+        raise NotImplementedError()
+
+
+def DiscoveryBackend(metaclass=ABCMeta):
+    """
+    Abstract base class for network discovery backends.
+    """
+
+    def __init__(self, config):
+        # store the config
+        self.config = config
+
+        # create a registry for nodes and devices we want to publish
+        self.publish = Registry()
+
+        # create a registry for nodes and devices we have discovered
+        self.discovered = Registry()
+
+    def create_publish_task(self):
+        """
+        Create a task to publish the contents of a registry.
+        """
+
+        raise NotImplementedError()
+
+    def create_subscribe_task(self):
+        """
+        Create a task to discover nodes and devices.
+        """
+
+        raise NotImplementedError()

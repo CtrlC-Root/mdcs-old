@@ -9,12 +9,15 @@ class RegistryServerConfig:
     Configuration settings for a Registry server.
     """
 
-    def __init__(self, public_host, bind_host, http_port):
+    def __init__(self, public_host, bind_host, http_port, discovery=None):
         self._public_host = public_host
 
         # HTTP API
         self._http_host = bind_host
         self._http_port = http_port
+
+        # Discovery
+        self._discovery = discovery
 
     @property
     def public_host(self):
@@ -29,12 +32,19 @@ class RegistryServerConfig:
         return self._http_port
 
     @property
-    def json_dict(self):
+    def discovery(self):
+        return self._discovery
+
+    def to_json(self):
         """
         Configuration settings in a dictionary suitable for JSON serialization.
         """
 
-        return {'host': self.public_host, 'httpPort': self.http_port}
+        values = {'host': self.public_host, 'httpPort': self.http_port}
+        if self.discovery:
+            values['discovery'] = self.discovery.to_json()
+
+        return values
 
 
 class RegistryServer:
@@ -49,11 +59,19 @@ class RegistryServer:
 
         # create the HTTP server
         self._http_server = RegistryHTTPServer(self.config, self.registry)
-        self.add_task(Task("HTTP API", self._http_server.run, stop=self._http_server.shutdown))
+        self.add_task(Task(
+            "HTTP API",
+            self._http_server.run,
+            stop=self._http_server.shutdown,
+            files=[self._http_server.socket]))
 
     @property
-    def http_socket(self):
-        return self._http_server.socket
+    def files(self):
+        """
+        Open files that need to be preserved when daemonizing.
+        """
+
+        return [file for task_files in map(lambda t: t.files, self._tasks) for file in task_files]
 
     def add_task(self, task):
         """

@@ -29,6 +29,13 @@ class DiscoveryConfig(metaclass=ABCMeta):
 
         raise NotImplementedError()
 
+    def to_json(self):
+        """
+        Get settings in a dictionary suitable for JSON serialization.
+        """
+
+        raise NotImplementedError()
+
 
 def DiscoveryBackend(metaclass=ABCMeta):
     """

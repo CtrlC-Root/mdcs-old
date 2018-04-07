@@ -5,7 +5,7 @@ from mdcs.http.view import View
 
 class NodeDetail(View):
     def get(self, request, config, node):
-        return {'name': node.name, 'config': config.json_dict}
+        return {'name': node.name, 'config': config.to_json()}
 
 
 class NodeHealth(View):

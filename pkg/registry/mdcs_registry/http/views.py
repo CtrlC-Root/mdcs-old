@@ -5,7 +5,7 @@ from mdcs.http.view import View
 
 class RegistryDetail(View):
     def get(self, request, config, registry):
-        return {'config': config.json_dict}
+        return {'config': config.to_json()}
 
 
 class RegistryHealth(View):

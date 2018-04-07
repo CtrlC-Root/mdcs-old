@@ -30,16 +30,16 @@ class MulticastDiscoveryConfig(DiscoveryConfig):
             help="Multicast discovery listen address")
 
         parser.add_argument(
-            '--discovery-mcast-port',
-            type=int,
-            default=5512,
-            help="Multicast discovery port")
-
-        parser.add_argument(
             '--discovery-mcast-group',
             type=str,
             default='224.0.0.128',
             help="Multicast discovery group address")
+
+        parser.add_argument(
+            '--discovery-mcast-port',
+            type=int,
+            default=5512,
+            help="Multicast discovery port")
 
     @classmethod
     def from_args(cls, args):
@@ -55,3 +55,10 @@ class MulticastDiscoveryConfig(DiscoveryConfig):
         """
 
         return MulticastDiscoveryBackend(self)
+
+    def to_json(self):
+        """
+        Get settings in a dictionary suitable for JSON serialization.
+        """
+
+        return {'host': self.public_host, 'group': self.group, 'port': self.port}

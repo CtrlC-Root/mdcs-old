@@ -15,6 +15,7 @@ class MulticastServer(UDPServer):
     def __init__(self, config, request_handler):
         super().__init__((config.public_host, config.port), request_handler, bind_and_activate=False)
         self.allow_reuse_address = True
+        self.config = config
 
         # create the group membership request
         self._group_member = struct.pack('4sL', socket.inet_aton(config.group), socket.INADDR_ANY)
@@ -65,4 +66,4 @@ class MulticastServer(UDPServer):
         """
 
         event_data = serialize_value(EVENT_SCHEMA, message)
-        self.socket.sendto(event_data, (self.group, self.port))
+        self.socket.sendto(event_data, (self.config.group, self.config.port))

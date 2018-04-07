@@ -40,7 +40,7 @@ class PublishRequestHandler(BaseRequestHandler):
                         'event': 'ONLINE'
                     })
 
-        except e:
+        except Exception as e:
             # TODO: log this or something
             print('uh oh: {0}'.format(e))
 

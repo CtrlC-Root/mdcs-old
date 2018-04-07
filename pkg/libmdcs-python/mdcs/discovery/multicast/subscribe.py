@@ -19,7 +19,7 @@ class SubscribeRequestHandler(BaseRequestHandler):
             # check if it's a node event
             if {'node', 'config', 'event'}.issubset(message):
                 if message['event'] == 'ONLINE':
-                    print("adding node {0} with config: {1}".format(message['node'], message['config']))
+                    print("updating node {0} with config: {1}".format(message['node'], message['config']))
                     self.registry.add_node(**message['config'], name=message['node'])
 
                 elif message['event'] == 'OFFLINE':
@@ -29,14 +29,14 @@ class SubscribeRequestHandler(BaseRequestHandler):
             # check if it's a device event
             elif {'node', 'device', 'event'}.issubset(message):
                 if message['event'] == 'ONLINE':
-                    print("adding node {0} device {1}".format(message['node'], message['device']))
+                    print("updating node {0} device {1}".format(message['node'], message['device']))
                     self.registry.add_device(message['device'], message['node'])
 
                 elif message['event'] == 'OFFLINE':
                     print("removing node {0} device {1}".format(message['node'], message['device']))
                     self.registry.remove_device(message['device'])
 
-        except e:
+        except Exception as e:
             # TODO: log this or something
             print('uh oh: {0}'.format(e))
 

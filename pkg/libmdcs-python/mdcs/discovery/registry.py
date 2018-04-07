@@ -19,7 +19,7 @@ class Registry:
 
     def add_node(self, name, host, http_port, tcp_port):
         # remove device entries for this node
-        for device in self.devices.values():
+        for device in list(self.devices.values()):
             if device.node == name:
                 del self.devices[device.name]
 
@@ -28,7 +28,7 @@ class Registry:
 
     def remove_node(self, name):
         # remove device entries for this node
-        for device in self.devices.values():
+        for device in list(self.devices.values()):
             if device.node == name:
                 del self.devices[device.name]
 

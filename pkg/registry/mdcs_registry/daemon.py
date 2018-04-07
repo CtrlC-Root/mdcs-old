@@ -20,8 +20,6 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', type=str, default='0.0.0.0', help="bind to IP address or hostname")
     parser.add_argument('--http-port', type=int, default=5520, help="HTTP API port")
-    parser.add_argument('--mcast-port', type=int, default=5512, help="Multicast API port")
-    parser.add_argument('--mcast-group', type=str, default='224.0.0.128', help="Multicast API group")
     parser.add_argument('--daemon', action='store_true', help="run as daemon in background")
 
     args = parser.parse_args()
@@ -33,9 +31,7 @@ def main():
     server_config = RegistryServerConfig(
         public_host=args.host,
         bind_host=args.host,
-        http_port=args.http_port,
-        mcast_port=args.mcast_port,
-        mcast_group=args.mcast_group)
+        http_port=args.http_port)
 
     server = RegistryServer(config=server_config, registry=registry)
 
@@ -45,8 +41,7 @@ def main():
 
     context = daemon.DaemonContext(
         files_preserve=[
-            server.http_socket.fileno(),
-            server.multicast_socket.fileno()
+            server.http_socket.fileno()
         ],
         signal_map={
             signal.SIGTERM: handle_signal,

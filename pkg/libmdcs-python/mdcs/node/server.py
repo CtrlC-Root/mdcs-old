@@ -5,7 +5,6 @@ from mdcs.task import Task
 
 from .http import NodeHTTPServer
 from .tcp import NodeTCPServer
-from .multicast import NodeMulticastServer
 
 
 class NodeServerConfig:
@@ -13,7 +12,7 @@ class NodeServerConfig:
     Configuration settings for a Node server.
     """
 
-    def __init__(self, public_host, bind_host, http_port, tcp_port, mcast_port, mcast_group):
+    def __init__(self, public_host, bind_host, http_port, tcp_port):
         self._public_host = public_host
 
         # HTTP API
@@ -23,11 +22,6 @@ class NodeServerConfig:
         # TCP API
         self._tcp_host = bind_host
         self._tcp_port = tcp_port
-
-        # Multicast API
-        self._mcast_host = bind_host
-        self._mcast_port = mcast_port
-        self._mcast_group = mcast_group
 
     @property
     def public_host(self):
@@ -50,29 +44,12 @@ class NodeServerConfig:
         return self._tcp_port
 
     @property
-    def mcast_host(self):
-        return self._mcast_host
-
-    @property
-    def mcast_port(self):
-        return self._mcast_port
-
-    @property
-    def mcast_group(self):
-        return self._mcast_group
-
-    @property
     def json_dict(self):
         """
         Configuration settings in a dictionary suitable for JSON serialization.
         """
 
-        return {
-            'host': self.public_host,
-            'httpPort': self.http_port,
-            'tcpPort': self.tcp_port,
-            'multicastPort': self.mcast_port,
-            'multicastGroup': self.mcast_group}
+        return {'host': self.public_host, 'httpPort': self.http_port, 'tcpPort': self.tcp_port}
 
 
 class NodeServer:
@@ -93,10 +70,6 @@ class NodeServer:
         self._tcp_server = NodeTCPServer(self.config, self.node)
         self.add_task(Task("TCP API", self._tcp_server.run, stop=self._tcp_server.shutdown))
 
-        # create the multicast server
-        self._multicast_server = NodeMulticastServer(self.config, self.node)
-        self.add_task(Task("Multicast API", self._multicast_server.run, stop=self._multicast_server.shutdown))
-
     @property
     def http_socket(self):
         return self._http_server.socket
@@ -104,10 +77,6 @@ class NodeServer:
     @property
     def tcp_socket(self):
         return self._tcp_server.socket
-
-    @property
-    def multicast_socket(self):
-        return self._multicast_server.socket
 
     def add_task(self, task):
         """
@@ -152,23 +121,6 @@ class NodeServer:
         for task in self._tasks:
             task.start()
 
-        self._multicast_server.broadcast_event({
-            'node': self.node.name,
-            'config': {
-                'host': self.config.public_host,
-                'http_port': self.config.http_port,
-                'tcp_port': self.config.tcp_port
-            },
-            'state': 'STARTED'
-        })
-
-        for name, device in self.node.devices.items():
-            self._multicast_server.broadcast_event({
-                'node': self.node.name,
-                'device': name,
-                'state': 'CONNECTED'
-            })
-
     def stop(self):
         """
         Stop the server.
@@ -176,23 +128,6 @@ class NodeServer:
 
         if not self.running:
             raise RuntimeError("server is not running")
-
-        for name, device in self.node.devices.items():
-            self._multicast_server.broadcast_event({
-                'node': self.node.name,
-                'device': name,
-                'state': 'DISCONNECTED'
-            })
-
-        self._multicast_server.broadcast_event({
-            'node': self.node.name,
-            'config': {
-                'host': self.config.public_host,
-                'http_port': self.config.http_port,
-                'tcp_port': self.config.tcp_port
-            },
-            'state': 'STOPPED'
-        })
 
         for task in self._tasks:
             task.stop()

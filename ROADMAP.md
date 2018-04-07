@@ -20,14 +20,7 @@
     - [x] Read an attribute value.
     - [x] Write an attribute value.
     - [ ] Run an action.
-  - [ ] Node server Multicast UDP interface:
-    - [ ] Design the protocol.
-    - [ ] Node heartbeat.
-    - [ ] Device added?
-    - [ ] Device removed?
-    - [ ] Device modified (attribute or action added or removed)?
-    - [ ] Attribute value changed.
-    - [ ] TODO: finish this sublist.
+  - [ ] Node server stream interface.
 - [ ] Python Node:
   - [ ] Investigate Python plugins.
     * https://stackoverflow.com/a/37233643/937006

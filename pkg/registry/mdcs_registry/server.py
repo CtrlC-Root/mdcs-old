@@ -1,7 +1,6 @@
 import socket
 
 from .http import RegistryHTTPServer
-from .multicast import RegistryMulticastServer
 from mdcs.task import Task
 
 
@@ -10,17 +9,12 @@ class RegistryServerConfig:
     Configuration settings for a Registry server.
     """
 
-    def __init__(self, public_host, bind_host, http_port, mcast_port, mcast_group):
+    def __init__(self, public_host, bind_host, http_port):
         self._public_host = public_host
 
         # HTTP API
         self._http_host = bind_host
         self._http_port = http_port
-
-        # Multicast API
-        self._mcast_host = bind_host
-        self._mcast_port = mcast_port
-        self._mcast_group = mcast_group
 
     @property
     def public_host(self):
@@ -35,28 +29,12 @@ class RegistryServerConfig:
         return self._http_port
 
     @property
-    def mcast_host(self):
-        return self._mcast_host
-
-    @property
-    def mcast_port(self):
-        return self._mcast_port
-
-    @property
-    def mcast_group(self):
-        return self._mcast_group
-
-    @property
     def json_dict(self):
         """
         Configuration settings in a dictionary suitable for JSON serialization.
         """
 
-        return {
-            'host': self.public_host,
-            'httpPort': self.http_port,
-            'multicastPort': self.mcast_port,
-            'multicastGroup': self.mcast_group}
+        return {'host': self.public_host, 'httpPort': self.http_port}
 
 
 class RegistryServer:
@@ -73,17 +51,9 @@ class RegistryServer:
         self._http_server = RegistryHTTPServer(self.config, self.registry)
         self.add_task(Task("HTTP API", self._http_server.run, stop=self._http_server.shutdown))
 
-        # create the multicast server
-        self._multicast_server = RegistryMulticastServer(self.config, self.registry)
-        self.add_task(Task("Multicast API", self._multicast_server.run, stop=self._multicast_server.shutdown))
-
     @property
     def http_socket(self):
         return self._http_server.socket
-
-    @property
-    def multicast_socket(self):
-        return self._multicast_server.socket
 
     def add_task(self, task):
         """

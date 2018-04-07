@@ -19,11 +19,3 @@ correctness and better performance.
 
 * [Avro Documentation](http://avro.apache.org/docs/current/spec.html#Protocol+Declaration)
 * [TCP API Protocol](../pkg/libmdcs-python/mdcs/tcp/api.avpr)
-
-## Multicast API
-
-The Multicast API is typically used over UDP port 5512 using the `224.0.0.128` group address. It can be used to monitor
-nodes and devices on local networks. It uses Avro to encode events and data values.
-
-* [Avro Documentation](http://avro.apache.org/docs/current/spec.html#Protocol+Declaration)
-* [Multicast Event Schema](../pkg/libmdcs-python/mdcs/multicast/event.avsc)

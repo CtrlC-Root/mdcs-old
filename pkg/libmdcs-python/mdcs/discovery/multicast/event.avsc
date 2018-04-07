@@ -3,7 +3,14 @@
     "name": "ControlEvent",
     "type": "record",
     "fields": [
-      {"name": "command", "type": "enum", "symbols": ["DISCOVER"]}
+      {
+        "name": "command",
+        "type": {
+          "name": "CommandType",
+          "type": "enum",
+          "symbols": ["DISCOVER"]
+        }
+      }
     ]
   },
   {
@@ -24,7 +31,14 @@
           ]
         }
       },
-      {"name": "event", "type": "enum", "symbols": ["ONLINE", "OFFLINE"]}
+      {
+        "name": "event",
+        "type": {
+          "name": "NodeEventType",
+          "type": "enum",
+          "symbols": ["ONLINE", "OFFLINE"]
+        }
+      }
     ]
   },
   {
@@ -33,7 +47,14 @@
     "fields": [
       {"name": "node", "type": "string", "doc": "node name"},
       {"name": "device", "type": "string", "doc": "device name"},
-      {"name": "event", "type": "enum", "symbols": ["ONLINE", "OFFLINE"]}
+      {
+        "name": "event",
+        "type": {
+          "name": "DeviceEventType",
+          "type": "enum",
+          "symbols": ["ONLINE", "OFFLINE"]
+        }
+      }
     ]
   }
 ]

@@ -49,3 +49,17 @@ class MulticastSubscribeServer(MulticastServer):
     def __init__(self, config, registry):
         super().__init__(config, SubscribeRequestHandler)
         self.registry = registry
+        self._initial_discover = False
+
+    def service_actions(self):
+        # send out a discover command when we initially start
+        if not self._initial_discover:
+            self.send_message({'command': 'DISCOVER'})
+            self._initial_discover = True
+
+    def shutdown(self):
+        # stop the server
+        super().shutdown()
+
+        # clear the initial discover flag
+        self._initial_discover = False

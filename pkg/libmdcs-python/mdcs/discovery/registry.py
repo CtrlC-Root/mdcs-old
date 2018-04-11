@@ -18,11 +18,6 @@ class Registry:
         self.devices = {}
 
     def add_node(self, name, host, http_port, tcp_port):
-        # remove device entries for this node
-        for device in list(self.devices.values()):
-            if device.node == name:
-                del self.devices[device.name]
-
         # set or update the node entry
         self.nodes[name] = self.NodeEntry(name, host, http_port, tcp_port)
 
@@ -37,8 +32,6 @@ class Registry:
             del self.nodes[name]
 
     def add_device(self, name, node):
-        # XXX: check if the node entry exists?
-
         # set or update the device entry
         self.devices[name] = self.DeviceEntry(name, node)
 

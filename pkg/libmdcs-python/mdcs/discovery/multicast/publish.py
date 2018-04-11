@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from socketserver import BaseRequestHandler
 
 from mdcs.tcp.avro import unserialize_value
@@ -53,3 +54,45 @@ class MulticastPublishServer(MulticastServer):
     def __init__(self, config, registry):
         super().__init__(config, PublishRequestHandler)
         self.registry = registry
+        self._publish_timeout = datetime.now()
+
+    def service_actions(self):
+        # periodically send out ONLINE states for nodes and devices
+        publish_time = datetime.now()
+        if publish_time > self._publish_timeout:
+            for node in self.registry.nodes.values():
+                self.send_message({
+                    'node': node.name,
+                    'config': {
+                        'host': node.host,
+                        'http_port': node.http_port,
+                        'tcp_port': node.tcp_port
+                    },
+                    'event': 'ONLINE'
+                })
+
+            for device in self.registry.devices.values():
+                self.send_message({
+                    'node': device.node,
+                    'device': device.name,
+                    'event': 'ONLINE'
+                })
+
+            # XXX this should be a configuration setting
+            self._publish_timeout = publish_time + timedelta(seconds=30)
+
+    def shutdown(self):
+        # send out OFFLINE messages for nodes
+        for node in self.registry.nodes.values():
+            self.send_message({
+                'node': node.name,
+                'config': {
+                    'host': node.host,
+                    'http_port': node.http_port,
+                    'tcp_port': node.tcp_port
+                },
+                'event': 'OFFLINE'
+            })
+
+        # stop the server
+        super().shutdown()

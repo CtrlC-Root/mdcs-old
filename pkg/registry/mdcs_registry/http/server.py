@@ -1,5 +1,5 @@
 from mdcs.http import HTTPServer
-from .views import RegistryDetail, RegistryHealth, NodeList, DeviceList
+from .views import RegistryDetail, RegistryHealth, Nodes, Devices
 
 
 class RegistryHTTPServer(HTTPServer):
@@ -14,8 +14,8 @@ class RegistryHTTPServer(HTTPServer):
         routes = (
             ('registry_detail', '/',       RegistryDetail),
             ('registry_health', '/health', RegistryHealth),
-            ('node_list',       '/n',      NodeList),
-            ('device_list',     '/d',      DeviceList),
+            ('nodes',           '/n',      Nodes),
+            ('devices',         '/d',      Devices),
         )
 
         for name, pattern, view in routes:

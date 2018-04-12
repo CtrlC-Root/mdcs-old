@@ -1,6 +1,6 @@
 # node-console
 
-A console client for interacting with control system nodes.
+A console client for interacting with node and bridge components.
 
 ## Documentation
 

@@ -31,28 +31,20 @@ Create a virtualenv and install the desired packages and their requirements.
 
 ```
 $ virtualenv --python=$(which python3) mdcs
-$ pushd pkg/libmdcs-python
 $ make reqs
-$ popd
-$ pushd pkg/bridge-hue
-$ make reqs
-$ popd
-$ pushd pkg/node-console
-$ make reqs
-$ popd
 ```
 
-Start the Hue bridge.
+Start a node.
 
 ```
-$ mdcs-bridge-hue --bridge 192.168.X.X --user 'bridge_api_username_here'
+$ mdcs-node
 ```
 
-Retrieve a list of devices, retrieve device attributes, read an attribute value, and write an attribute value.
+Retrieve a list of devices, retrieve device attributes, and read an attribute value.
 
 ```
-$ mdcsctl list-devices
-$ mdcsctl show-device hue-AABBCCDDEEFF-group-0
-$ mdcsctl read hue-AABBCCDDEEFF-group-0 name
-$ mdcsctl write hue-AABBCCDDEEFF-group-0 on true
+$ HOST_DEVICE="host-$(hostname)"
+$ mdcs-nodectl list-devices
+$ mdcs-nodectl show-device $HOST_DEVICE
+$ mdcs-nodectl read $HOST_DEVICE cpu.count
 ```

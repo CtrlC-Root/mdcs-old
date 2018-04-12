@@ -8,7 +8,7 @@ setup(
     description='mdcs node console client',
     author='Alexandru Barbur',
     author_email='root.ctrlc@gmail.com',
-    url='https://github.com/mdcs/pkg/mdcsctl',
+    url='https://github.com/mdcs/pkg/node-console',
 
     packages=find_packages(),
     install_requires=[
@@ -17,7 +17,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'mdcsctl=mdcs_console.ctl:main'
+            'mdcs-nodectl=mdcs_node_console.ctl:main'
         ]
     }
 )

@@ -1,7 +1,7 @@
 # project settings
 TOP := $(shell pwd)
-PACKAGE := node_console
-BINARY := mdcsctl
+PACKAGE := node_node_console
+BINARY := mdcs-nodectl
 
 #
 # COMMON

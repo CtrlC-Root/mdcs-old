@@ -1,7 +1,7 @@
 # project settings
 TOP := $(shell pwd)
-PACKAGE := mdcsctl
-BINARY := $(PACKAGE)
+PACKAGE := node_console
+BINARY := mdcsctl
 
 #
 # COMMON
@@ -48,7 +48,7 @@ endif
 .PHONY: test-style test-unit test
 
 test-style: check-env
-	python setup.py egg_info
+	python setup.py egg_info > /dev/null
 	pycodestyle --show-source --count \
 		`cat $(PACKAGE).egg-info/top_level.txt | xargs echo`
 

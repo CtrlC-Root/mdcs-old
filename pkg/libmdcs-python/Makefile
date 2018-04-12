@@ -27,7 +27,7 @@ distclean: clean
 # DEVELOPMENT
 #
 
-.PHONY: reqs check-reqs
+.PHONY: reqs
 
 # install requirements from pypi and local packages
 reqs: check-env
@@ -41,7 +41,7 @@ reqs: check-env
 .PHONY: test-style test-unit test
 
 test-style: check-env
-	python setup.py egg_info
+	python setup.py egg_info > /dev/null
 	pycodestyle --show-source --count \
 		`cat $(PACKAGE).egg-info/top_level.txt | xargs echo`
 

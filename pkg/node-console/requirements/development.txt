@@ -1,4 +1,4 @@
 -r common.txt
 
-pep8
+pycodestyle
 httpie

@@ -42,7 +42,7 @@ reqs: check-env
 
 test-style: check-env
 	python setup.py egg_info
-	pep8 --show-source --count \
+	pycodestyle --show-source --count \
 		`cat $(PACKAGE).egg-info/top_level.txt | xargs echo`
 
 test: test-style

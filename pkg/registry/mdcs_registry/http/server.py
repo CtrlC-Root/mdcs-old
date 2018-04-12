@@ -4,7 +4,7 @@ from .views import RegistryDetail, RegistryHealth, Nodes, Devices
 
 class RegistryHTTPServer(HTTPServer):
     """
-    A server that provides the HTTP API for interacting with a Registry.
+    A server that provides the HTTP API for interacting with a Registry daemon.
     """
 
     def __init__(self, config, registry):

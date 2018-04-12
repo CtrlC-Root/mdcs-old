@@ -3,6 +3,12 @@
 The Modular Distributed Control System is a framework and set of components built with the framework for assembling a
 soft real-time distributed control system.
 
+## Documentation
+
+There is high-level architecture, framework, and component documentation in the `doc` directory. A good place to start
+is the [architecture documentation](doc/Architecture.md). There is also a [project roadmap](ROADMAP.md) that shows
+what functionality has been already implemented and what still needs to be done.
+
 ## Framework
 
 Reusable libraries for implementing components.

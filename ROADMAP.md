@@ -20,7 +20,6 @@
     - [x] Read an attribute value.
     - [x] Write an attribute value.
     - [ ] Run an action.
-  - [ ] Node server stream interface.
 - [ ] Python Node:
   - [ ] Investigate Python plugins.
     * https://stackoverflow.com/a/37233643/937006
@@ -28,8 +27,9 @@
     * https://stackoverflow.com/a/28890654/937006
     * https://pyudev.readthedocs.io/en/latest/
     * https://python-evdev.readthedocs.io/en/latest/
-  - [ ] Design the architecture.
-  - [ ] TODO: finish this sublist.
+- [ ] Registry:
+  - [ ] Check if the registry is healthy (HAProxy or ELB compatible).
+  - [ ] Node and device TTLs. Mark them OFFLINE after a while.
 - [ ] Console Client:
   - [x] Retrieve a list of devices.
   - [x] Retrieve a list of device attributes and actions.

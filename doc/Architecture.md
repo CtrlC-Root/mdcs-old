@@ -64,3 +64,4 @@ and schema definitions.
 * Data Storage: components that record device attribute values
 * Automation: components that automate tasks using devices
 * Monitoring: components that monitor devices
+  * [Registry](Registry.md): A daemon that keeps track of online nodes and devices.

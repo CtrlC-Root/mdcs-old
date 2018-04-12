@@ -19,3 +19,7 @@ correctness and better performance.
 
 * [Avro Documentation](http://avro.apache.org/docs/current/spec.html#Protocol+Declaration)
 * [TCP API Protocol](../pkg/libmdcs-python/mdcs/tcp/api.avpr)
+
+## Network Discovery
+
+TODO

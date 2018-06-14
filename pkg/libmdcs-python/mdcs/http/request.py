@@ -18,7 +18,6 @@ class Request:
 
         # parse query paramters
         self.params = {}
-
         if url_parts.params:
             for query_arg in url_parts.query.split(','):
                 key, value = query_arg.split('=')
@@ -26,6 +25,9 @@ class Request:
 
         # store headers
         self.headers = headers
+
+        # initialize cached values
+        self._json_data = None
 
     @property
     def content_type(self):
@@ -36,8 +38,14 @@ class Request:
 
     @property
     def json(self):
+        # corner case: already parsed the request data into JSON
+        if self._json_data:
+            return self._json_data
+
         # XXX there has to be a better way
         if not self.content_type.startswith('application/json'):
             raise RuntimeError("request does not contain JSON data")
 
-        return json.loads(self.data)
+        # parse, cache, and return the request data as JSON
+        self._json_data = json.loads(self.data)
+        return self._json_data

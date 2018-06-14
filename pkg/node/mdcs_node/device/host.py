@@ -28,6 +28,10 @@ class HostDevice(Device):
             self.read_cpu_count,
             None))
 
+        # TODO: add properties for platform details
+        # https://docs.python.org/3.6/library/platform.html#platform.system
+        # https://docs.python.org/3.6/library/platform.html#platform.system_alias
+
         # XXX: split this attribute into per-core cpu.X.usage attributes or offer both?
         self.add_attribute(DelegatedAttribute(
             'cpu.usage',

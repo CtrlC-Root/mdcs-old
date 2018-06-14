@@ -8,7 +8,9 @@ class RegistryHTTPServer(HTTPServer):
     """
 
     def __init__(self, config, registry):
-        super().__init__(config.http_host, config.http_port, {'config': config, 'registry': registry})
+        super().__init__(config.http_host, config.http_port)
+        self._config = config
+        self._registry = registry
 
         # register routes
         routes = (
@@ -20,3 +22,6 @@ class RegistryHTTPServer(HTTPServer):
 
         for name, pattern, view in routes:
             self.register_route(name, pattern, view)
+
+    def create_context(self, request):
+        return {'config': self._config, 'registry': self._registry}

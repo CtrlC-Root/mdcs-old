@@ -52,7 +52,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             route, context = self.server.resolve_url(request.path)
 
             # update the view context with the server's view context
-            context.update(self.server.view_context)
+            context.update(self.server.create_context(request))
 
             # process the view
             view = route.view(context=context)
@@ -64,6 +64,9 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 'Access-Control-Allow-Methods': ','.join(view.allowed_methods),
                 'Access-Control-Allow-Headers': request.headers.setdefault('Access-Control-Request-Headers', '*')
             })
+
+            # finalize the context
+            self.server.finalize_context(context)
 
         except RouteNotFound:
             response = Response(HTTPStatus.NOT_FOUND)
@@ -91,11 +94,10 @@ class HTTPServer(BaseHTTPServer):
 
     Route = namedtuple('Route', ['name', 'pattern', 'view'])
 
-    def __init__(self, http_host, http_port, view_context={}):
+    def __init__(self, http_host, http_port):
         super().__init__((http_host, http_port), HTTPRequestHandler, bind_and_activate=False)
         self.allow_reuse_address = True
-        self.view_context = view_context
-        self.routes = {}
+        self._routes = {}
 
     @property
     def host(self):
@@ -112,10 +114,10 @@ class HTTPServer(BaseHTTPServer):
         Register a named route with a URL pattern and corresponding view.
         """
 
-        if name in self.routes:
+        if name in self._routes:
             raise RuntimeError("route with name {0} already registered".format(name))
 
-        self.routes[name] = self.Route(name=name, pattern=RoutePattern(pattern), view=view)
+        self._routes[name] = self.Route(name=name, pattern=RoutePattern(pattern), view=view)
 
     def resolve_url(self, path):
         """
@@ -123,12 +125,26 @@ class HTTPServer(BaseHTTPServer):
         parsed variable values are returned otherwise a RouteNotFound exception is raised.
         """
 
-        for route in self.routes.values():
+        for route in self._routes.values():
             variables = route.pattern.parse(path)
             if variables is not None:
                 return route, variables
 
         raise RouteNotFound
+
+    def create_context(self, request):
+        """
+        Initialize and return the view context for the given request.
+        """
+
+        return {}
+
+    def finalize_context(self, context):
+        """
+        Finalize a view context.
+        """
+
+        pass
 
     def run(self):
         try:

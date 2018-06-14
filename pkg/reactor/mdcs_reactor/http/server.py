@@ -1,4 +1,5 @@
 from mdcs.http import HTTPServer
+
 from .views import ReactorDetail, ReactorHealth
 
 
@@ -8,7 +9,8 @@ class ReactorHTTPServer(HTTPServer):
     """
 
     def __init__(self, config):
-        super().__init__(config.http_host, config.http_port, {'config': config})
+        super().__init__(config.http_host, config.http_port)
+        self._config = config
 
         # register routes
         routes = (
@@ -18,3 +20,6 @@ class ReactorHTTPServer(HTTPServer):
 
         for name, pattern, view in routes:
             self.register_route(name, pattern, view)
+
+    def create_context(self, request):
+        return {'config': self._config}

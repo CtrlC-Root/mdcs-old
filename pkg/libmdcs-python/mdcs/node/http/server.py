@@ -12,7 +12,9 @@ class NodeHTTPServer(HTTPServer):
     """
 
     def __init__(self, config, node):
-        super().__init__(config.http_host, config.http_port, {'config': config, 'node': node})
+        super().__init__(config.http_host, config.http_port)
+        self._config = config
+        self._node = node
 
         # register routes
         routes = (
@@ -28,3 +30,6 @@ class NodeHTTPServer(HTTPServer):
 
         for name, pattern, view in routes:
             self.register_route(name, pattern, view)
+
+    def create_context(self, request):
+        return {'config': self._config, 'node': self._node}

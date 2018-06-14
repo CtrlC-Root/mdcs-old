@@ -1,6 +1,10 @@
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 from mdcs.http import HTTPServer
 
 from .views import ReactorDetail, ReactorHealth
+from .views import ActionList
 
 
 class ReactorHTTPServer(HTTPServer):
@@ -16,10 +20,28 @@ class ReactorHTTPServer(HTTPServer):
         routes = (
             ('reactor_detail', '/',       ReactorDetail),
             ('reactor_health', '/health', ReactorHealth),
+
+            ('action_list',    '/a',      ActionList),
         )
 
         for name, pattern, view in routes:
             self.register_route(name, pattern, view)
 
+    def server_activate(self):
+        """
+        Activate the server and connect to the database.
+        """
+
+        super().server_activate()
+        self._database_engine = create_engine(self._config.database_url)
+        self._session_factory = sessionmaker(bind=self._database_engine)
+
     def create_context(self, request):
-        return {'config': self._config}
+        return {'config': self._config, 'session': self._session_factory()}
+
+    def finalize_context(self, context):
+        # if we do not explicitly close the session here it will be garbage collected later but potentially
+        # in a different thread which will throw an SQLite.OperationalException if the engine is using an
+        # SQLite3 database. this is because the Python sqlite3 module is not thread-safe. besides, this will
+        # prevent unnecessary sessions from hanging around any longer than necessary.
+        context['session'].close()

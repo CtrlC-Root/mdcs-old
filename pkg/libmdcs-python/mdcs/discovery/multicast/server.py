@@ -1,5 +1,6 @@
 import struct
 import socket
+import platform
 from socketserver import UDPServer, BaseRequestHandler
 
 from mdcs.tcp.avro import serialize_value
@@ -33,6 +34,12 @@ class MulticastServer(UDPServer):
     def run(self):
         # XXX disable looping multicast traffic back to this machine
         # self.socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 0)
+
+        # XXX OS X needs SO_REUSEPORT set in addition to SO_REUSEADDR which is set as part of
+        # SocketServer.BaseServer.server_bind() if allow_reuse_address is set
+        # https://stackoverflow.com/a/14388707/937006
+        if platform.system() == 'Darwin' and self.allow_reuse_address:
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
 
         try:
             # bind and activate the server

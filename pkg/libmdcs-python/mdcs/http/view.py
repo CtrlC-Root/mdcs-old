@@ -12,7 +12,7 @@ class View:
     HTTP_METHODS = ['OPTIONS', 'HEAD', 'GET', 'POST', 'PUT', 'DELETE']
 
     def __init__(self, context={}):
-        self.context = context
+        self._context = context
 
     @property
     def allowed_methods(self):
@@ -49,7 +49,7 @@ class View:
 
         # run the method handler
         handler = getattr(self, handler_name)
-        response = handler(request, **self.context)
+        response = handler(request, **self._context)
 
         # create an empty response if necessary
         if response is None:

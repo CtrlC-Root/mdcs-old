@@ -15,7 +15,7 @@ class RouteNotFound(RuntimeError):
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
     """
-    A handler for node HTTP API requests.
+    A handler for HTTP requests.
     """
 
     def do_OPTIONS(self):
@@ -37,6 +37,9 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         self.do_GENERIC()
 
     def do_GENERIC(self):
+        # XXX this flow needs to be better
+        context = None
+
         try:
             # parse the request
             request = Request(
@@ -65,13 +68,22 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 'Access-Control-Allow-Headers': request.headers.setdefault('Access-Control-Request-Headers', '*')
             })
 
-            # finalize the context
-            self.server.finalize_context(context)
-
         except RouteNotFound:
             response = Response(HTTPStatus.NOT_FOUND)
 
-        except RuntimeError as e:
+        except Exception as e:
+            response = Response(
+                headers={'Content-Type': 'text/plain'},
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                content=str(e))
+
+        try:
+            # finalize the context
+            if context:
+                self.server.finalize_context(context)
+
+        except Exception as e:
+            # XXX any special way to force GC of the context object here?
             response = Response(
                 headers={'Content-Type': 'text/plain'},
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
@@ -134,7 +146,7 @@ class HTTPServer(BaseHTTPServer):
 
     def create_context(self, request):
         """
-        Initialize and return the view context for the given request.
+        Initialize and return a view context for the given request.
         """
 
         return {}

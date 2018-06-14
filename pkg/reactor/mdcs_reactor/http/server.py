@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from mdcs.http import HTTPServer
 
 from .views import ReactorDetail, ReactorHealth
-from .views import ActionList
+from .views import ActionList, ActionDetail
 
 
 class ReactorHTTPServer(HTTPServer):
@@ -20,7 +20,8 @@ class ReactorHTTPServer(HTTPServer):
             ('reactor_detail', '/',       ReactorDetail),
             ('reactor_health', '/health', ReactorHealth),
 
-            ('action_list',    '/a',      ActionList),
+            ('action_list',    '/a',        ActionList),
+            ('action_detail',  '/a/<uuid>', ActionDetail)
         )
 
         for name, pattern, view in routes:

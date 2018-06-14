@@ -40,8 +40,7 @@ class ReactorHTTPServer(HTTPServer):
         return {'config': self._config, 'session': self._session_factory()}
 
     def finalize_context(self, context):
-        # if we do not explicitly close the session here it will be garbage collected later but potentially
-        # in a different thread which will throw an SQLite.OperationalException if the engine is using an
-        # SQLite3 database. this is because the Python sqlite3 module is not thread-safe. besides, this will
-        # prevent unnecessary sessions from hanging around any longer than necessary.
+        # if we do not explicitly close the session here it will be garbage collected later but potentially in a
+        # different thread which will throw an exception. this is because the Session object is not thread-safe.
+        # http://docs.sqlalchemy.org/en/latest/orm/session_basics.html#is-the-session-thread-safe
         context['session'].close()

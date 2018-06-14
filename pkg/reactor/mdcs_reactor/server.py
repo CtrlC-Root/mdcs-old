@@ -9,7 +9,7 @@ class ReactorServerConfig:
     Configuration settings for a Reactor server.
     """
 
-    def __init__(self, public_host, bind_host, http_port, discovery):
+    def __init__(self, public_host, bind_host, http_port, discovery, database_url):
         self._public_host = public_host
 
         # HTTP API
@@ -18,6 +18,9 @@ class ReactorServerConfig:
 
         # Discovery
         self._discovery = discovery
+
+        # Database
+        self._database_url = database_url
 
     @property
     def public_host(self):
@@ -34,6 +37,10 @@ class ReactorServerConfig:
     @property
     def discovery(self):
         return self._discovery
+
+    @property
+    def database_url(self):
+        return self._database_url
 
     def to_json(self):
         """

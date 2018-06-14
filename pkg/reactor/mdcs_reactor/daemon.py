@@ -21,6 +21,7 @@ def main():
     parser.add_argument('--host', type=str, default='0.0.0.0', help="bind to IP address or hostname")
     parser.add_argument('--http-port', type=int, default=5530, help="HTTP API port")
     MulticastDiscoveryConfig.define_args(parser)
+    parser.add_argument('--db-url', type=str, default='sqlite:///reactor.db', help='database url')
 
     parser.add_argument('--daemon', action='store_true', help="run as daemon in background")
 
@@ -31,7 +32,8 @@ def main():
         public_host=args.host,
         bind_host=args.host,
         http_port=args.http_port,
-        discovery=MulticastDiscoveryConfig.from_args(args))
+        discovery=MulticastDiscoveryConfig.from_args(args),
+        database_url=args.db_url)
 
     server = ReactorServer(config=server_config)
 

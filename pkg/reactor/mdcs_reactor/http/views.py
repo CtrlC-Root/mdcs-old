@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+import shortuuid
 from mdcs.http.view import View
 
 from mdcs_reactor.models import Action
@@ -24,6 +25,7 @@ class ActionList(View):
     def post(self, request, config, session):
         # create the action
         action = Action.from_json(request.json)
+        action.uuid = shortuuid.uuid()
 
         # save it to the database
         session.add(action)

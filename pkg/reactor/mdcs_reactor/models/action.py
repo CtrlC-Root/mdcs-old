@@ -10,15 +10,18 @@ class Action(ModelBase):
 
     __tablename__ = 'action'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
+    uuid = Column(String, primary_key=True)
+    name = Column(String, unique=True)
 
     @staticmethod
     def from_json(data):
-        return Action(name=data['name'])
+        action = Action(name=data['name'])
+        action.uuid = data.get('uuid', None)
+
+        return action
 
     def to_json(self):
-        return {'id': self.id, 'name': self.name}
+        return {'uuid': self.uuid, 'name': self.name}
 
     def __repr__(self):
         return "<Action(name='{0}')>".format(self.name)

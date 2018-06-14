@@ -20,8 +20,8 @@ depends_on = None
 def upgrade():
     op.create_table(
         'action',
-        sa.Column('id', sa.Integer, primary_key=True),
-        sa.Column('name', sa.String(64), nullable=False))
+        sa.Column('uuid', sa.String(22), nullable=False, primary_key=True),
+        sa.Column('name', sa.String(64), nullable=False, unique=True))
 
 
 def downgrade():

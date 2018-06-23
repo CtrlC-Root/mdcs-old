@@ -18,10 +18,4 @@ setup(
         'alembic >= 0.9.0',
         'shortuuid >= 0.5.0'
     ],
-
-    entry_points={
-        'console_scripts': [
-            'mdcs-reactor=mdcs_reactor.daemon:main'
-        ]
-    }
 )

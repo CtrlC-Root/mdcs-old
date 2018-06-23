@@ -12,8 +12,7 @@ setup(
 
     packages=find_packages(),
     install_requires=[
-        'mdcs >= 0.1',
-        'python-daemon >= 2.0.0',
+        'Flask >= 1.0.0',
         'SQLAlchemy >= 1.2.0',
         'alembic >= 0.9.0',
         'shortuuid >= 0.5.0'

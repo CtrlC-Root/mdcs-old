@@ -2,3 +2,6 @@
 
 pycodestyle
 httpie
+
+# faster reloader for development server
+watchdog

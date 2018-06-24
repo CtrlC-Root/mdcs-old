@@ -23,6 +23,13 @@ def upgrade():
         sa.Column('title', sa.String(64), nullable=False, unique=True),
         sa.Column('content', sa.Text(), nullable=False))
 
+    op.create_table(
+        'task',
+        sa.Column('uuid', sa.String(22), nullable=False, primary_key=True),
+        sa.Column('action_uuid', sa.String(22), sa.ForeignKey('action.uuid')),
+        sa.Column('created', sa.DateTime()))
+
 
 def downgrade():
+    op.drop_table('task')
     op.drop_table('action')

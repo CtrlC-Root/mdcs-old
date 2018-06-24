@@ -50,9 +50,13 @@ def health():
 
 
 # import views after the application object exists to avoid a circular import error
-# disable the pycodestyle E402 warning for this one line since we know what we're doing
+# disable the pycodestyle E402 warning for these lines since we know what we're doing
 # https://pycodestyle.readthedocs.io/en/latest/intro.html#error-codes
 from .views import ActionList, ActionDetail  # noqa
+from .views import TaskList, TaskDetail # noqa
 
 application.add_url_rule('/action/', view_func=ActionList.as_view('action_list'))
 application.add_url_rule('/action/<uuid>', view_func=ActionDetail.as_view('action_detail'))
+
+application.add_url_rule('/task/', view_func=TaskList.as_view('task_list'))
+application.add_url_rule('/task/<uuid>', view_func=TaskDetail.as_view('task_detail'))

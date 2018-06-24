@@ -15,7 +15,7 @@ class Action(ModelBase):
 
     @staticmethod
     def from_json(data):
-        action = Action(name=data['title'])
+        action = Action(title=data['title'])
         action.uuid = data.get('uuid', None)
 
         return action

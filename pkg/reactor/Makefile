@@ -1,7 +1,6 @@
 # project settings
 TOP := $(shell pwd)
 PACKAGE := mdcs_reactor
-BINARY := mdcs-reactor
 
 #
 # COMMON
@@ -28,7 +27,7 @@ distclean: clean
 # DEVELOPMENT
 #
 
-.PHONY: reqs check-reqs
+.PHONY: reqs check-reqs run-dev
 
 # install requirements from pypi and local packages
 reqs: check-env
@@ -37,9 +36,13 @@ reqs: check-env
 
 # check if requirements are installed
 check-reqs: check-env
-ifeq (, $(shell which $(BINARY)))
-	$(error "No $(BINARY) in $(PATH), consider running the reqs target")
+ifeq (, $(shell which flask))
+	$(error "No flask in $(PATH), consider running the reqs target")
 endif
+
+# run the local development server
+run-dev: check-reqs
+	FLASK_APP="${PACKAGE}:application" FLASK_ENV="development" flask run
 
 #
 # TESTING

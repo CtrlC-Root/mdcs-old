@@ -20,7 +20,8 @@ def upgrade():
     op.create_table(
         'action',
         sa.Column('uuid', sa.String(22), nullable=False, primary_key=True),
-        sa.Column('title', sa.String(64), nullable=False, unique=True))
+        sa.Column('title', sa.String(64), nullable=False, unique=True),
+        sa.Column('content', sa.Text(), nullable=False))
 
 
 def downgrade():

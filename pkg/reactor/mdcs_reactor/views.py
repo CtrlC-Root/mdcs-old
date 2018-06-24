@@ -41,8 +41,7 @@ class ActionDetail(MethodView):
         return jsonify(action.to_json())
 
     def put(self, action):
-        if 'title' in request.json:
-            action.title = request.json['title']
+        action.update(request.json)
 
         g.db.add(action)
         g.db.commit()

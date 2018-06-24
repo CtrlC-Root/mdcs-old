@@ -4,16 +4,24 @@ from flask.views import MethodView
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from .application import application
-from .models import Action
+from .models import Action, ActionSchema
 
 
 class ActionList(MethodView):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.schema = ActionSchema()
+
     def get(self):
-        return jsonify(list(map(lambda a: a.to_json(), g.db.query(Action).all())))
+        return jsonify(self.schema.dump(g.db.query(Action).all(), many=True).data)
 
     def post(self):
         # create the action
-        action = Action.from_json(request.json)
+        action_data, errors = self.schema.load(request.json)
+        if errors:
+            return jsonify(errors), 400
+
+        action = Action(**action_data)
         action.uuid = shortuuid.uuid()
 
         # save it to the database
@@ -21,10 +29,14 @@ class ActionList(MethodView):
         g.db.commit()
 
         # return the newly created action
-        return jsonify(action.to_json())
+        return jsonify(self.schema.dump(action).data)
 
 
 class ActionDetail(MethodView):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.schema = ActionSchema()
+
     def dispatch_request(self, uuid):
         try:
             action = g.db.query(Action).filter(Action.uuid==uuid).one()
@@ -38,15 +50,20 @@ class ActionDetail(MethodView):
         return super().dispatch_request(action)
 
     def get(self, action):
-        return jsonify(action.to_json())
+        return jsonify(self.schema.dump(action).data)
 
     def put(self, action):
-        action.update(request.json)
+        updates, errors = self.schema.load(request.json, partial=True)
+        if errors:
+            return jsonify(errors), 400
+
+        for field, value in updates.items():
+            setattr(action, field, value)
 
         g.db.add(action)
         g.db.commit()
 
-        return jsonify(action.to_json())
+        return jsonify(self.schema.dump(action).data)
 
     def delete(self, action):
         g.db.delete(action)

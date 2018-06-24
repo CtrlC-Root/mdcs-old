@@ -15,6 +15,7 @@ setup(
         'Flask >= 1.0.0',
         'SQLAlchemy >= 1.2.0',
         'alembic >= 0.9.0',
-        'shortuuid >= 0.5.0'
+        'shortuuid >= 0.5.0',
+        'marshmallow >= 2.15.0'
     ],
 )

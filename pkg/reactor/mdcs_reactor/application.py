@@ -17,12 +17,12 @@ database_session_factory = sessionmaker(bind=database_engine)
 # create and finalize a database session
 # http://flask.pocoo.org/docs/1.0/patterns/sqlite3/
 # http://flask.pocoo.org/docs/1.0/patterns/sqlalchemy/
-@application.before_first_request
+@application.before_request
 def create_db_session():
     g.db = database_session_factory()
 
 
-@application.teardown_appcontext
+@application.teardown_request
 def finalize_db_session(exception=None):
     db = getattr(g, 'db', None)
     if db is not None:

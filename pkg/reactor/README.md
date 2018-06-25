@@ -19,6 +19,14 @@ An event based automation tool.
 
 ## References
 
+Services:
+
+* [Beanstalkd](http://kr.github.io/beanstalkd/)
+
+Libraries:
+
+* [Flask](http://flask.pocoo.org/docs/1.0/)
 * [SQLAlchemy](http://docs.sqlalchemy.org/en/latest/)
 * [Alembic](http://alembic.zzzcomputing.com/en/latest/)
-* [Marshmallow](http://marshmallow.readthedocs.io/en/latest/)
+* [Marshmallow](https://marshmallow.readthedocs.io/en/2.x-line/)
+* [Greenstalk](https://greenstalk.readthedocs.io/en/latest/)

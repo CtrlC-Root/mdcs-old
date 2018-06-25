@@ -12,6 +12,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # install aurora beanstalkd dashboard
+# https://github.com/xuri/aurora
 which aurora &> /dev/null
 if [ $? -ne 0 ]; then
     # download, extract, and install the binary

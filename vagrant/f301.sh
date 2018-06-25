@@ -7,6 +7,8 @@ AURORA_URL="https://github.com/xuri/aurora/releases/download/2.1/aurora_linux_am
 dpkg -l beanstalkd &> /dev/null
 if [ $? -ne 0 ]; then
     sudo apt-get install -y beanstalkd
+    sudo sed -i -e 's/\(BEANSTALKD_LISTEN_ADDR\)=127.0.0.1/\1=0.0.0.0/' /etc/default/beanstalkd
+    sudo systemctl restart beanstalkd.service
 fi
 
 # install aurora beanstalkd dashboard

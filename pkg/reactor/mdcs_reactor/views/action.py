@@ -39,7 +39,7 @@ class ActionDetail(MethodView):
 
     def dispatch_request(self, uuid):
         try:
-            action = g.db.query(Action).filter(Action.uuid==uuid).one()
+            action = g.db.query(Action).filter(Action.uuid == uuid).one()
 
         except NoResultFound:
             return 'action does not exist', 404

@@ -43,7 +43,7 @@ class TaskDetail(MethodView):
 
     def dispatch_request(self, uuid):
         try:
-            task = g.db.query(Task).filter(Task.uuid==uuid).one()
+            task = g.db.query(Task).filter(Task.uuid == uuid).one()
 
         except NoResultFound:
             return 'task does not exist', 404

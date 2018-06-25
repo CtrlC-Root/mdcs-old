@@ -1,0 +1,9 @@
+[Unit]
+Description=Aurora Beanstalkd Dashboard
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/aurora -c /etc/aurora.toml
+
+[Install]
+WantedBy=multi-user.target

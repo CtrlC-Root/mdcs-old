@@ -20,6 +20,7 @@ Vagrant.configure("2") do |config|
     end
 
     f301.vm.provision "shell", path: "vagrant/f301.sh"
-    f301.vm.network :forwarded_port, guest: 6379, host: 6379 # redis
+    f301.vm.network :forwarded_port, guest: 11300, host: 11300 # beanstalkd
+    f301.vm.network :forwarded_port, guest: 3000, host: 3000   # aurora beanstalk dahsboard
   end
 end

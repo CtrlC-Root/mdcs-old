@@ -1,1 +1,1 @@
-from .application import application
+from .web import application

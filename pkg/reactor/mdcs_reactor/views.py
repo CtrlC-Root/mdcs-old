@@ -5,7 +5,7 @@ from flask import g, request, jsonify
 from flask.views import MethodView
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
-from .application import application
+from .web import application
 from .models import Action, ActionSchema
 from .models import Task, TaskSchema
 

@@ -1,44 +1,45 @@
 #!/usr/bin/env python
 
-import sys
-import daemon
-import signal
 import argparse
 
 import greenstalk
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+import mdcs.task
+import mdcs.daemon
+
 from .models import Action, Task
 
 
-class WorkerDaemon:
+class WorkerTask(mdcs.task.Task):
     def __init__(self, session_factory, queue_client):
+        super().__init__(
+            name='Reactor Worker',
+            run=self._run,
+            start=self._start,
+            stop=self._stop,
+            files=[queue_client._sock])
+
         self._session = session_factory
         self._queue = queue_client
-        self._interrupted = False
-
-    def process_signal(self, signal_number, stack_frame):
-        self._interrupted = True
+        self._running = False
 
     def _process_job(self, session, job):
-        """
-        Process one job.
-        """
-
         print("JOB {0}: {1}".format(job.id, job.body))
 
         task = session.query(Task).filter(Task.uuid == job.body).one()
         print(">> Task: {0}".format(task))
         print(">> Action: {0}".format(task.action))
 
-    def run(self):
-        """
-        Process queued jobs.
-        """
+    def _start(self):
+        self._running = True
 
-        # process jobs until asked to stop
-        while not self._interrupted:
+    def _stop(self):
+        self._running = False
+
+    def _run(self):
+        while self._running:
             session = None
 
             try:
@@ -65,9 +66,34 @@ class WorkerDaemon:
                     session.close()
 
 
+class WorkerDaemon(mdcs.daemon.TaskDaemon):
+    def __init__(self, beanstalk_host, beanstalk_port, database_uri, background):
+        super().__init__()
+
+        # create the database engine and session factory
+        self._db_engine = create_engine(database_uri, convert_unicode=True)
+        self._db_session_factory = sessionmaker(bind=self._db_engine)
+
+        # connect to the beanstalk queue
+        self._queue_client = greenstalk.Client(host=beanstalk_host, port=beanstalk_port)
+
+        # create tasks
+        self.add_task(WorkerTask(
+            session_factory=self._db_session_factory,
+            queue_client=self._queue_client))
+
+    def initialize_context(self):
+        super().initialize_context()
+
+        # release any open database connections and open new ones as needed
+        # this is to work around not being able to specify the connection sockets
+        # to the daemon context so it can keep them open when entering it
+        self._db_engine.dispose()
+
+
 def main():
     """
-    Run the node daemon.
+    Parse command line arguments and run the worker daemon.
     """
 
     # parse command line arguments
@@ -79,42 +105,11 @@ def main():
 
     args = parser.parse_args()
 
-    # connect to the database
-    database_engine = create_engine(args.db_uri, convert_unicode=True)
-    database_session_factory = sessionmaker(bind=database_engine)
+    # create and run the daemon
+    daemon = WorkerDaemon(
+        beanstalk_host=args.bs_host,
+        beanstalk_port=args.bs_port,
+        database_uri=args.db_uri,
+        background=args.daemon)
 
-    # connect to beanstalkd
-    queue_client = greenstalk.Client(host=args.bs_host, port=args.bs_port)
-
-    # create the worker
-    worker = WorkerDaemon(
-        session_factory=database_session_factory,
-        queue_client=queue_client)
-
-    # create the daemon context
-    context = daemon.DaemonContext(
-        files_preserve=[queue_client._sock],
-        signal_map={
-            signal.SIGTERM: worker.process_signal,
-            signal.SIGINT: worker.process_signal
-        })
-
-    if not args.daemon:
-        # run the process in the foreground
-        context.detach_process = False
-
-        # preserve standard file descriptors
-        context.stdin = sys.stdin
-        context.stdout = sys.stdout
-        context.stderr = sys.stderr
-
-    # run the worker in the daemon context
-    with context:
-        # release any open database connections and open new ones as needed
-        # this is to work around not being able to specify the connection sockets
-        # to the daemon context
-        database_engine.dispose()
-
-        # run the worker
-        print("running...")
-        worker.run()
+    daemon.run()

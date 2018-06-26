@@ -40,6 +40,10 @@ class Task:
     def running(self):
         return self._thread.is_alive() if self._thread else False
 
+    @property
+    def healthy(self):
+        return True if self._thread is None else self.running
+
     def start(self):
         if self.running:
             raise TaskError(self, "task is already running")

@@ -8,8 +8,8 @@ import argparse
 
 from mdcs.generic import Node
 from mdcs.discovery import MulticastDiscoveryConfig
-from mdcs import NodeServerConfig, NodeServer
 
+from .generic import NodeServerConfig, NodeServer
 from .device import HostDevice
 
 

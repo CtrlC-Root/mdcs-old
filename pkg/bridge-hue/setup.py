@@ -13,6 +13,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'mdcs >= 0.1',
+        'mdcs-node >= 0.1',
         'requests >= 2.18.0',
         'python-daemon >= 2.0.0'
     ],

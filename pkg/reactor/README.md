@@ -30,3 +30,4 @@ Libraries:
 * [Alembic](http://alembic.zzzcomputing.com/en/latest/)
 * [Marshmallow](https://marshmallow.readthedocs.io/en/2.x-line/)
 * [Greenstalk](https://greenstalk.readthedocs.io/en/latest/)
+* [Lupa](https://pypi.org/project/lupa/)

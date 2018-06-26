@@ -39,6 +39,9 @@ class WorkerTask(mdcs.task.Task):
         self._running = False
 
     def _run(self):
+        # http://docs.sqlalchemy.org/en/latest/orm/contextual.html#using-thread-local-scope-with-web-applications
+        # http://docs.sqlalchemy.org/en/rel_0_9/orm/session_basics.html#session-frequently-asked-questions
+
         while self._running:
             session = None
 
@@ -55,7 +58,7 @@ class WorkerTask(mdcs.task.Task):
                 # try again
                 continue
 
-            except:
+            except Exception:
                 # abort
                 session.rollback()
                 self._queue.bury(job)

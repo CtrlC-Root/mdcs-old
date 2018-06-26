@@ -6,7 +6,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 # create the application
 application = Flask('mdcs_reactor', instance_relative_config=True)
-## XXX application.config.from_envvar('REACTOR_CONFIG')
+# XXX application.config.from_envvar('REACTOR_CONFIG')
 
 # XXX: local development
 application.config['DATABASE_URI'] = 'sqlite:///reactor.db'

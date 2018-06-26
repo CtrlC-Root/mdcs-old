@@ -17,7 +17,8 @@ endif
 
 # clean generated files
 clean:
-	find $(TOP) -name '*.pyc' -exec rm -rf {} \;
+	find $(TOP) -type d -name '__pycache__' -delete
+	find $(TOP) -name '*.pyc' -delete
 
 # clean all development files
 distclean: clean

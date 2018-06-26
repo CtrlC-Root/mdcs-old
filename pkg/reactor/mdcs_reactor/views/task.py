@@ -32,6 +32,9 @@ class TaskList(MethodView):
         g.db.add(task)
         g.db.commit()
 
+        # create the corresponding job
+        g.queue.put(task.uuid)
+
         # return the newly created task
         return jsonify(self.schema.dump(task).data)
 

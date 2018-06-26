@@ -4,7 +4,8 @@ from flask.views import MethodView
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from mdcs_reactor.web import application
-from mdcs_reactor.models import Action, ActionSchema
+from mdcs_reactor.models import Action
+from mdcs_reactor.schema import Action as ActionSchema
 
 
 class ActionList(MethodView):

@@ -6,7 +6,8 @@ from flask.views import MethodView
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from mdcs_reactor.web import application
-from mdcs_reactor.models import Task, TaskSchema
+from mdcs_reactor.models import Task
+from mdcs_reactor.schema import Task as TaskSchema
 
 
 class TaskList(MethodView):

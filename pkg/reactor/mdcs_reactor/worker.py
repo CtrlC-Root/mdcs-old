@@ -10,6 +10,7 @@ import mdcs.task
 import mdcs.daemon
 
 from .models import Action, Task
+from .scripting import LuaScriptBackend
 
 
 class WorkerTask(mdcs.task.Task):
@@ -23,14 +24,14 @@ class WorkerTask(mdcs.task.Task):
 
         self._session = session_factory
         self._queue = queue_client
+
+        self._backend = LuaScriptBackend()
         self._running = False
 
     def _process_job(self, session, job):
-        print("JOB {0}: {1}".format(job.id, job.body))
-
+        print("======== JOB {0} ========".format(job.id))
         task = session.query(Task).filter(Task.uuid == job.body).one()
-        print(">> Task: {0}".format(task))
-        print(">> Action: {0}".format(task.action))
+        self._backend.run(task.action.content)
 
     def _start(self):
         self._running = True
@@ -58,7 +59,9 @@ class WorkerTask(mdcs.task.Task):
                 # try again
                 continue
 
-            except Exception:
+            except Exception as e:
+                print("EXC: {0}".format(e))
+
                 # abort
                 session.rollback()
                 self._queue.bury(job)

@@ -10,22 +10,21 @@ import mdcs.task
 import mdcs.daemon
 
 from .models import Action, Task
-from .scripting import LuaScriptBackend
+from .scripting.lua import LuaScriptConfig
 
 
 class WorkerTask(mdcs.task.Task):
-    def __init__(self, session_factory, queue_client):
+    def __init__(self, session_factory, queue_client, script_backend):
         super().__init__(
             name='Reactor Worker',
             run=self._run,
             start=self._start,
             stop=self._stop,
-            files=[queue_client._sock])
+            files=[queue_client._sock]) # XXX: better way to access _sock property?
 
         self._session = session_factory
         self._queue = queue_client
-
-        self._backend = LuaScriptBackend()
+        self._backend = script_backend
         self._running = False
 
     def _process_job(self, session, job):
@@ -60,7 +59,7 @@ class WorkerTask(mdcs.task.Task):
                 continue
 
             except Exception as e:
-                print("EXC: {0}".format(e))
+                print(">> EXC <<\n{0}".format(e))
 
                 # abort
                 session.rollback()
@@ -73,7 +72,7 @@ class WorkerTask(mdcs.task.Task):
 
 
 class WorkerDaemon(mdcs.daemon.TaskDaemon):
-    def __init__(self, beanstalk_host, beanstalk_port, database_uri, background):
+    def __init__(self, beanstalk_host, beanstalk_port, database_uri, script_config, background):
         super().__init__()
 
         # create the database engine and session factory
@@ -86,7 +85,8 @@ class WorkerDaemon(mdcs.daemon.TaskDaemon):
         # create tasks
         self.add_task(WorkerTask(
             session_factory=self._db_session_factory,
-            queue_client=self._queue_client))
+            queue_client=self._queue_client,
+            script_backend=script_config.create_backend()))
 
     def initialize_context(self):
         super().initialize_context()
@@ -107,6 +107,8 @@ def main():
     parser.add_argument('--bs-host', type=str, default='127.0.0.1', help="beanstalk host")
     parser.add_argument('--bs-port', type=int, default=11300, help="beanstalk port")
     parser.add_argument('--db-uri', type=str, help="database uri")
+    LuaScriptConfig.define_args(parser)
+
     parser.add_argument('--daemon', action='store_true', help="run as daemon in background")
 
     args = parser.parse_args()
@@ -116,6 +118,7 @@ def main():
         beanstalk_host=args.bs_host,
         beanstalk_port=args.bs_port,
         database_uri=args.db_uri,
+        script_config=LuaScriptConfig.from_args(args),
         background=args.daemon)
 
     daemon.run()

@@ -17,6 +17,14 @@ class Registry:
         self.nodes = {}
         self.devices = {}
 
+    def clear(self):
+        """
+        Remote all nodes and devices.
+        """
+
+        self.nodes.clear()
+        self.devices.clear()
+
     def add_node(self, name, host, http_port, tcp_port):
         # set or update the node entry
         self.nodes[name] = self.NodeEntry(name, host, http_port, tcp_port)

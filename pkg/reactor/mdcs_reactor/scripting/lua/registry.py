@@ -1,44 +1,34 @@
-import requests
 import fnmatch
+
+from .device import DeviceProxy
 
 
 class RegistryProxy:
-    def __init__(self, registry_url):
-        self._url = registry_url
-        self._registry = Registry()
+    """
+    A proxy object exposed to Lua scripts that wraps a local Registry object.
+    """
 
-    def refresh(self):
+    def __init__(self, runtime, registry):
+        self._runtime = runtime
+        self._registry = registry
+
+    def get_device(self, name):
         """
-        Fetch nodes and devices from the remote registry.
+        Get the device with the given name.
         """
 
-        self._registry = Registry()
+        device = self._registry.devices.get(name, None)
+        if device is None:
+            raise RuntimeError("device not found in registry: {0}".format(name))
 
-        # XXX load nodes
-        response = requests.get('{0}/n'.format(self._url))
-        if response.status_code != 200:
-            raise RuntimeError('failed to retrieve registry nodes: {0}'.format(response))
-
-        for node_name, node_config in response.json().items():
-            self._registry.add_node(
-                name=node_name,
-                host=node_config['host'],
-                http_port=node_config['httpPort'],
-                tcp_port=node_config['tcpPort'])
-
-        # XXX load devices
-        response = requests.get('{0}/d'.format(self._url))
-        if response.status_code != 200:
-            raise RuntimeError('failed to retrieve registry devices: {0}'.format(response))
-
-        for device_name, device_config in response.json().items():
-            self._registry.add_device(
-                name=device_name,
-                node=device_config['node'])
+        return DeviceProxy(
+            runtime=self._runtime,
+            node=self._registry.nodes[device.node],
+            device=device)
 
     def get_devices(self, pattern):
         """
-        Get a dictionary of devices whose name matches the provided pattern.
+        Get a Lua table of devices whose name matches the provided pattern.
         """
 
         devices = {}
@@ -47,7 +37,8 @@ class RegistryProxy:
                 continue
 
             devices[device.name] = DeviceProxy(
+                runtime=self._runtime,
                 node=self._registry.nodes[device.node],
                 device=device)
 
-        return devices
+        return self._runtime.table_from(devices)

@@ -1,4 +1,3 @@
-from .json import JSONEncoder
 from .request import Request
 from .response import Response
 from .route import RoutePattern, InvalidRoutePattern

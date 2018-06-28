@@ -1,6 +1,6 @@
+import json
 from http import HTTPStatus
 
-from .json import JSONEncoder
 from .response import Response
 
 
@@ -74,4 +74,4 @@ class View:
         return Response(
             headers={'Content-Type': 'application/json'},
             status_code=HTTPStatus.OK,
-            content=JSONEncoder().encode(response))
+            content=json.dumps(response))

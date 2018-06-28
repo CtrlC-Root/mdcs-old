@@ -19,6 +19,7 @@ if [ $? -ne 0 ]; then
     # https://unix.stackexchange.com/a/239745/103130
     wget --quiet -O - "${AURORA_URL}" | tar -xz -C $HOME
     sudo install -o root -g root -m 0755 $HOME/aurora /usr/local/bin
+    rm $HOME/aurora
 fi
 
 if [ ! -f "/etc/aurora.toml" ]; then

@@ -9,9 +9,8 @@ class AttributeFlags(IntFlag):
     Attribute flags that represent capabilities and allowed usage.
     """
 
-    DYNAMIC = 1     # can be added and removed at runtime
-    READ = 2        # clients can read value
-    WRITE = 4       # clients can write value
+    READ = 1        # clients can read value
+    WRITE = 2       # clients can write value
 
 
 class Attribute:
@@ -35,10 +34,6 @@ class Attribute:
     @property
     def schema(self):
         return self._schema
-
-    @property
-    def dynamic(self):
-        return AttributeFlags.DYNAMIC in self._flags
 
     @property
     def readable(self):

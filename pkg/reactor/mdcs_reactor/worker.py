@@ -20,7 +20,7 @@ class WorkerTask(mdcs.task.Task):
             run=self._run,
             start=self._start,
             stop=self._stop,
-            files=[queue_client._sock]) # XXX: better way to access _sock property?
+            files=[queue_client._sock]) # XXX: any way not to access private property?
 
         self._session = session_factory
         self._queue = queue_client
@@ -71,7 +71,7 @@ class WorkerTask(mdcs.task.Task):
                     session.close()
 
 
-class WorkerDaemon(mdcs.daemon.TaskDaemon):
+class WorkerDaemon(mdcs.daemon.Daemon):
     def __init__(self, beanstalk_host, beanstalk_port, database_uri, script_config, background):
         super().__init__()
 

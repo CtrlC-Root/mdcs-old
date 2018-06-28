@@ -23,9 +23,6 @@ class Node:
     def config(self):
         return self._config
 
-    def update_config(self, config):
-        self._config.update(config)
-
     @property
     def devices(self):
         return self._devices

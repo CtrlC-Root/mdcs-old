@@ -3,7 +3,7 @@ from collections import namedtuple
 
 class Registry:
     """
-    An in-memory name database of nodes and devices.
+    An in-memory index of nodes and devices.
     """
 
     NodeEntry = namedtuple('NodeEntry', ['name', 'host', 'http_port', 'tcp_port'])

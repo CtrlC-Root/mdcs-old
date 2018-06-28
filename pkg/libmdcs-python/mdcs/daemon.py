@@ -4,7 +4,7 @@ import daemon
 import signal
 
 
-class TaskDaemon:
+class Daemon:
     """
     A daemon that runs one or more tasks in the background.
     """

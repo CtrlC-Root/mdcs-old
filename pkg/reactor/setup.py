@@ -17,7 +17,8 @@ setup(
         'alembic >= 0.9.0',
         'shortuuid >= 0.5.0',
         'marshmallow >= 2.15.0',
-        'greenstalk >= 0.5.0'
+        'greenstalk >= 0.5.0',
+        'lupa >= 1.6'
     ],
 
     entry_points={

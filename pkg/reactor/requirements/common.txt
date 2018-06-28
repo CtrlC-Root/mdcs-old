@@ -4,3 +4,4 @@ alembic==0.9.9
 shortuuid==0.5.0
 marshmallow==2.15.3
 greenstalk==0.5.1
+lupa==1.6

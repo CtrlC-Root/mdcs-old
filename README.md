@@ -24,27 +24,17 @@ Standalone components.
 * [node-web](pkg/node-web/README.md): web interface for nodes
 * [bridge-hue](pkg/bridge-hue/README.md): bridge node for Philips Hue lights
 * [registry](pkg/registry/README.md): node and device registry
+* [reactor](pkg/reactor/README.md): event based automation tool
 
 ## Quick Start
 
-Create a virtualenv and install the desired packages and their requirements.
+Make sure you have recent versions of the following software installed:
+
+* VirtualBox
+* Vagrant
+
+Provision the Vagrant VMs:
 
 ```
-$ virtualenv --python=$(which python3) mdcs
-$ make reqs
-```
-
-Start a node.
-
-```
-$ mdcs-node
-```
-
-Retrieve a list of devices, retrieve device attributes, and read an attribute value.
-
-```
-$ HOST_DEVICE="host-$(hostname)"
-$ mdcs-nodectl list-devices
-$ mdcs-nodectl show-device $HOST_DEVICE
-$ mdcs-nodectl read $HOST_DEVICE cpu.count
+$ vagrant up
 ```

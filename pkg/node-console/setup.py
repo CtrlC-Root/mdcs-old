@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='node-console',
+    name='mdcs-node-console',
     version='0.1',
     description='mdcs node console client',
     author='Alexandru Barbur',

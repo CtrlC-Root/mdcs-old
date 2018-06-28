@@ -1,3 +1,2 @@
 mdcs
 psutil==5.2.2
-python-daemon==2.1.2

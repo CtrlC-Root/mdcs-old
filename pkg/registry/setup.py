@@ -12,13 +12,12 @@ setup(
 
     packages=find_packages(),
     install_requires=[
-        'mdcs >= 0.1',
-        'python-daemon >= 2.0.0'
+        'mdcs >= 0.1'
     ],
 
     entry_points={
         'console_scripts': [
-            'mdcs-registry=mdcs_registry.daemon:main'
+            'mdcs-registry=mdcs_registry.registry:main'
         ]
     }
 )

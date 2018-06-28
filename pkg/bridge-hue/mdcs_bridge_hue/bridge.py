@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 
-import sys
-import time
-import daemon
-import signal
 import argparse
 from http import HTTPStatus
 
@@ -11,7 +7,7 @@ import requests
 
 from mdcs.generic import Node
 from mdcs.discovery import MulticastDiscoveryConfig
-from mdcs_node.generic import NodeServerConfig, NodeServer
+from mdcs_node.generic import NodeDaemonConfig, NodeDaemon
 
 from .device import LightDevice, GroupDevice
 
@@ -71,43 +67,16 @@ def main():
         name = "hue-{0}-group-{1}".format(bridge_id, group_id)
         node.add_device(GroupDevice(name, args.bridge, args.user, group_id))
 
-    # create the node server
-    server_config = NodeServerConfig(
+    # create the node daemon
+    config = NodeDaemonConfig(
         public_host=args.host,
         bind_host=args.host,
         http_port=args.http_port,
         tcp_port=args.tcp_port,
-        discovery=MulticastDiscoveryConfig.from_args(args))
+        discovery=MulticastDiscoveryConfig.from_args(args),
+        background=args.daemon)
 
-    server = NodeServer(config=server_config, node=node)
+    daemon = NodeDaemon(config=config, node=node)
 
-    # create the daemon context
-    def handle_signal(signal_number, stack_frame):
-        server.stop()
-
-    context = daemon.DaemonContext(
-        files_preserve=server.files,
-        signal_map={
-            signal.SIGTERM: handle_signal,
-            signal.SIGINT: handle_signal
-        })
-
-    if not args.daemon:
-        # run the process in the foreground
-        context.detach_process = False
-
-        # preserve standard file descriptors
-        context.stdin = sys.stdin
-        context.stdout = sys.stdout
-        context.stderr = sys.stderr
-
-    # run the server
-    with context:
-        print("running...")
-        server.start()
-        while server.running and server.healthy:
-            time.sleep(1)
-
-        if server.running:
-            print("server fault, stopping") # XXX: this should be logged
-            server.stop()
+    # run the daemon
+    daemon.run()

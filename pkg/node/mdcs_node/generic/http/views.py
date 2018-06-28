@@ -2,10 +2,13 @@ from http import HTTPStatus
 
 from mdcs.http.view import View
 
+from mdcs_node.generic.schema import NodeSchema, DeviceSchema, AttributeSchema, ActionSchema
+
 
 class NodeDetail(View):
     def get(self, request, config, node):
-        return {'name': node.name, 'config': config.to_json()}
+        schema = NodeSchema()
+        return schema.dump(node).data
 
 
 class NodeHealth(View):
@@ -16,7 +19,8 @@ class NodeHealth(View):
 
 class DeviceList(View):
     def get(self, request, config, node):
-        return list(node.devices.values())
+        schema = DeviceSchema(many=True)
+        return schema.dump(node.devices.values()).data
 
 
 class DeviceDetail(View):
@@ -24,7 +28,8 @@ class DeviceDetail(View):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 
-        return node.devices[device]
+        schema = DeviceSchema()
+        return schema.dump(node.devices[device]).data
 
 
 class AttributeDetail(View):
@@ -36,7 +41,8 @@ class AttributeDetail(View):
         if path not in device.attributes:
             return (HTTPStatus.NOT_FOUND, "attribute not found")
 
-        return device.attributes[path]
+        schema = AttributeSchema()
+        return schema.dump(device.attributes[path]).data
 
 
 class AttributeValue(View):
@@ -52,6 +58,7 @@ class AttributeValue(View):
         if not attribute.readable:
             return (HTTPStatus.BAD_REQUEST, "attribute cannot be read")
 
+        # TODO: encode this to JSON using Avro?
         return attribute.read()
 
     def put(self, request, config, node, device, path):
@@ -66,6 +73,7 @@ class AttributeValue(View):
         if not attribute.writable:
             return (HTTPStatus.BAD_REQUEST, "attribute cannot be modified")
 
+        # TODO: decode this from JSON using Avro?
         attribute.write(request.json)
         return HTTPStatus.NO_CONTENT
 
@@ -79,7 +87,8 @@ class ActionDetail(View):
         if path not in device.actions:
             return (HTTPStatus.NOT_FOUND, "action not found")
 
-        return device.actions[path]
+        schema = ActionSchema()
+        return schema.dump(device.actions[path]).data
 
 
 class ActionRun(View):

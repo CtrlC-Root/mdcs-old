@@ -13,6 +13,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'mdcs >= 0.1',
+        'marshmallow >= 2.15.0',
         'psutil >= 5.2.0'
     ],
 

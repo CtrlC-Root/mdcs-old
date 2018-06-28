@@ -1,2 +1,3 @@
 mdcs
+marshmallow==2.15.3
 psutil==5.2.2

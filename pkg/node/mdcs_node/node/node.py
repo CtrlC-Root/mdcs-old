@@ -6,7 +6,7 @@ class Node:
     A control system node.
     """
 
-    def __init__(self, name=None, config={}):
+    def __init__(self, config, name=None):
         """
         Create a new node.
         """

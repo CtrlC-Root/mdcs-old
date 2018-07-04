@@ -5,7 +5,7 @@ from marshmallow.fields import String, List, Dict
 from marshmallow.validate import Length, ContainsOnly
 import avro.schema
 
-from mdcs.generic.attribute import Attribute, AttributeFlags
+from mdcs.device import Attribute, AttributeFlags
 
 
 class AttributeSchema(Schema):

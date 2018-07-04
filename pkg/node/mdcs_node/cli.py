@@ -4,8 +4,7 @@ import argparse
 
 from mdcs.discovery import MulticastDiscoveryConfig
 
-from .node import Node
-from .config import NodeDaemonConfig
+from .node import Node, NodeConfig
 from .daemon import NodeDaemon
 from .device import HostDevice
 
@@ -27,21 +26,18 @@ def main():
     args = parser.parse_args()
 
     # create the node
-    node = Node()
-
-    # create static devices
-    node.add_device(HostDevice())
-
-    # create the node daemon
-    config = NodeDaemonConfig(
+    config = NodeConfig(
         public_host=args.host,
         bind_host=args.host,
         http_port=args.http_port,
         tcp_port=args.tcp_port,
-        discovery=MulticastDiscoveryConfig.from_args(args),
-        background=args.daemon)
+        discovery=MulticastDiscoveryConfig.from_args(args))
 
-    daemon = NodeDaemon(config=config, node=node)
+    node = Node(config=config)
 
-    # run the daemon
+    # create static devices
+    node.add_device(HostDevice())
+
+    # create the node daemon and run it
+    daemon = NodeDaemon(node=node, background=args.daemon)
     daemon.run()

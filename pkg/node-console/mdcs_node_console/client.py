@@ -39,7 +39,18 @@ class NodeClient:
 
     @property
     def tcp_port(self):
-        return self._node_config['tcpPort'] # TODO: should be defined in a schema or something
+        return self._node_config['tcp_port']
+
+    def _get_node_data(self):
+        response = requests.get("http://{0}:{1}/".format(self._host, self._http_port)) # XXX: use urllib... urljoin
+        if response.status_code != HTTPStatus.OK:
+            raise RuntimeError("error retrieving node information: {0}".format(response))
+
+        node, errors = NodeSchema().load(response.json())
+        if errors:
+            raise RuntimeError("TODO: {0}".format(errors))
+
+        return node
 
     def _read_attribute(self, device, attribute):
         # create the Avro IPC client
@@ -67,21 +78,10 @@ class NodeClient:
             }
         })
 
-        value = unserialize_value(schema, response['value'])
+        value = unserialize_value(attribute.schema, response['value'])
         time = datetime.fromtimestamp(response['time'] / 1000.0)
 
         return value, time
-
-    def _get_node_data(self):
-        response = requests.get("http://{0}:{1}/".format(self._host, self._http_port)) # XXX: use urllib... urljoin
-        if response.status_code != HTTPStatus.OK:
-            raise RuntimeError("error retrieving node information: {0}".format(response))
-
-        node, errors = NodeSchema().load(response.json())
-        if errors:
-            raise RuntimeError("TODO: {0}".format(errors))
-
-        return node
 
     def _fix_device(self, device):
         for attribute in list(device.attributes.values()):

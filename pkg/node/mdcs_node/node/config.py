@@ -1,24 +1,16 @@
-class NodeDaemonConfig:
+class NodeConfig:
     """
-    Configuration settings for a Node daemon.
+    Configuration settings for a Node.
     """
 
-    def __init__(self, public_host, bind_host, http_port, tcp_port, discovery, background):
+    def __init__(self, public_host, bind_host, http_port, tcp_port, discovery, instance={}):
         self._public_host = public_host
-
-        # HTTP API
         self._http_host = bind_host
         self._http_port = http_port
-
-        # TCP API
         self._tcp_host = bind_host
         self._tcp_port = tcp_port
-
-        # Discovery
         self._discovery = discovery
-
-        # Daemon
-        self._background = background
+        self._instance = instance
 
     @property
     def public_host(self):
@@ -45,16 +37,5 @@ class NodeDaemonConfig:
         return self._discovery
 
     @property
-    def background(self):
-        return self._background
-
-    def to_json(self):
-        """
-        Get settings in a dictionary suitable for JSON serialization.
-        """
-
-        return {
-            'host': self.public_host,
-            'httpPort': self.http_port,
-            'tcpPort': self.tcp_port,
-            'discovery': self.discovery.to_json()}
+    def instance(self):
+        return self._instance

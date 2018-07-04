@@ -1,5 +1,7 @@
 from marshmallow import Schema
-from marshmallow.fields import String, Dict
+from marshmallow.fields import String, Nested
+
+from .config import NodeConfigSchema
 
 
 class NodeSchema(Schema):
@@ -8,4 +10,4 @@ class NodeSchema(Schema):
     """
 
     name = String()
-    config = Dict()
+    config = Nested(NodeConfigSchema)

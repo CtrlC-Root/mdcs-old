@@ -1,7 +1,7 @@
 from marshmallow import Schema, post_load, pre_dump
 from marshmallow.fields import String, Dict, Nested
 
-from mdcs.generic.device import Device
+from mdcs.device import Device
 
 from .attribute import AttributeSchema
 from .action import ActionSchema

@@ -6,7 +6,7 @@ from http import HTTPStatus
 import requests
 
 from mdcs.discovery import MulticastDiscoveryConfig
-from mdcs_node import Node, NodeDaemonConfig, NodeDaemon
+from mdcs_node import Node, NodeConfig, NodeDaemon
 
 from .device import LightDevice, GroupDevice
 
@@ -39,7 +39,15 @@ def main():
     bridge_id = config['bridgeid']
 
     # create the node
-    node = Node(config={'hueBridge': args.bridge, 'hueUser': args.user})
+    config = NodeConfig(
+        public_host=args.host,
+        bind_host=args.host,
+        http_port=args.http_port,
+        tcp_port=args.tcp_port,
+        discovery=MulticastDiscoveryConfig.from_args(args),
+        instance={'hueBridge': args.bridge, 'hueUser': args.user})
+
+    node = Node(config=config)
 
     # retrieve available lights from the Hue bridge and create devices
     response = requests.get("http://{0}/api/{1}/lights".format(args.bridge, args.user))
@@ -66,16 +74,6 @@ def main():
         name = "hue-{0}-group-{1}".format(bridge_id, group_id)
         node.add_device(GroupDevice(name, args.bridge, args.user, group_id))
 
-    # create the node daemon
-    config = NodeDaemonConfig(
-        public_host=args.host,
-        bind_host=args.host,
-        http_port=args.http_port,
-        tcp_port=args.tcp_port,
-        discovery=MulticastDiscoveryConfig.from_args(args),
-        background=args.daemon)
-
-    daemon = NodeDaemon(config=config, node=node)
-
-    # run the daemon
+    # create the node daemon and run it
+    daemon = NodeDaemon(node=node, background=args.daemon)
     daemon.run()

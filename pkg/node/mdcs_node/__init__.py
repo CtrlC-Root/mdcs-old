@@ -1,3 +1,2 @@
-from .node import Node
-from .config import NodeDaemonConfig
+from .node import Node, NodeConfig
 from .daemon import NodeDaemon

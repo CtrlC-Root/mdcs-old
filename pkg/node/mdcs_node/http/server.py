@@ -11,9 +11,8 @@ class NodeHTTPServer(HTTPServer):
     A server that provides the HTTP API for interacting with a Node.
     """
 
-    def __init__(self, config, node):
-        super().__init__(config.http_host, config.http_port)
-        self._config = config
+    def __init__(self, node):
+        super().__init__(node.config.http_host, node.config.http_port)
         self._node = node
 
         # register routes
@@ -32,4 +31,4 @@ class NodeHTTPServer(HTTPServer):
             self.register_route(name, pattern, view)
 
     def create_context(self, request):
-        return {'config': self._config, 'node': self._node}
+        return {'node': self._node}

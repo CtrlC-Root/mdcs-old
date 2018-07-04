@@ -4,7 +4,7 @@ from marshmallow import Schema, post_load, pre_dump
 from marshmallow.fields import String
 from marshmallow.validate import Length
 
-from mdcs.generic.action import Action
+from mdcs.device import Action
 
 
 class ActionSchema(Schema):

@@ -1,31 +1,31 @@
 from http import HTTPStatus
 
-from mdcs.http.view import View
+from mdcs.http import View
 from mdcs.schema import DeviceSchema, AttributeSchema, ActionSchema
 
-from mdcs_node.generic.schema import NodeSchema
+from mdcs_node.schema import NodeSchema
 
 
 class NodeDetail(View):
-    def get(self, request, config, node):
+    def get(self, request, node):
         schema = NodeSchema()
         return schema.dump(node).data
 
 
 class NodeHealth(View):
-    def get(self, request, config, node):
+    def get(self, request, node):
         # TODO: implement this (compatible with HAProxy)
         return HTTPStatus.OK
 
 
 class DeviceList(View):
-    def get(self, request, config, node):
+    def get(self, request, node):
         schema = DeviceSchema(many=True)
         return schema.dump(node.devices.values()).data
 
 
 class DeviceDetail(View):
-    def get(self, request, config, node, device):
+    def get(self, request, node, device):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 
@@ -34,7 +34,7 @@ class DeviceDetail(View):
 
 
 class AttributeDetail(View):
-    def get(self, request, config, node, device, path):
+    def get(self, request, node, device, path):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 
@@ -47,7 +47,7 @@ class AttributeDetail(View):
 
 
 class AttributeValue(View):
-    def get(self, request, config, node, device, path):
+    def get(self, request, node, device, path):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 
@@ -62,7 +62,7 @@ class AttributeValue(View):
         # TODO: encode this to JSON using Avro?
         return attribute.read()
 
-    def put(self, request, config, node, device, path):
+    def put(self, request, node, device, path):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 
@@ -80,7 +80,7 @@ class AttributeValue(View):
 
 
 class ActionDetail(View):
-    def get(self, request, config, node, device, path):
+    def get(self, request, node, device, path):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 
@@ -93,7 +93,7 @@ class ActionDetail(View):
 
 
 class ActionRun(View):
-    def post(self, request, config, node, device, path):
+    def post(self, request, node, device, path):
         if device not in node.devices:
             return (HTTPStatus.NOT_FOUND, "device not found")
 

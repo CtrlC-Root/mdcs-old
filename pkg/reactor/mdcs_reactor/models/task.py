@@ -12,7 +12,7 @@ class Task(Model):
     __tablename__ = 'task'
 
     uuid = Column(String(22), primary_key=True)
-    action_uuid = Column(String(22), ForeignKey('action.uuid'))
+    action_uuid = Column(String(22), ForeignKey('action.uuid'), nullable=False)
     created = Column(DateTime)
 
     action = relationship('Action', back_populates='tasks')

@@ -14,34 +14,48 @@ class NodeClient:
     A client for remote Nodes.
     """
 
-    def __init__(self, host, http_port):
+    def __init__(self, host, name=None, http_port=None, tcp_port=None):
+        self._name = name
         self._host = host
         self._http_port = http_port
+        self._tcp_port = tcp_port
 
-        # retrieve the Node name and configuration settings
-        node_data = self._get_node_data()
-        self._node_name = node_data['name']
-        self._node_config = node_data['config']
-
-    @property
-    def node_name(self):
-        return self._node_name
+        if self._name is None or self._tcp_port is None:
+            node_data = self._get_node_data()
+            self._name = node_data['name']
+            self._tcp_port = node_data['config'].tcp_port
 
     @property
-    def node_config(self):
-        return self._node_config
+    def name(self):
+        """
+        Node name.
+        """
+
+        return self._name
 
     @property
     def host(self):
+        """
+        Node public host.
+        """
+
         return self._host
 
     @property
     def http_port(self):
+        """
+        Node HTTP API port.
+        """
+
         return self._http_port
 
     @property
     def tcp_port(self):
-        return self._node_config.tcp_port
+        """
+        Node TCP API port.
+        """
+
+        return self._tcp_port
 
     @property
     def node_http_api(self):

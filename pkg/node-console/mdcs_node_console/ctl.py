@@ -14,7 +14,7 @@ def list_devices(client, args):
     """
 
     devices = client.get_devices()
-    print("\nNode: {0}\n".format(client.node_name))
+    print("\nNode: {0}\n".format(client.name))
 
     table = BeautifulTable()
     table.default_alignment = BeautifulTable.ALIGN_LEFT
@@ -33,7 +33,7 @@ def show_device(client, args):
 
     device = client.get_device(args.device)
     print("\nNode: {0}\nDevice: {1}\nConfig: {2}\n".format(
-        client.node_name,
+        client.name,
         device.name,
         json.dumps(device.config, indent=4, sort_keys=True)))
 
@@ -67,9 +67,10 @@ def read_attribute(client, args):
     """
 
     device = client.get_device(args.device)
-    print("\nNode: {0}\nDevice: {1}".format(
-        client.node_name,
-        device.name))
+    print("\nNode: {0}\nDevice: {1}\nAttribute: {2}".format(
+        client.name,
+        device.name,
+        args.attribute))
 
     attribute = device.attributes[args.attribute]
     value, time = attribute.read()
@@ -82,9 +83,10 @@ def write_attribute(client, args):
     """
 
     device = client.get_device(args.device)
-    print("\nNode: {0}\nDevice: {1}".format(
-        client.node_name,
-        device.name))
+    print("\nNode: {0}\nDevice: {1}\nAttribute: {2}".format(
+        client.name,
+        device.name,
+        args.attribute))
 
     attribute = device.attributes[args.attribute]
     value, time = attribute.write(json.loads(args.value))

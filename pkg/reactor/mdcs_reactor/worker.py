@@ -9,7 +9,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 import mdcs.task
 import mdcs.daemon
 
-from .models import Action, Task
+from .models import Action, Task, TaskState
 from .scripting.lua import LuaScriptConfig
 
 
@@ -30,7 +30,28 @@ class WorkerTask(mdcs.task.Task):
     def _process_job(self, session, job):
         print("======== JOB {0} ========".format(job.id))
         task = session.query(Task).filter(Task.uuid == job.body).one()
-        self._backend.run(task.action.content)
+        if task.state != TaskState.PENDING:
+            print("skipping task in state: {0}".format(task.state.name))
+            return
+
+        task.state = TaskState.RUNNING
+        session.add(task)
+        session.commit()
+
+        try:
+            self._backend.run(task.action.content)
+
+        except Exception as e:
+            task.state = TaskState.FAILED
+            task.output = str(e)
+            raise
+
+        else:
+            task.state = TaskState.COMPLETED
+
+        finally:
+            session.add(task)
+            session.commit()
 
     def _start(self):
         self._running = True
@@ -50,8 +71,6 @@ class WorkerTask(mdcs.task.Task):
                 session = self._session()
 
                 self._process_job(session, job)
-
-                session.commit()
                 self._queue.delete(job)
 
             except greenstalk.TimedOutError:
@@ -60,14 +79,12 @@ class WorkerTask(mdcs.task.Task):
 
             except Exception as e:
                 print(">> EXC <<\n{0}".format(e))
-
-                # abort
-                session.rollback()
                 self._queue.bury(job)
 
             finally:
                 # close the database session
                 if session is not None:
+                    session.rollback()
                     session.close()
 
 

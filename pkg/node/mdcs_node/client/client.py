@@ -40,7 +40,7 @@ class NodeClient:
 
     @property
     def tcp_port(self):
-        return self._node_config['tcp_port']
+        return self._node_config.tcp_port
 
     def _get_node_data(self):
         response = requests.get("http://{0}:{1}/".format(self._host, self._http_port)) # XXX: use urllib... urljoin

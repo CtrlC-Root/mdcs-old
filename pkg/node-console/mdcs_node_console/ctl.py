@@ -1,118 +1,96 @@
 #!/usr/bin/env python
 
-import sys
 import json
 import argparse
-from http import HTTPStatus
-from datetime import datetime
 
-import requests
-import avro.ipc
-import avro.schema
+from beautifultable import BeautifulTable
 
-from mdcs.tcp import API_PROTOCOL, TCPTransceiver
-from mdcs.tcp.avro import serialize_value, unserialize_value
+from .client import NodeClient
 
 
-def list_devices(args):
+def list_devices(client, args):
     """
     List available devices.
     """
 
-    # retrieve devices
-    response = requests.get("http://{host}:{http_port}/d".format(**vars(args)))
-    if response.status_code != HTTPStatus.OK:
-        print("error retrieving devices from bridge: {0}".format(response))
-        sys.exit(1)
+    devices = client.get_devices()
+    print("\nNode: {0}\n".format(client.node_name))
 
-    devices = response.json()
+    table = BeautifulTable()
+    table.default_alignment = BeautifulTable.ALIGN_LEFT
+    table.column_headers = ["Device"]
 
-    # display device names
     for device in devices:
-        print(device['name'])
+        table.append_row([device.name])
+
+    print(table)
 
 
-def show_device(args):
+def show_device(client, args):
     """
     Show device attributes and actions.
     """
 
-    # retrieve devices
-    response = requests.get("http://{host}:{http_port}/d/{device}".format(**vars(args)))
-    if response.status_code != HTTPStatus.OK:
-        print("error retrieving device information from bridge: {0}".format(response))
-        sys.exit(1)
+    device = client.get_device(args.device)
+    print("\nNode: {0}\nDevice: {1}\nConfig: {2}\n".format(
+        client.node_name,
+        device.name,
+        json.dumps(device.config, indent=4, sort_keys=True)))
 
-    device = response.json()
+    attributes = BeautifulTable()
+    attributes.default_alignment = BeautifulTable.ALIGN_LEFT
+    attributes.column_headers = ["Attribute", "Flags", "Schema"]
 
-    # display attributes
-    for attribute in device['attributes']:
-        print("Attribute:", attribute['path'])
+    for attribute in device.attributes.values():
+        attributes.append_row([
+            attribute.path,
+            ','.join([flag.name for flag in attribute.flags]),
+            attribute.schema.to_json()])
 
-    # display actions
-    for action in device['actions']:
-        print("Action:   ", action['path'])
+    actions = BeautifulTable()
+    actions.default_alignment = BeautifulTable.ALIGN_LEFT
+    actions.column_headers = ["Action", "Input", "Output"]
+
+    for action in device.actions.values():
+        actions.append_row([
+            action.path,
+            action.input_schema.to_json(),
+            action.output_schema.to_json()])
+
+    print(attributes)
+    print(actions)
 
 
-def read_attribute(args):
+def read_attribute(client, args):
     """
     Read an attribute value.
     """
 
-    # retrieve the attribute schema
-    response = requests.get("http://{host}:{http_port}/d/{device}/at/{attribute}".format(**vars(args)))
-    if response.status_code != HTTPStatus.OK:
-        print("error retrieving config from bridge: {0}".format(response))
-        sys.exit(1)
+    device = client.get_device(args.device)
+    print("\nNode: {0}\nDevice: {1}\n".format(
+        client.node_name,
+        device.name))
 
-    attribute = response.json()
-    schema = avro.schema.Parse(json.dumps(attribute['schema']))
+    attribute = device.attributes[args.attribute]
+    value, time = attribute.read()
 
-    # create the Avro IPC client
-    client = TCPTransceiver(args.host, args.tcp_port)
-    requestor = avro.ipc.Requestor(API_PROTOCOL, client)
-
-    # read the attribute value
-    response = requestor.Request('read', {'target': {'device': args.device, 'attribute': args.attribute}})
-    value = unserialize_value(schema, response['value'])
-    time = datetime.fromtimestamp(response['time'] / 1000.0)
-
-    # display the value
-    print("Time: {0}\nValue: {1}".format(time, value))
+    print("Value: {0}\nTime: {1}\n".format(value, time))
 
 
-def write_attribute(args):
+def write_attribute(client, args):
     """
     Write an attribute value.
     """
 
-    # retrieve the attribute schema
-    response = requests.get("http://{host}:{http_port}/d/{device}/at/{attribute}".format(**vars(args)))
-    if response.status_code != HTTPStatus.OK:
-        print("error retrieving config from bridge: {0}".format(response))
-        sys.exit(1)
+    device = client.get_device(args.device)
+    print("\nNode: {0}\nDevice: {1}\n".format(
+        client.node_name,
+        device.name))
 
-    attribute = response.json()
-    schema = avro.schema.Parse(json.dumps(attribute['schema']))
+    attribute = device.attributes[args.attribute]
+    value, time = attribute.write(args.value)
 
-    # create the Avro IPC client
-    client = TCPTransceiver(args.host, args.tcp_port)
-    requestor = avro.ipc.Requestor(API_PROTOCOL, client)
-
-    # write the attribute value
-    response = requestor.Request('write', {
-        'target': {'device': args.device, 'attribute': args.attribute},
-        'data': {
-            'value': serialize_value(schema, json.loads(args.value)),
-            'time': int(datetime.now().timestamp() * 1000)
-        }
-    })
-
-    value = unserialize_value(schema, response['value'])
-    time = datetime.fromtimestamp(response['time'] / 1000.0)
-
-    # display the value
-    print("Time: {0}\nValue: {1}".format(time, value))
+    print("Value: {0}\nTime: {1}\n".format(value, time))
 
 
 def main():
@@ -124,7 +102,6 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', type=str, default='127.0.0.1', help="node hostname or IP address")
     parser.add_argument('--http-port', type=int, default=5510, help="HTTP API port")
-    parser.add_argument('--tcp-port', type=int, default=5511, help="TCP API port")
     subparsers = parser.add_subparsers()
 
     parser_list_devices = subparsers.add_parser('list-devices', description=list_devices.__doc__)
@@ -147,5 +124,8 @@ def main():
 
     args = parser.parse_args()
 
-    # run the handler
-    args.handler(args)
+    # create the node client
+    client = NodeClient(host=args.host, http_port=args.http_port)
+
+    # run the command handler
+    args.handler(client, args)

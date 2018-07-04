@@ -15,6 +15,9 @@ class NodeDaemon(Daemon):
         self._config = config
         self._node = node
 
+        # XXX argh
+        self._node.config.update(self._config.to_json())
+
         # create the HTTP API server
         self._http_server = NodeHTTPServer(self._config, self._node)
         self.add_task(Task(

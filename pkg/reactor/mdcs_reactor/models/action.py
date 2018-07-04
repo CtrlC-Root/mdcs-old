@@ -12,8 +12,8 @@ class Action(Model):
     __tablename__ = 'action'
 
     uuid = Column(String(22), primary_key=True)
-    title = Column(String(64), unique=True)
-    content = Column(Text)
+    title = Column(String(64), unique=True, nullable=False)
+    content = Column(Text, nullable=False)
 
     # http://docs.sqlalchemy.org/en/latest/orm/basic_relationships.html#one-to-many
     # http://docs.sqlalchemy.org/en/latest/orm/cascades.html

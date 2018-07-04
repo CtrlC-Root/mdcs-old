@@ -8,6 +8,8 @@ Create Date: 2018-06-23 21:05:26.725647
 from alembic import op
 import sqlalchemy as sa
 
+from mdcs_reactor.models.task import TaskState
+
 
 # revision identifiers, used by Alembic.
 revision = '83e9545598d7'
@@ -19,15 +21,18 @@ depends_on = None
 def upgrade():
     op.create_table(
         'action',
-        sa.Column('uuid', sa.String(22), nullable=False, primary_key=True),
-        sa.Column('title', sa.String(64), nullable=False, unique=True),
+        sa.Column('uuid', sa.String(22), primary_key=True, nullable=False),
+        sa.Column('title', sa.String(64), unique=True, nullable=False),
         sa.Column('content', sa.Text(), nullable=False))
 
     op.create_table(
         'task',
-        sa.Column('uuid', sa.String(22), nullable=False, primary_key=True),
-        sa.Column('action_uuid', sa.String(22), sa.ForeignKey('action.uuid')),
-        sa.Column('created', sa.DateTime()))
+        sa.Column('uuid', sa.String(22), primary_key=True, nullable=False),
+        sa.Column('action_uuid', sa.String(22), sa.ForeignKey('action.uuid'), nullable=False),
+        sa.Column('state', sa.Enum(TaskState), nullable=False),
+        sa.Column('created', sa.DateTime(), nullable=False),
+        sa.Column('modified', sa.DateTime(), nullable=False),
+        sa.Column('output', sa.Text(), nullable=False))
 
 
 def downgrade():

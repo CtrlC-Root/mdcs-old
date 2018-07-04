@@ -1,4 +1,5 @@
 import functools
+from urllib.parse import urljoin
 from http import HTTPStatus
 from datetime import datetime
 
@@ -42,8 +43,12 @@ class NodeClient:
     def tcp_port(self):
         return self._node_config.tcp_port
 
+    @property
+    def node_http_api(self):
+        return "http://{0}:{1}/".format(self._host, self._http_port)
+
     def _get_node_data(self):
-        response = requests.get("http://{0}:{1}/".format(self._host, self._http_port)) # XXX: use urllib... urljoin
+        response = requests.get(self.node_http_api)
         if response.status_code != HTTPStatus.OK:
             raise RuntimeError("error retrieving node information: {0}".format(response))
 
@@ -96,7 +101,7 @@ class NodeClient:
         # TODO: replace Action with DelegatedAction to run actions
 
     def get_devices(self):
-        response = requests.get("http://{0}:{1}/d".format(self._host, self._http_port))
+        response = requests.get(urljoin(self.node_http_api, "d"))
         if response.status_code != HTTPStatus.OK:
             raise RuntimeError("error retrieving device information from node: {0}".format(response))
 
@@ -110,7 +115,7 @@ class NodeClient:
         return devices
 
     def get_device(self, name):
-        response = requests.get("http://{0}:{1}/d/{2}".format(self._host, self._http_port, name))
+        response = requests.get(urljoin(self.node_http_api, "d/{0}".format(name)))
         if response.status_code != HTTPStatus.OK:
             raise RuntimeError("error retrieving device information from node: {0}".format(response))
 

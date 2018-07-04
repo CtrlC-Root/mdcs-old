@@ -7,8 +7,9 @@ import requests
 
 from mdcs.device import Device, DelegatedAttribute, DelegatedAction
 from mdcs.tcp import API_PROTOCOL, TCPTransceiver
-from mdcs.tcp.avro import serialize_value, unserialize_value
+from mdcs.tcp import serialize_value, unserialize_value
 from mdcs.schema import DeviceSchema
+
 from mdcs_node.schema import NodeSchema
 
 

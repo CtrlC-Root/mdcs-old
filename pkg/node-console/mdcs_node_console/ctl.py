@@ -5,7 +5,7 @@ import argparse
 
 from beautifultable import BeautifulTable
 
-from .client import NodeClient
+from mdcs_node.client import NodeClient
 
 
 def list_devices(client, args):

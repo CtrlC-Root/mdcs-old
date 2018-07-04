@@ -67,13 +67,12 @@ def read_attribute(client, args):
     """
 
     device = client.get_device(args.device)
-    print("\nNode: {0}\nDevice: {1}\n".format(
+    print("\nNode: {0}\nDevice: {1}".format(
         client.node_name,
         device.name))
 
     attribute = device.attributes[args.attribute]
     value, time = attribute.read()
-
     print("Value: {0}\nTime: {1}\n".format(value, time))
 
 
@@ -83,13 +82,12 @@ def write_attribute(client, args):
     """
 
     device = client.get_device(args.device)
-    print("\nNode: {0}\nDevice: {1}\n".format(
+    print("\nNode: {0}\nDevice: {1}".format(
         client.node_name,
         device.name))
 
     attribute = device.attributes[args.attribute]
     value, time = attribute.write(json.loads(args.value))
-
     print("Value: {0}\nTime: {1}\n".format(value, time))
 
 
@@ -104,10 +102,10 @@ def main():
     parser.add_argument('--http-port', type=int, default=5510, help="HTTP API port")
     subparsers = parser.add_subparsers()
 
-    parser_list_devices = subparsers.add_parser('list-devices', description=list_devices.__doc__)
+    parser_list_devices = subparsers.add_parser('list', description=list_devices.__doc__)
     parser_list_devices.set_defaults(handler=list_devices)
 
-    parser_show_device = subparsers.add_parser('show-device', description=show_device.__doc__)
+    parser_show_device = subparsers.add_parser('show', description=show_device.__doc__)
     parser_show_device.set_defaults(handler=show_device)
     parser_show_device.add_argument('device', type=str, help="device name")
 

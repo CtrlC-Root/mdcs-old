@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import shortuuid
 from flask import g, request, jsonify
 from flask.views import MethodView
@@ -27,7 +25,6 @@ class TaskList(MethodView):
         # create the task
         task = Task(**task_data)
         task.uuid = shortuuid.uuid()
-        task.created = datetime.now()
 
         # save it to the database
         g.db.add(task)

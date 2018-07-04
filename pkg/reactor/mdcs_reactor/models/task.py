@@ -1,5 +1,5 @@
 import enum
-import datetime
+from datetime import datetime
 
 from sqlalchemy import Column, ForeignKey, String, DateTime, Enum, Text
 from sqlalchemy.orm import relationship
@@ -25,8 +25,8 @@ class Task(Model):
     uuid = Column(String(22), primary_key=True)
     action_uuid = Column(String(22), ForeignKey('action.uuid'), nullable=False)
     state = Column(Enum(TaskState), nullable=False, default=TaskState.PENDING)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now)
-    modified = Column(DateTime, nullable=False, onupdate=datetime.datetime.now)
+    created = Column(DateTime, nullable=False, default=datetime.now)
+    modified = Column(DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
     output = Column(Text, nullable=False, default="")
 
     action = relationship('Action', back_populates='tasks')

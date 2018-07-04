@@ -1,8 +1,9 @@
 from http import HTTPStatus
 
 from mdcs.http.view import View
+from mdcs.schema import DeviceSchema, AttributeSchema, ActionSchema
 
-from mdcs_node.generic.schema import NodeSchema, DeviceSchema, AttributeSchema, ActionSchema
+from mdcs_node.generic.schema import NodeSchema
 
 
 class NodeDetail(View):

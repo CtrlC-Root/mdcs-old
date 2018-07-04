@@ -2,10 +2,9 @@
 
 import argparse
 
-from mdcs.generic import Node
 from mdcs.discovery import MulticastDiscoveryConfig
 
-from .generic import NodeDaemonConfig, NodeDaemon
+from .generic import Node, NodeDaemonConfig, NodeDaemon
 from .device import HostDevice
 
 

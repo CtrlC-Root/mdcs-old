@@ -2,7 +2,7 @@ import socket
 
 import psutil
 
-from mdcs.generic import Device, AttributeFlags, DelegatedAttribute
+from mdcs.device import Device, AttributeFlags, DelegatedAttribute
 
 
 class HostDevice(Device):

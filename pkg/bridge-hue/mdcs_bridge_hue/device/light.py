@@ -5,7 +5,7 @@ from http import HTTPStatus
 import json
 import requests
 
-from mdcs.generic import Device, AttributeFlags, DelegatedAttribute
+from mdcs.device import Device, AttributeFlags, DelegatedAttribute
 
 
 class LightDevice(Device):

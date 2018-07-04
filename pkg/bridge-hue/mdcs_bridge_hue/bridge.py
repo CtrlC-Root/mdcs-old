@@ -5,7 +5,7 @@ from http import HTTPStatus
 
 import requests
 
-from mdcs.generic import Node
+from mdcs_node.generic import Node
 from mdcs.discovery import MulticastDiscoveryConfig
 from mdcs_node.generic import NodeDaemonConfig, NodeDaemon
 

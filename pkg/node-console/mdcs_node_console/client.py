@@ -6,10 +6,11 @@ from datetime import datetime
 import avro.ipc
 import requests
 
-from mdcs.generic import Device, DelegatedAttribute, DelegatedAction
+from mdcs.device import Device, DelegatedAttribute, DelegatedAction
 from mdcs.tcp import API_PROTOCOL, TCPTransceiver
 from mdcs.tcp.avro import serialize_value, unserialize_value
-from mdcs_node.generic.schema import NodeSchema, DeviceSchema
+from mdcs.schema import DeviceSchema
+from mdcs_node.generic.schema import NodeSchema
 
 
 class NodeClient:

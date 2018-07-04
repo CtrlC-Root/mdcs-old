@@ -19,7 +19,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'mdcs-node=mdcs_node.node:main'
+            'mdcs-node=mdcs_node.cli:main'
         ]
     }
 )

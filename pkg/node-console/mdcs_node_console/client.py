@@ -1,4 +1,3 @@
-import json
 import functools
 from http import HTTPStatus
 from datetime import datetime
@@ -10,7 +9,7 @@ from mdcs.device import Device, DelegatedAttribute, DelegatedAction
 from mdcs.tcp import API_PROTOCOL, TCPTransceiver
 from mdcs.tcp.avro import serialize_value, unserialize_value
 from mdcs.schema import DeviceSchema
-from mdcs_node.generic.schema import NodeSchema
+from mdcs_node.schema import NodeSchema
 
 
 class NodeClient:
@@ -63,7 +62,7 @@ class NodeClient:
         response = requestor.Request('write', {
             'target': {'device': device.name, 'attribute': attribute.path},
             'data': {
-                'value': serialize_value(attribute.schema, json.loads(value)),
+                'value': serialize_value(attribute.schema, value),
                 'time': int(datetime.now().timestamp() * 1000)
             }
         })

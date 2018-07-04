@@ -1,45 +1,48 @@
-#!/usr/bin/env python
-
-import argparse
-
-from mdcs.discovery import MulticastDiscoveryConfig
-
-from .generic import Node, NodeDaemonConfig, NodeDaemon
-from .device import HostDevice
+import uuid
 
 
-def main():
+class Node:
     """
-    Run the node daemon.
+    A control system node.
     """
 
-    # parse command line arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--host', type=str, default='0.0.0.0', help="bind to IP address or hostname")
-    parser.add_argument('--http-port', type=int, default=5510, help="HTTP API port")
-    parser.add_argument('--tcp-port', type=int, default=5511, help="TCP API port")
-    MulticastDiscoveryConfig.define_args(parser)
+    def __init__(self, name=None, config={}):
+        """
+        Create a new node.
+        """
 
-    parser.add_argument('--daemon', action='store_true', help="run as daemon in background")
+        self._name = name or str(uuid.uuid4())
+        self._config = config
+        self._devices = {}
 
-    args = parser.parse_args()
+    @property
+    def name(self):
+        return self._name
 
-    # create the node
-    node = Node()
+    @property
+    def config(self):
+        return self._config
 
-    # create static devices
-    node.add_device(HostDevice())
+    @property
+    def devices(self):
+        return self._devices
 
-    # create the node daemon
-    config = NodeDaemonConfig(
-        public_host=args.host,
-        bind_host=args.host,
-        http_port=args.http_port,
-        tcp_port=args.tcp_port,
-        discovery=MulticastDiscoveryConfig.from_args(args),
-        background=args.daemon)
+    def add_device(self, device):
+        """
+        Add a device to this node.
+        """
 
-    daemon = NodeDaemon(config=config, node=node)
+        if device.name in self._devices:
+            raise KeyError("device identifier is not unique")
 
-    # run the daemon
-    daemon.run()
+        self._devices[device.name] = device
+
+    def remove_device(self, device):
+        """
+        Remove a device from this node.
+        """
+
+        if device.name not in self._devices:
+            raise KeyError("device not found")
+
+        del self._devices[device.name]

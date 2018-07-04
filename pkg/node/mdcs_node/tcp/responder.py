@@ -3,7 +3,7 @@ import time
 from avro.ipc import Responder
 from avro.schema import AvroException
 
-from mdcs.tcp.schema import API_PROTOCOL
+from mdcs.tcp.protocol import API_PROTOCOL
 from mdcs.tcp.avro import serialize_value, unserialize_value
 
 

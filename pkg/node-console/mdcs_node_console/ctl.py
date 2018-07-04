@@ -88,7 +88,7 @@ def write_attribute(client, args):
         device.name))
 
     attribute = device.attributes[args.attribute]
-    value, time = attribute.write(args.value)
+    value, time = attribute.write(json.loads(args.value))
 
     print("Value: {0}\nTime: {1}\n".format(value, time))
 

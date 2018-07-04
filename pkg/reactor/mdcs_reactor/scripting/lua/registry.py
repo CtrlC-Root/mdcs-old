@@ -1,5 +1,7 @@
 import fnmatch
 
+from mdcs_node import NodeClient
+
 from .device import DeviceProxy
 
 
@@ -17,14 +19,15 @@ class RegistryProxy:
         Get the device with the given name.
         """
 
-        device = self._registry.devices.get(name, None)
-        if device is None:
+        device_entry = self._registry.devices.get(name, None)
+        if device_entry is None:
             raise RuntimeError("device not found in registry: {0}".format(name))
 
-        return DeviceProxy(
-            runtime=self._runtime,
-            node=self._registry.nodes[device.node],
-            device=device)
+        node = self._registry.nodes[device_entry.node]
+        client = NodeClient(name=node.name, host=node.host, http_port=node.http_port, tcp_port=node.tcp_port)
+        device = client.get_device(device_entry.name)
+
+        return DeviceProxy(runtime=self._runtime, device=device)
 
     def get_devices(self, pattern):
         """
@@ -32,13 +35,16 @@ class RegistryProxy:
         """
 
         devices = {}
-        for device in self._registry.devices.values():
-            if not fnmatch.fnmatch(device.name, pattern):
+        for device_entry in self._registry.devices.values():
+            if not fnmatch.fnmatch(device_entry.name, pattern):
                 continue
+
+            node = self._registry.nodes[device_entry.node]
+            client = NodeClient(name=node.name, host=node.host, http_port=node.http_port, tcp_port=node.tcp_port)
+            device = client.get_device(device_entry.name)
 
             devices[device.name] = DeviceProxy(
                 runtime=self._runtime,
-                node=self._registry.nodes[device.node],
                 device=device)
 
         return self._runtime.table_from(devices)

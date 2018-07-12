@@ -1,8 +1,10 @@
 # remote
 
-A new Flutter project.
+A cross-platform mobile application for controlling reactor instances.
 
-## Getting Started
+## References
 
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+* https://www.dartlang.org/
+* https://flutter.io/
+
+* https://github.com/brianegan/flutter_architecture_samples

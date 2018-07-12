@@ -1,2 +1,2 @@
-/// Abstract base class for all models.
+/// Abstract base class for models.
 abstract class Model {}

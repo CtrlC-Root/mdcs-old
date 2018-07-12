@@ -18,4 +18,6 @@ class Task extends Model {
     DateTime created;
     DateTime modified;
     String output;
+
+    Task({this.uuid, this.action, this.state, this.created, this.modified, this.output});
 }

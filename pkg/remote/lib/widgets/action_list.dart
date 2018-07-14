@@ -44,8 +44,41 @@ class _ActionListState extends State<ActionList> {
     return ListView.builder(
       itemCount: actions.length,
       itemBuilder: (context, index) {
+        Action action = actions[index];
         return Card(
-          child: Text("Action ${actions[index].title}"),
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        action.title,
+                        style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.25),
+                      ),
+                      Text(
+                        "Action description goes here maybe?",
+                        style: DefaultTextStyle.of(context).style.copyWith(fontWeight: FontWeight.w300),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.play_arrow),
+                  tooltip: "Run",
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(Icons.details),
+                  color: Color.fromRGBO(0, 196, 0, 1.0),
+                  tooltip: "Details",
+                  onPressed: () {},
+                ),
+              ],
+            )
+          ),
         );
       },
     );

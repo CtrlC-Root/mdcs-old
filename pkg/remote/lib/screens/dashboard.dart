@@ -19,7 +19,21 @@ class DashboardScreen extends StatelessWidget {
           Expanded(
             child: ActionList(repository: repository),
           ),
-        ]
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  icon: Icon(Icons.add_circle, size: 48.0),
+                  color: Color.fromRGBO(0, 0, 196, 1.0),
+                  tooltip: "New",
+                  onPressed: () {},
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

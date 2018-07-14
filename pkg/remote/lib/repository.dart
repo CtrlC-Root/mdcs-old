@@ -9,6 +9,14 @@ class Repository {
     actions.values = [
       Action(uuid: "one", title: "More Light", content: "more_light()"),
       Action(uuid: "two", title: "Less Light", content: "less_light()"),
+      Action(uuid: "one", title: "More Light", content: "more_light()"),
+      Action(uuid: "two", title: "Less Light", content: "less_light()"),
+      Action(uuid: "one", title: "More Light", content: "more_light()"),
+      Action(uuid: "two", title: "Less Light", content: "less_light()"),
+      Action(uuid: "one", title: "More Light", content: "more_light()"),
+      Action(uuid: "two", title: "Less Light", content: "less_light()"),
+      Action(uuid: "one", title: "More Light", content: "more_light()"),
+      Action(uuid: "two", title: "Less Light", content: "less_light()"),
     ];
   }
 }

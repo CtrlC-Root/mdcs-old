@@ -19,22 +19,31 @@ class DashboardScreen extends StatelessWidget {
           Expanded(
             child: ActionList(repository: repository),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                child: IconButton(
-                  icon: Icon(Icons.add_circle, size: 48.0),
-                  color: Color.fromRGBO(0, 0, 196, 1.0),
-                  tooltip: "New",
-                  onPressed: () {},
-                ),
-              ),
-            ],
-          ),
+          DashboardControls(),
         ],
       ),
+    );
+  }
+}
+
+class DashboardControls extends StatelessWidget {
+  void onNewAction() {
+    // TODO: do something
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        IconButton(
+          icon: Icon(Icons.add_circle),
+          iconSize: 48.0,
+          color: Color.fromRGBO(0, 0, 196, 1.0),
+          tooltip: "New",
+          onPressed: this.onNewAction,
+        ),
+      ],
     );
   }
 }

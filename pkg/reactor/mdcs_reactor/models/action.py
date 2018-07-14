@@ -12,7 +12,8 @@ class Action(Model):
     __tablename__ = 'action'
 
     uuid = Column(String(22), primary_key=True)
-    title = Column(String(64), unique=True, nullable=False)
+    title = Column(String(32), unique=True, nullable=False)
+    description = Column(String(64), nullable=False, default="")
     content = Column(Text, nullable=False)
 
     # http://docs.sqlalchemy.org/en/latest/orm/basic_relationships.html#one-to-many
@@ -25,7 +26,8 @@ class Action(Model):
         back_populates='action')
 
     def __repr__(self):
-        return "<Action(uuid='{0}', title='{1}', content='{2}')>".format(
+        return "<Action(uuid='{0}', title='{1}', description='{2}', content='{3}')>".format(
             self.uuid,
             self.title,
+            self.description,
             self.content)

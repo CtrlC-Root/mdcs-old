@@ -22,7 +22,8 @@ def upgrade():
     op.create_table(
         'action',
         sa.Column('uuid', sa.String(22), primary_key=True, nullable=False),
-        sa.Column('title', sa.String(64), unique=True, nullable=False),
+        sa.Column('title', sa.String(32), unique=True, nullable=False),
+        sa.Column('description', sa.String(64), nullable=False),
         sa.Column('content', sa.Text(), nullable=False))
 
     op.create_table(

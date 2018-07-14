@@ -11,7 +11,8 @@ class Action(Schema):
     """
 
     uuid = String(dump_only=True)
-    title = String(required=True, validate=Length(min=1, max=64))
+    title = String(required=True, validate=Length(min=1, max=32))
+    description = String(validate=Length(max=64))
     content = String(required=True, validate=Length(min=1))
 
     tasks = Nested(Task, many=True, exclude=('action_uuid',), dump_only=True)

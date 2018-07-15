@@ -4,14 +4,11 @@ import 'package:remote/stores/model_notifier.dart';
 
 /// Abstract base class for model stores.
 abstract class ModelStore<T extends Model, N extends ModelNotifier<T>> extends ChangeNotifier {
-  Map<int, N> _values;
+  Map<String, N> _values;
 
-  ModelStore(List<T> initialValues) {
-    this._values = Map.fromIterable(
-      initialValues,
-      key: (value) => value.hashCode,
-      value: (value) => this.createModelNotifier(value)
-    );
+  /// Default constructor.
+  ModelStore() {
+    this._values = Map<String, N>();
   }
 
   /// Create an instance of the concrete model notifier from the given concrete model instance.
@@ -19,42 +16,48 @@ abstract class ModelStore<T extends Model, N extends ModelNotifier<T>> extends C
   @protected
   N createModelNotifier(T value);
 
-  List<T> get values {
-    return this._values.values.map((N notifier) => notifier.value).toList();
-  }
-
+  /// Get model notifiers.
   List<N> get notifiers {
     return this._values.values.toList();
   }
 
+  /// Get model values.
+  List<T> get values {
+    return this._values.values.map((N notifier) => notifier.value).toList();
+  }
+
+  /// Set model values.
   set values(List<T> newValues) {
     // TODO compare the two lists and only create/remove notifiers as necessary
     // XXX should we set notifier values to null when removing them?
 
     this._values = Map.fromIterable(
       newValues,
-      key: (value) => value.hashCode,
+      key: (value) => value.primaryKey,
       value: (value) => this.createModelNotifier(value)
     );
 
     this.notifyListeners();
   }
 
+  /// Add a single model value.
   void add(T value) {
-    this._values[value.hashCode] = this.createModelNotifier(value);
+    this._values[value.primaryKey] = this.createModelNotifier(value);
     this.notifyListeners();
   }
 
+  /// Remove a single model value.
   void remove(T value) {
     // XXX should we set the notifier value to null before removing it?
-    // XXX this._values[value.hashCode].value = null
+    // XXX this._values[value.primaryKey].value = null
 
-    this._values.remove(value.hashCode);
+    this._values.remove(value.primaryKey);
     this.notifyListeners();
   }
 
+  /// Get the model notifier for the given model value.
   N getNotifierFor(T value) {
-    // TODO: this._modelNotifiers.containsKey(value.hashCode)
-    return this._values[value.hashCode];
+    // TODO: this._modelNotifiers.containsKey(value.primaryKey)
+    return this._values[value.primaryKey];
   }
 }

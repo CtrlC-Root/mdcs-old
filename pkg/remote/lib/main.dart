@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:remote/repository.dart';
+import 'package:remote/jobs/jobs.dart';
 import 'package:remote/screens/screens.dart';
 
-void main() => runApp(RemoteApp());
+void main() {
+  final JobQueue queue = JobQueue();
+  queue.start().then((dynamic ignore) {
+    runApp(RemoteApp(queue: queue));
+  });
+  //runApp(RemoteApp(queue: queue));
+}
 
 class RemoteApp extends StatelessWidget {
+  final JobQueue queue;
   final Repository repository = Repository();
 
-  RemoteApp({Key key}) : super(key: key) {
+  RemoteApp({Key key, @required JobQueue queue}) : this.queue = queue, super(key: key) {
     // TODO: replace this debugging code
-    this.repository.loadTestData();
+    this.queue.run<InitialFetchJob>(InitialFetchJob(Uri(scheme: 'http', host: 'localhost', port: 5000)))
+      .then((InitialFetchJob initialFetch) {
+        this.repository.actions.values = initialFetch.actions;
+        this.repository.tasks.values = initialFetch.tasks;
+      });
   }
 
   @override

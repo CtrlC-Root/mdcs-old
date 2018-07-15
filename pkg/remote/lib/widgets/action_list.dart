@@ -59,7 +59,7 @@ class _ActionListState extends State<ActionList> {
                         style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.25),
                       ),
                       Text(
-                        "Action description goes here maybe?",
+                        action.description,
                         style: DefaultTextStyle.of(context).style.copyWith(fontWeight: FontWeight.w300),
                       ),
                     ],

@@ -36,6 +36,8 @@ abstract class ModelStore<T extends Model, N extends ModelNotifier<T>> extends C
       key: (value) => value.hashCode,
       value: (value) => this.createModelNotifier(value)
     );
+
+    this.notifyListeners();
   }
 
   void add(T value) {

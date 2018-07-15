@@ -7,6 +7,10 @@ void main() => runApp(RemoteApp());
 class RemoteApp extends StatelessWidget {
   final Repository repository = Repository();
 
+  RemoteApp({Key key}) : super(key: key) {
+    this.repository.syncWithBackend();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

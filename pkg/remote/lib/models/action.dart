@@ -9,12 +9,13 @@ class Action extends Model {
 
     Action({this.uuid, this.title, this.description, this.content});
 
-    static Action fromJSON(Map<String, dynamic> data) {
-      return Action(
-        uuid: data['uuid'] as String,
-        title: data['title'] as String,
-        description: data['description'] as String,
-        content: data['content'] as String,
-      );
+    Action.fromJSON(Map<String, dynamic> data) {
+      this.uuid = data['uuid'] as String;
+      this.title = data['title'] as String;
+      this.description = data['description'] as String;
+      this.content = data['content'] as String;
     }
+
+    @override
+    String get primaryKey => this.uuid;
 }

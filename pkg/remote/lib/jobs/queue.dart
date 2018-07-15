@@ -50,7 +50,7 @@ class JobQueue {
     this._sendPort = null,
     this._isolate = null;
 
-  Future start() async {
+  Future<JobQueue> start() async {
     assert(this._state == JobQueueState.initial);
 
     this._state = JobQueueState.starting;
@@ -62,6 +62,7 @@ class JobQueue {
       .then((dynamic sendPort) {
         this._sendPort = sendPort as SendPort;
         this._state = JobQueueState.running;
+        return this;
       })
       .catchError((dynamic e) {
         this._state = JobQueueState.stopped;
@@ -87,7 +88,14 @@ class JobQueue {
 
     ReceivePort response = ReceivePort();
     this._sendPort.send([job, response.sendPort]);
-    final T result = await response.first;
-    return result;
+
+    return response.first.then((dynamic message) {
+      final T job = message as T;
+      if (job.state == JobState.failed) {
+        throw job.error;
+      }
+
+      return job;
+    });
   }
 }

@@ -55,9 +55,15 @@ abstract class ModelStore<T extends Model, N extends ModelNotifier<T>> extends C
     this.notifyListeners();
   }
 
-  /// Get the model notifier for the given model value.
-  N getNotifierFor(T value) {
-    // TODO: this._modelNotifiers.containsKey(value.primaryKey)
-    return this._values[value.primaryKey];
+  /// Get the model notifier for the model with the given primary key.
+  N getNotifierByKey(String primaryKey) {
+    // TODO: this._values.containsKey(primaryKey)
+    return this._values[primaryKey];
+  }
+
+  /// Get the model with the given primary key.
+  T getValueByKey(String primaryKey) {
+    // TODO: this._values.containsKey(primaryKey)
+    return this._values[primaryKey].value;
   }
 }

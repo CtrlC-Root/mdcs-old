@@ -18,22 +18,26 @@ class InitialFetchJob extends Job {
     // retrieve actions
     final actionUri = this._api.replace(path: '/action/');
     final actionResponse = await client.get(actionUri.toString());
+
     if (actionResponse.statusCode != 200) {
       this.fail(Exception('failed to retrieve actions'));
       return;
     }
 
+    // parse actions
     final List<Map<String, dynamic>> actionsData = json.decode(actionResponse.body).cast<Map<String, dynamic>>();
     this._actions = actionsData.map((Map<String, dynamic> data) => Action.fromJSON(data)).toList();
 
     // retrieve tasks
     final taskUri = this._api.replace(path: '/task/');
     final taskResponse = await client.get(taskUri.toString());
+
     if (taskResponse.statusCode != 200) {
       this.fail(Exception('failed to retrieve tasks'));
       return;
     }
 
+    // parse tasks
     final List<Map<String, dynamic>> tasksData = json.decode(taskResponse.body).cast<Map<String, dynamic>>();
     this._tasks = tasksData.map((Map<String, dynamic> data) => Task.fromJSON(data)).toList();
 

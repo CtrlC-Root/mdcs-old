@@ -8,7 +8,8 @@ class RemoteApp extends StatelessWidget {
   final Repository repository = Repository();
 
   RemoteApp({Key key}) : super(key: key) {
-    this.repository.syncWithBackend();
+    // TODO: replace this debugging code
+    this.repository.loadTestData();
   }
 
   @override

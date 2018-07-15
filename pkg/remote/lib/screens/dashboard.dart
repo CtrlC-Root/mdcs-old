@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:remote/repository.dart';
+import 'package:remote/jobs/jobs.dart';
 import 'package:remote/widgets/widgets.dart';
 
 class DashboardScreen extends StatelessWidget {
+  final JobQueue queue;
   final Repository repository;
 
-  DashboardScreen({Key key, @required this.repository}) : super(key: key);
+  DashboardScreen({Key key, @required this.queue, @required this.repository}) : super(key: key);
 
   void onNavigateSettings() {
     // TODO: do something
@@ -32,7 +34,7 @@ class DashboardScreen extends StatelessWidget {
         children: [
           StatusIndicator(),
           Expanded(
-            child: ActionList(repository: repository),
+            child: ActionList(queue: queue, repository: repository),
           ),
         ],
       ),

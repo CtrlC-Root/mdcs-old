@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:remote/repository.dart';
+import 'package:remote/jobs/jobs.dart';
 import 'package:remote/models/action.dart';
 import 'package:remote/widgets/action_card.dart';
 
 class ActionList extends StatefulWidget {
+  final JobQueue queue;
   final Repository repository;
 
-  ActionList({Key key, @required this.repository}) : super(key: key);
+  ActionList({Key key, @required this.queue, @required this.repository}) : super(key: key);
 
   @override
   _ActionListState createState() => _ActionListState();
@@ -46,6 +48,7 @@ class _ActionListState extends State<ActionList> {
       itemCount: actions.length,
       itemBuilder: (context, index) {
         return ActionCard(
+          queue: this.widget.queue,
           repository: this.widget.repository,
           actionUuid: actions[index].uuid
         );

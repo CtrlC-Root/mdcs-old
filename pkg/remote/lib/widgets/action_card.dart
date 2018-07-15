@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:remote/repository.dart';
+import 'package:remote/jobs/jobs.dart';
 import 'package:remote/stores/action.dart';
 
 class ActionCard extends StatefulWidget {
+  final JobQueue queue;
   final Repository repository;
   final String actionUuid;
 
-  ActionCard({Key key, @required this.repository, @required this.actionUuid}) : super(key: key);
+  ActionCard({Key key, @required this.queue, @required this.repository, @required this.actionUuid}) : super(key: key);
 
   @override
   _ActionCardState createState() => _ActionCardState();
@@ -14,6 +16,14 @@ class ActionCard extends StatefulWidget {
 
 class _ActionCardState extends State<ActionCard> {
   ActionNotifier _notifier;
+
+  void onRunAction() {
+    this.widget.queue.run(CreateTaskJob(Uri(scheme: 'http', host: 'localhost', port: 5000), this._notifier.value))
+      .then((CreateTaskJob createTask) {
+        debugPrint(createTask.task.toString());
+        this.widget.repository.tasks.add(createTask.task);
+      });
+  }
 
   void onActionChanged() {
     this.setState(() {});
@@ -70,7 +80,7 @@ class _ActionCardState extends State<ActionCard> {
             IconButton(
               icon: Icon(Icons.play_arrow),
               tooltip: "Run",
-              onPressed: () {},
+              onPressed: this.onRunAction,
             ),
             IconButton(
               icon: Icon(Icons.details),

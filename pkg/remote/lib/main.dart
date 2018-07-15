@@ -34,7 +34,7 @@ class RemoteApp extends StatelessWidget {
       title: 'Remote Control',
       initialRoute: '/',
       routes: {
-        '/': (context) => DashboardScreen(repository: repository)
+        '/': (context) => DashboardScreen(queue: queue, repository: repository)
       },
     );
   }

@@ -5,24 +5,21 @@ import 'package:remote/screens/screens.dart';
 
 /// Application entry point.
 void main() {
-  runApp(RemoteApp());
+  final JobQueue queue = JobQueue();
+  final Repository repository = Repository(queue, Uri(scheme: 'http', host: 'localhost', port: 5000));
+
+  queue.start().then((JobQueue ignore) {
+    runApp(RemoteApp(repository: repository));
+  });
 }
 
 /// Remote control application top-level widget.
 class RemoteApp extends StatelessWidget {
-  final JobQueue queue = JobQueue();
-  final Repository repository = Repository();
+  final Repository repository;
 
-  RemoteApp({Key key}) : super(key: key) {
-    // start the job queue and initialize the repository
-    this.queue.start()
-      .then((JobQueue queue) {
-        return queue.run(InitialFetchJob(Uri(scheme: 'http', host: 'localhost', port: 5000)));
-      })
-      .then((InitialFetchJob initialFetch) {
-        this.repository.actions.values = initialFetch.actions;
-        this.repository.tasks.values = initialFetch.tasks;
-      })
+  RemoteApp({Key key, @required this.repository}) : super(key: key) {
+    // initialize repository
+    this.repository.fetchAll()
       .catchError((e) {
         debugPrint("UH OH: ${e.toString()}");
       });
@@ -34,7 +31,7 @@ class RemoteApp extends StatelessWidget {
       title: 'Remote Control',
       initialRoute: '/',
       routes: {
-        '/': (context) => DashboardScreen(queue: queue, repository: repository)
+        '/': (context) => DashboardScreen(repository: repository)
       },
     );
   }

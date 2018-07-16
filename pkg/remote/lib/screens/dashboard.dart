@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:remote/repository.dart';
-import 'package:remote/jobs/jobs.dart';
 import 'package:remote/widgets/widgets.dart';
 
 class DashboardScreen extends StatelessWidget {
-  final JobQueue queue;
   final Repository repository;
 
-  DashboardScreen({Key key, @required this.queue, @required this.repository}) : super(key: key);
+  DashboardScreen({Key key, @required this.repository}) : super(key: key);
 
   void onNavigateSettings() {
     // TODO: do something
@@ -32,9 +30,9 @@ class DashboardScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          StatusIndicator(),
+          StatusIndicator(repository: repository),
           Expanded(
-            child: ActionList(queue: queue, repository: repository),
+            child: ActionList(repository: repository),
           ),
         ],
       ),
@@ -45,7 +43,6 @@ class DashboardScreen extends StatelessWidget {
         tooltip: "New",
         onPressed: this.onNewAction,
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

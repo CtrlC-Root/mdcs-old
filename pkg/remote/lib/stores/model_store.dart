@@ -42,16 +42,22 @@ abstract class ModelStore<T extends Model, N extends ModelNotifier<T>> extends C
 
   /// Add a single model value.
   void add(T value) {
+    if (this._values.containsKey(value.primaryKey)) {
+      throw Exception('store already contains value with key: ${value.primaryKey}');
+    }
+
     this._values[value.primaryKey] = this.createModelNotifier(value);
     this.notifyListeners();
   }
 
   /// Remove a single model value.
-  void remove(T value) {
-    // XXX should we set the notifier value to null before removing it?
-    // XXX this._values[value.primaryKey].value = null
+  void remove(String primaryKey) {
+    if (!this._values.containsKey(primaryKey)) {
+      throw Exception('store does not contain value with key: $primaryKey');
+    }
 
-    this._values.remove(value.primaryKey);
+    // XXX this._values[primaryKey].value = null;
+    this._values.remove(primaryKey);
     this.notifyListeners();
   }
 

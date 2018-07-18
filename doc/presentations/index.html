@@ -7,10 +7,10 @@
 		<title>reveal.js</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="css/theme/white.css">
 
 		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+		<link rel="stylesheet" href="lib/css/atom-one-light.css">
 
 		<!-- Printing and PDF exports -->
 		<script>
@@ -29,50 +29,100 @@
           <h2>Alexandru Barbur</h2>
         </section>
 
+        <!-- BEGIN INTRO -->
 				<section>
           <h2>About Me</h2>
-          <ul>
-            <li>Software Engineer</li>
-            <li>DevOps Engineer</li>
-            <li>OSU HEDP SCARLET Laser Facility</li>
-          </ul>
+          <img class="plain stretch" src="images/scarlet_first_light.png" alt="SCARLET First Light" />
+
+          <aside class="notes">
+            Fairly diverse background:
+            <ul>
+              <li>Software Engineer</li>
+              <li>Web Services Engineer</li>
+              <li>DevOps Engineer</li>
+            </ul>
+
+            Most relevant to this talk is SCARLET Laser Facility:
+            <ul>
+              <li>Provide a simplified UI for running the facility</li>
+              <li>Automatically collect and analyze experimental data</li>
+              <li>Automate common processes for safety and efficiency</li>
+            </ul>
+          </aside>
         </section>
 
         <section>
-          <h2>About MDCS</h2>
-          <ul>
-            <li><em>M</em>odular - Logical components using defined interfaces.</li>
-            <li><em>D</em>istributed - Components fail independently.</li>
-            <li><em>C</em>ontrol <em>S</em>ystem - Record and analyze data, control devices, automate processes.</li>
-          </ul>
+          <h2>Control Systems</h2>
+          <img class="plain stretch" src="images/can_network.png" alt="CAN BUS Example" />
+
+          <aside class="notes">
+            Control systems are a class of software used to:
+            <ul>
+              <li>Control devices.</li>
+              <li>Record data.</li>
+              <li>Automate processes.</li>
+            </ul>
+
+            Generally broken down into:
+            <ul>
+              <li>
+                hard real-time: missing a deadline means total system failure. ex: car air bag system.
+              </li>
+              <li>
+                firm real-time: infrequent deadline misses are tolerable, value of a result
+                after the deadline is zero. ex: rejecting bad products in an assembly line.
+              </li>
+              <li>
+                soft real-time: usefulness of a result degrades after it's deadline, thereby
+                degrading the overall quality of service. ex: home automation.
+              </li>
+            </ul>
+
+            <ol>
+              <li>https://en.wikipedia.org/wiki/Control_system</li>
+              <li>https://en.wikipedia.org/wiki/Real-time_computing#Criteria_for_real-time_computing</li>
+            </ol>
+          </aside>
+        </section>
+
+        <section>
+          <h2>MDCS</h2>
+          <p>
+            <strong>M</strong>odular <strong>D</strong>istributed
+            <strong>C</strong>ontrol <strong>S</strong>ystem
+          </p>
+
+          <!-- TODO: some kind of diagram??? -->
 
           <aside class="notes">
             Personal project to implement a control system as a foundation for
             automation research. Reference implementation written in Python.
 
             <ul>
-              <li>Modular - Components should be plug and play.</li>
-              <li>Distributed - No single point of failure.</li>
-              <li>
-                Control System - Soft real time.
-                <ul>
-                  <li>Example A: ECU connected to sensors and actuators in a car.</li>
-                  <li>Example B: Motion sensors and door locks in a secure facility.</li>
-                </ul>
-              </li>
+              <li>Modular - Logical components with defined interfaces.</li>
+              <li>Distributed - Components fail independently. No single point of failure.</li>
+              <li>Control System - Record and analyze data, control devices, automate processes.</li>
+              <li>Soft real time.</li>
             </ul>
 
             Most scientific facilities have control systems (i.e. EPICS).
           </aside>
         </section>
+        <!-- END INTRO -->
 
         <section>
-          <h2>Code Layout</h2>
+          <!-- TODO: good lord is there a better title for this? -->
+          <h1>Project Considerations</h1>
+        </section>
+
+        <!-- BEGIN PROJECT LAYOUT -->
+        <section>
+          <h2>Project Layout</h2>
           <ul>
             <li>
               Shared common library:
               <ul>
-                <li>Models and Schemas.</li>
+                <li>Abstract interfaces.</li>
                 <li>Serialization.</li>
                 <li>Networking.</li>
               </ul>
@@ -82,7 +132,8 @@
               <ul>
                 <li>Daemons.</li>
                 <li>Web applications.</li>
-                <li>API schema and clients.</li>
+                <li>Mobile applications.</li>
+                <li>API schemas and clients.</li>
               </ul>
             </li>
           </ul>
@@ -97,6 +148,7 @@
           </aside>
         </section>
 
+        <!-- TODO: probably need to find a more exciting example -->
         <section>
           <h2>Ex: Project Layout</h2>
 
@@ -117,87 +169,14 @@
                   development.txt
           </code></pre>
         </section>
+        <!-- END PROJECT LAYOUT -->
 
-        <section>
-          <h2>Server Architecture</h2>
-
-          <ul>
-            <li>
-              Threaded:
-              <ul>
-                <li>One thread per API server socket and client.</li>
-                <li>(Python 2/3) SocketServer</li>
-              </ul>
-            </li>
-            <li>
-              Asynchronous:
-              <ul>
-                <li>One event loop across multiple APIs.</li>
-                <li>Single or multi-threaded.</li>
-                <li>(Python 3+) asyncio, aiohttp</li>
-              </ul>
-            </li>
-          </ul>
-
-          <aside class="notes">
-            Existing MDCS packages are a reference implementation. Primary goals:
-
-            <ol>
-              <li>Correctness</li>
-              <li>Easy to understand for beginners</li>
-            </ol>
-          </aside>
-        </section>
-
-        <section>
-          <h2>Ex: SocketServer Server</h2>
-
-          <pre><code data-trim data-noescape>
-            from socketserver import TCPServer
-            from avro.ipc import FramedReader, FramedWriter
-
-            class NodeTCPServer(TCPServer):
-                def __init__(self, ...):
-                    super().__init__(
-                      (tcp_host, tcp_port), NodeTCPRequestHandler,
-                      bind_and_activate=False)
-                    self.allow_reuse_address = True
-
-                def run(self):
-                    try:
-                        self.server_bind()
-                        self.server_activate()
-                        self.serve_forever()
-
-                    finally:
-                        self.server_close()
-          </code></pre>
-        </section>
-
-        <section>
-          <h2>Ex: SocketServer Handler</h2>
-
-          <pre><code data-trim data-noescape>
-            from avro.ipc import FramedReader, FramedWriter
-            from socketserver import StreamRequestHandler
-
-            class NodeTCPRequestHandler(StreamRequestHandler):
-                def handle(self):
-                    reader = FramedReader(self.rfile)
-                    request_data = reader.Read()
-
-                    responder = NodeResponder(...)
-                    response_data = responder.Respond(request_data)
-
-                    writer = FramedWriter(self.wfile)
-                    writer.Write(response_data)
-          </code></pre>
-        </section>
-
+        <!-- BEGIN SERIALIZATION -->
         <section>
           <h2>Serialization</h2>
 
           <ul>
+            <li>Validation</li>
             <li>Versioning</li>
             <li>Binary Data</li>
             <li>Bandwidth</li>
@@ -209,10 +188,14 @@
             <ul>
               <li>Simple types (Boolean, Integer, String)</li>
               <li>Compound Types (RGB color)</li>
-              <li>large image</li>
-              <li>video stream</li>
+              <li>Multi-Dimensional Types (Images)</li>
             </ul>
           </aside>
+        </section>
+
+        <section>
+          <h2>Serialization: Standards</h2>
+          <img class="plain stretch" src="images/xkcd_927_standards.png" alt="XKCD: 927" />
         </section>
 
         <section>
@@ -222,116 +205,41 @@
           <ul>
             <li>XML (w/ DTD)</li>
             <li>JSON (w/ JSON Schema)</li>
-            <li>BSON (Mongo Binary JSON)</li>
+            <li>BSON (MongoDB Binary JSON)</li>
+            <li>YAML</li>
+            <li>TOML</li>
             <li>MsgPack</li>
             <li>Apache Avro</li>
             <li>Google ProtoBuf</li>
           </ul>
-        </section>
-
-        <section>
-          <h2>Serialization: Versioning</h2>
-
-          <ul>
-            <li>
-              Schema:
-              <ul>
-                <li>Include it with the binary.</li>
-                <li>Include it with the data (Avro).</li>
-                <li>Reference an external schema (XML DTD).</li>
-              </ul>
-            </li>
-            <li>
-              Schema-less:
-              <ul>
-                <li>Include a version number.</li>
-                <li>Ignore unknown fields, provide default values, parse permissively, and cross your fingers.</li>
-              </ul>
-            </li>
-          </ul>
 
           <aside class="notes">
-            Schema-less: Hey, I'm an engineer, how hard can it be?
-          </aside>
-        </section>
-
-        <section>
-          <h2>Serialization: Binary Data</h2>
-
-          <ul>
-            <li>Native Support (Avro, MsgPack, BSON)</li>
-            <li>Encode / Decode (JSON)
-              <ul>
-                <li>Overlap with native types, how do you know which data is encoded?</li>
-              </ul>
-            </li>
-          </ul>
-
-          <aside class="notes">
-            Native Support: what about HTTP APIs?
-            Encode / Decode: Base64 string? Array of ints?
-          </aside>
-        </section>
-
-        <section>
-          <h2>Serialization: Bandwidth</h2>
-
-          <ul>
-            <li>Verbose / Text Encoding (JSON, XML)</li>
-            <li>Compact / Binary Encoding (MsgPack, Avro)</li>
-          </ul>
-
-          <aside class="notes">
-            Verbose / Text Encoding: Easier for humans.
-            Compact / Binary Encoding: Annoying for humans.
-            Pro tip: Abbreviate your field names.
-          </aside>
-        </section>
-
-        <section>
-          <h2>Serialization: Speed</h2>
-
-          <ul>
-            <li>
-              Constraints
-              <ul>
-                <li>Message size.</li>
-                <li>Response time.</li>
-              </ul>
-            </li>
-            <li>
-              Encoding / Decoding
-              <ul>
-                <li>Nested binary data.</li>
-                <li>Immutable data structures.</li>
-              </ul>
-            </li>
-            <li>Schema Validation</li>
-          </ul>
-
-          <aside class="notes">
+            MDCS uses Apache Avro because:
             <ul>
-              <li>
-                Constraints
-                <ul>
-                  <li>Limit maximum message size?</li>
-                  <li>Real-time versus soft-time.</li>
-                </ul>
-              </li>
-              <li>
-                Encoding / Decoding
-                <ul>
-                  <li>With nested binary data (when using JSON, XML, etc) do you decode twice?</li>
-                  <li>Use an immutable data structure and peek into it (BSON, MsgPack).</li>
-                </ul>
-              </li>
-              <li>
-                Schema Validation
-                <ul>
-                  <li>When a message is sent, when it’s received, or both?</li>
-                </ul>
-              </li>
+              <li>Schemas are super useful to validate and document data</li>
+              <li>Native support for binary data is useful</li>
+              <li>Binary and JSON serialization</li>
+            </ul>
           </aside>
+        </section>
+
+        <section>
+          <h2>Ex: Avro Schema</h2>
+
+          <pre><code data-trim data-noescape>
+          {
+                'type': 'array',
+                'items': {
+                    'name': 'cpu_core_usage',
+                    'type': 'record',
+                    'fields': [
+                        {'name': 'user', 'type': 'float'},
+                        {'name': 'system', 'type': 'float'},
+                        {'name': 'idle', 'type': 'float'}
+                    ]
+                }
+            }
+          </code></pre>
         </section>
 
         <section>
@@ -375,12 +283,15 @@
             data = unserialize_value(schema, bytes([0x00, ...]))
           </code></pre>
         </section>
+        <!-- END SERIALIZATION -->
+
+        <!-- BEGIN APIS -->
         <section>
           <h2>Component APIs</h2>
 
           <ul>
             <li>
-              Client Support
+              Client Support:
               <ul>
                 <li>Console</li>
                 <li>Web Browser</li>
@@ -389,10 +300,10 @@
             </li>
             <li>Performance</li>
             <li>
-              Data Flows
+              Data Flows:
               <ul>
+                <li>Request / Response.</li>
                 <li>Publish / Subscribe.</li>
-                <li>Message Bus.</li>
               </ul>
             </li>
           </ul>
@@ -411,15 +322,8 @@
               <li>
                 Performance
                 <ul>
-                  <li>Minimize encoding and decoding. Prefer binary protocols.</li>
-                  <li>Reduce transmission overhead. Use TCP or UDP.</li>
-                </ul>
-              </li>
-              <li>
-                Data Flows
-                <ul>
-                  <li>Publish / Subscribe topology. Use multicast.</li>
-                  <li>Message bus topology. Use broadcast.</li>
+                  <li>Minimize encoding and decoding. Prefer binary encodings.</li>
+                  <li>Reduce transmission overhead. Prefer lower level protocols.</li>
                 </ul>
               </li>
             </ul>
@@ -454,21 +358,23 @@
             </li>
           </ul>
         </section>
+        <!-- END APIS -->
 
+        <!-- BEGIN NETWORK IO -->
         <section>
           <h2>Network IO</h2>
 
           <ul>
             <li>Native sockets.</li>
             <li>
-              Broker-less
+              Broker-less:
               <ul>
                 <li>ZeroMQ (http://zeromq.org/)</li>
                 <li>NanoMsg (https://nanomsg.github.io/nng/)</li>
               </ul>
             </li>
             <li>
-              Broker
+              Broker:
               <ul>
                 <li>MQTT (http://mqtt.org/)</li>
                 <li>RabbitMQ (https://www.rabbitmq.com/)</li>
@@ -518,7 +424,94 @@
                     self.socket.close()
           </code></pre>
         </section>
+        <!-- END NETWORK IO -->
 
+        <!-- BEGIN SERVER ARCHITECTURE -->
+        <!-- TODO: split this into two slides with diagrams for each approach -->
+        <section>
+          <h2>Server Architecture</h2>
+
+          <ul>
+            <li>
+              Threaded:
+              <ul>
+                <li>One thread per server socket.</li>
+                <li>One thread per client socket.</li>
+                <li>(Python 2/3) SocketServer</li>
+              </ul>
+            </li>
+            <li>
+              Asynchronous:
+              <ul>
+                <li>One event loop across multiple APIs.</li>
+                <li>Single or multi-threaded.</li>
+                <li>(Python 3+) asyncio, aiohttp</li>
+              </ul>
+            </li>
+          </ul>
+
+          <aside class="notes">
+            Existing MDCS packages are a reference implementation. Primary goals:
+            <ol>
+              <li>Correctness</li>
+              <li>Easy to understand for beginners</li>
+            </ol>
+
+            Notes:
+            <ul>
+              <li>Threaded - Worse scaling but easier to understand.</li>
+              <li>Asynchronous - Better scaling but multiple competing standards that don't all work together.</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section>
+          <h2>Ex: SocketServer Server</h2>
+
+          <pre><code data-trim data-noescape>
+            from socketserver import TCPServer
+            from avro.ipc import FramedReader, FramedWriter
+
+            class NodeTCPServer(TCPServer):
+                def __init__(self, ...):
+                    super().__init__(
+                      (tcp_host, tcp_port), NodeTCPRequestHandler,
+                      bind_and_activate=False)
+                    self.allow_reuse_address = True
+
+                def run(self):
+                    try:
+                        self.server_bind()
+                        self.server_activate()
+                        self.serve_forever()
+
+                    finally:
+                        self.server_close()
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Ex: SocketServer Handler</h2>
+
+          <pre><code data-trim data-noescape>
+            from avro.ipc import FramedReader, FramedWriter
+            from socketserver import StreamRequestHandler
+
+            class NodeTCPRequestHandler(StreamRequestHandler):
+                def handle(self):
+                    reader = FramedReader(self.rfile)
+                    request_data = reader.Read()
+
+                    responder = NodeResponder(...)
+                    response_data = responder.Respond(request_data)
+
+                    writer = FramedWriter(self.wfile)
+                    writer.Write(response_data)
+          </code></pre>
+        </section>
+        <!-- END SERVER ARCHITECTURE -->
+
+        <!-- BEGIN NETWORK DISCOVERY -->
         <section>
           <h2>Network Discovery</h2>
 
@@ -526,14 +519,14 @@
             <li>Broadcast</li>
             <li>Multicast</li>
             <li>
-              mDNS
+              mDNS:
               <ul>
                 <li>Avahi (Linux)</li>
                 <li>Bonjour (OS X)</li>
               </ul>
             </li>
             <li>
-              External Services
+              External Services:
               <ul>
                 <li>Consul</li>
                 <li>Zookeeper</li>
@@ -546,14 +539,14 @@
               <li>
                 Broadcast:
                 <ul>
-                  <li>Impacts performance on wireless networks.</li>
-                  <li>May not work across segments or in some network topologies.</li>
+                  <li>May be dropped by buggy wireless APs.</li>
+                  <li>Likely not forwarded outside of the local network segment.</li>
                 </ul>
               </li>
               <li>
                 Multicast:
                 <ul>
-                  <li>Requires router support.</li>
+                  <li>Requires router configuration.</li>
                   <li>Users unlikely to be familiar with management or monitoring.</li>
                 </ul>
               </li>
@@ -612,69 +605,45 @@
                     self.socket.sendto(data, ('224.0.0.128', 5512))
           </code></pre>
         </section>
+        <!-- END NETWORK DISCOVERY -->
 
         <section>
-          <h2>Control System Design</h2>
+          <h1>Control System Design</h1>
+        </section>
 
-          <ul>
-            <li>Abstract model of the world.</li>
-            <li><em>Devices</em> composed of attributes and actions.</li>
-            <li><em>Attributes</em> represent the state of a device. Read or write attribute values.</li>
-            <li><em>Actions</em> represent routines that change a device's state. Run with parameters and get results.</li>
-            <li>Attributes and action parameters have defined schemas.</li>
-          </ul>
+        <!-- BEGIN DEVICES -->
+        <section>
+          <h2>Abstract Models</h2>
+          <!-- TODO: stuff -->
+
+          <aside class="notes">
+            TODO: don't make me think about implementation details
+          </aside>
         </section>
 
         <section>
-          <h2>Ex: Bathroom Scale</h2>
+          <h2>MDCS: Devices</h2>
+          <!-- TODO: what is this device 'hue-AABBCCDDEEFF-light-5' meme -->
 
-          <ul>
-            <li>
-              Attr: Units
-              <ul>
-                <li>Flags: Read, Write</li>
-                <li>Schema: Enum (Metric, Imperial)</li>
-              </ul>
-            </li>
-            <li>
-              Attr: Weight
-              <ul>
-                <li>Flags: Read</li>
-                <li>Schema: Float</li>
-              </ul>
-            </li>
-            <li>
-              Action: Calibrate
-              <ul>
-                <li>Input Schema: None </li>
-                <li>Output Schema: Boolean</li>
-              </ul>
-            </li>
-          </ul>
+          <aside class="notes">
+            TODO: hide implementation details behind abstract model of device, attributes, actions
+          </aside>
         </section>
 
         <section>
-          <h2>CS Design: Devices</h2>
+          <h2>Ex: Device Design</h2>
+          <!-- TODO: picture of physical control panel -->
 
-          <ul>
-            <li>User can connect or disconnect USB, serial, etc.</li>
-            <li>Network services can time out.</li>
-            <li>
-              Underlying protocol can impose constraints:
-              <ul>
-                <li>Only one req/rep at a time for serial ports.</li>
-                <li>Firewire bus shares bandwidth among connected devices.</li>
-              </ul>
-            </li>
-          </ul>
+          <aside class="notes">
+            TODO: indicators and inputs are attributes, buttons are actions
+          </aside>
         </section>
 
         <section>
-          <h2>Ex: Device Classes</h2>
+          <h2>Ex: MDCS Device API</h2>
 
           <pre><code data-trim data-noescape>
-            from mdcs.device import Device
-            from mdcs.device import AttributeFlags
+            from mdcs.device import Device, AttributeFlags
             from mdcs.device import DelegatedAttribute
 
             class LightDevice(Device):
@@ -687,57 +656,66 @@
                       'string',
                       self.read_name,
                       self.write_name))
-
-                    self.add_attribute(DelegatedAttribute(
-                      'brightness',
-                      AttributeFlags.READ | AttributeFlags.WRITE,
-                      'int',
-                      self.read_brightness,
-                      self.write_brightness))
           </code></pre>
         </section>
+        <!-- END DEVICES -->
+
+        <!-- BEGIN AUTOMATION -->
+        <!-- TODO: slide describing reactor component and lupa -->
 
         <section>
-          <h2>CS Design: Attributes</h2>
+          <h2>Automation</h2>
+          <!-- TODO: diagram of flowchart -->
 
-          <ul>
-            <li>
-              Attribute values can change over time:
-              <ul>
-                <li>Constant: Model number, serial number, etc.</li>
-                <li>Variable: Brightness, output voltage, etc.</li>
-                <li>Floating: Temperature, relative humidity, etc.</li>
-              </ul>
-            </li>
-            <li>How often do we record a floating value (Nyquist-Shannon sampling theorem)?</li>
-            <li>Poll value or let the device notify you of changes?</li>
-          </ul>
+          <aside class="notes">
+            TODO: end users not expert programmers, simple APIs
+          </aside>
         </section>
 
         <section>
-          <h2>CS Design: Actions</h2>
+          <h2>MDCS: Reactor</h2>
+          <!-- TODO: diagram of web and queue -->
 
-          <ul>
-            <li>
-              Consider implications of long-running actions:
-              <ul>
-                <li>How does it timeout?</li>
-                <li>Does it block attribute IO?</li>
-                <li>Can you cancel it?</li>
-              </ul>
-            </li>
-          </ul>
+          <aside class="notes">
+            TODO: web API, background queue, lupa script backend
+          </aside>
         </section>
 
         <section>
-          <h2>Questions and Links</h2>
+          <h2>Ex: More Light Script</h2>
+
+          <pre><code data-trim data-noescape>
+            lights = registry:get_devices("*light*")
+            for name, light in pairs(lights) do
+              brightness = light:read("brightness")
+              brightness = math.min(254, brightness + 32)
+
+              light:write("on", true)
+              light:write("brightness", brightness)
+            end
+          </code></pre>
+        </section>
+        <!-- END AUTOMATION -->
+
+        <!-- BEGIN ACCESS CONTROL -->
+        <!-- TODO -->
+        <!-- END ACCESS CONTROL -->
+
+        <!-- BEGIN CAPTURING DATA -->
+        <!-- TODO -->
+        <!-- END CAPTURING DATA -->
+
+        <!-- BEGIN REFERENCES -->
+        <section>
+          <h2>References</h2>
 
           <ul>
-            <li>https://github.com/CtrlC-Root/mdcs</li>
-            <li>https://www.linkedin.com/in/alexandru-barbur-43236993</li>
-            <li>Comments or questions?</li>
+            <li>Me: alex@ctrlc.name</li>
+            <li>MDCS: https://github.com/CtrlC-Root/mdcs</li>
+            <li>Presentation: TODO</li>
           </ul>
         </section>
+        <!-- END REFERENCES -->
 			</div>
 		</div>
 
@@ -754,7 +732,7 @@
 					{ src: 'plugin/markdown/markdown.js' },
 					{ src: 'plugin/notes/notes.js', async: true },
 					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() {
-            hljs.configure({languages: ['Python']})
+            hljs.configure({languages: ['Python', 'Lua']})
             hljs.initHighlightingOnLoad();
           } }
 				]

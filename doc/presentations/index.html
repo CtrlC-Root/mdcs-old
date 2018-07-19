@@ -111,65 +111,8 @@
         <!-- END INTRO -->
 
         <section>
-          <!-- TODO: good lord is there a better title for this? -->
-          <h1>Project Considerations</h1>
+          <h1>Distributed Software</h1>
         </section>
-
-        <!-- BEGIN PROJECT LAYOUT -->
-        <section>
-          <h2>Project Layout</h2>
-          <ul>
-            <li>
-              Shared common library:
-              <ul>
-                <li>Abstract interfaces.</li>
-                <li>Serialization.</li>
-                <li>Networking.</li>
-              </ul>
-            </li>
-            <li>
-              Components:
-              <ul>
-                <li>Daemons.</li>
-                <li>Web applications.</li>
-                <li>Mobile applications.</li>
-                <li>API schemas and clients.</li>
-              </ul>
-            </li>
-          </ul>
-
-          <aside class="notes">
-            Consider the target audience:
-
-            <ul>
-              <li>Developers want to be able to find relevant code quickly.</li>
-              <li>End users want to know which components to use.</li>
-            </ul>
-          </aside>
-        </section>
-
-        <!-- TODO: probably need to find a more exciting example -->
-        <section>
-          <h2>Ex: Project Layout</h2>
-
-          <pre><code data-trim data-noescape>
-            README.md
-            Makefile
-            pkg/
-              libmdcs-python/
-              node/
-              bridge-hue/
-                README.md
-                Makefile
-                setup.py
-                mdcs_bridge_hue/
-                  __init__.py
-                requirements/
-                  common.txt
-                  development.txt
-          </code></pre>
-        </section>
-        <!-- END PROJECT LAYOUT -->
 
         <!-- BEGIN SERIALIZATION -->
         <section>
@@ -298,12 +241,11 @@
                 <li>Mobile Application</li>
               </ul>
             </li>
-            <li>Performance</li>
             <li>
               Data Flows:
               <ul>
-                <li>Request / Response.</li>
-                <li>Publish / Subscribe.</li>
+                <li>Request / Response</li>
+                <li>Publish / Subscribe</li>
               </ul>
             </li>
           </ul>
@@ -313,20 +255,31 @@
 
             <ul>
               <li>
-                Client Support
+                Client Support:
                 <ul>
                   <li>Can I debug the problem with curl?</li>
                   <li>Safest bet is HTTP(S) w/ JSON.</li>
                 </ul>
               </li>
               <li>
-                Performance
+                Documentation:
+                <ul>
+                  <li>Show me the schema</li>
+                  <li>Use Swagger to generate clients</li>
+                </ul>
+              </li>
+              <li>
+                Performance:
                 <ul>
                   <li>Minimize encoding and decoding. Prefer binary encodings.</li>
                   <li>Reduce transmission overhead. Prefer lower level protocols.</li>
                 </ul>
               </li>
             </ul>
+
+            <ol>
+              <li>https://swagger.io/</li>
+            </ol>
           </aside>
         </section>
 
@@ -337,9 +290,8 @@
             <li>
               HTTP API:
               <ul>
-                <li>Configuration settings.</li>
+                <li>Inspect node and device settings.</li>
                 <li>Inspect device attributes and actions.</li>
-                <li>Avro JSON wrapper around TCP API.</li>
               </ul>
             </li>
             <li>
@@ -357,6 +309,13 @@
               </ul>
             </li>
           </ul>
+
+          <aside class="notes">
+            <ul>
+              <li>HTTP API will use Avro JSON serialization</li>
+              <li>TCP API uses Avro binary serialization</li>
+            </ul>
+          </aside>
         </section>
         <!-- END APIS -->
 
@@ -608,34 +567,54 @@
         <!-- END NETWORK DISCOVERY -->
 
         <section>
-          <h1>Control System Design</h1>
+          <h1>Control Systems</h1>
         </section>
 
         <!-- BEGIN DEVICES -->
         <section>
           <h2>Abstract Models</h2>
-          <!-- TODO: stuff -->
+          <img class="plain stretch" src="images/abstract_o_meter.png" alt="Abstract-o-Meter" />
 
           <aside class="notes">
-            TODO: don't make me think about implementation details
+            <ul>
+              <li>Abstract model of the world</li>
+              <li>Too realistic: harder to work with than necessary</li>
+              <li>Too abstract: miss out on operational details</li>
+              <li>Ex: TPMS only reports pressure when the wheels are spinning</li>
+            </ul>
           </aside>
         </section>
 
         <section>
           <h2>MDCS: Devices</h2>
-          <!-- TODO: what is this device 'hue-AABBCCDDEEFF-light-5' meme -->
+
+          <ul>
+            <li>Unique Identifier</li>
+            <li>Named attributes.</li>
+            <li>Named actions.</li>
+          </ul>
 
           <aside class="notes">
-            TODO: hide implementation details behind abstract model of device, attributes, actions
+            <ul>
+              <li>Attributes represent the state of a device. Ex: Battery level.</li>
+              <li>Actions represent subroutines that change the state or do work. Ex: Calibrate scale.</li>
+              <li>Attribute values, action parameters, and action results have schemas.</li>
+            </ul>
           </aside>
         </section>
 
         <section>
           <h2>Ex: Device Design</h2>
-          <!-- TODO: picture of physical control panel -->
+          <img class="plain stretch" src="images/cnc_control_panel.png" alt="CNC Control Panel" />
 
           <aside class="notes">
-            TODO: indicators and inputs are attributes, buttons are actions
+            <ul>
+              <li>buttons (i.e. emergency stop) are actions</li>
+              <li>indicator dials are attributes (read-only float)</li>
+              <li>LEDs are attributes (read-only boolean or int)</li>
+              <li>multiple position knobs? it depends but probably attribute (read-write enum)</li>
+              <li>consider what the end user might expect</li>
+            </ul>
           </aside>
         </section>
 
@@ -643,6 +622,7 @@
           <h2>Ex: MDCS Device API</h2>
 
           <pre><code data-trim data-noescape>
+            import requests, json
             from mdcs.device import Device, AttributeFlags
             from mdcs.device import DelegatedAttribute
 
@@ -656,28 +636,40 @@
                       'string',
                       self.read_name,
                       self.write_name))
+
+                def read_name(self):
+                    response = requests.get(self.config['...'])
+                    data = response.json()
+                    return data['name']
           </code></pre>
         </section>
         <!-- END DEVICES -->
 
         <!-- BEGIN AUTOMATION -->
-        <!-- TODO: slide describing reactor component and lupa -->
-
         <section>
           <h2>Automation</h2>
-          <!-- TODO: diagram of flowchart -->
+          <img class="plain stretch" src="images/mdcs_reactor_flow.png" alt="MDCS Reactor Flow" />
 
           <aside class="notes">
-            TODO: end users not expert programmers, simple APIs
+            <ul>
+              <li>end users may not be proficient programmers</li>
+              <li>flow charts versus scripts?</li>
+              <li>green events, yellow conditions, blue actions</li>
+            </ul>
           </aside>
         </section>
 
         <section>
           <h2>MDCS: Reactor</h2>
-          <!-- TODO: diagram of web and queue -->
+          <img class="plain stretch" src="images/mdcs_reactor.png" alt="MDCS Reactor" />
 
           <aside class="notes">
-            TODO: web API, background queue, lupa script backend
+            <ul>
+              <li>Flask Web Application</li>
+              <li>Beanstalkd Job Queue</li>
+              <li>Background Worker</li>
+              <li>Lua script backend</li>
+            </ul>
           </aside>
         </section>
 
@@ -694,25 +686,43 @@
               light:write("brightness", brightness)
             end
           </code></pre>
+
+          <aside class="notes">
+            <ul>
+              <li>duck-typing devices by name and attributes</li>
+              <li>easy to read even for non-programmers</li>
+            </ul>
+          </aside>
         </section>
         <!-- END AUTOMATION -->
 
-        <!-- BEGIN ACCESS CONTROL -->
-        <!-- TODO -->
-        <!-- END ACCESS CONTROL -->
+        <!-- BEGIN EXTRA TOPICS -->
+        <section>
+          <h2>Extra Topics</h2>
 
-        <!-- BEGIN CAPTURING DATA -->
-        <!-- TODO -->
-        <!-- END CAPTURING DATA -->
+          <ul>
+            <li>Access Control</li>
+            <li>Recording Attribute Values</li>
+            <li>Hotplugging Devices</li>
+          </ul>
+
+          <aside class="notes">
+            <ul>
+              <li>ACLs: car radio shouldn't deploy airbags</li>
+              <li>Recording: Nyquist–Shannon sampling theorem</li>
+              <li>Hotplug: detect and generate configuration settings</li>
+            </ul>
+          </aside>
+        </section>
+        <!-- END EXTRA TOPICS -->
 
         <!-- BEGIN REFERENCES -->
         <section>
           <h2>References</h2>
 
           <ul>
-            <li>Me: alex@ctrlc.name</li>
-            <li>MDCS: https://github.com/CtrlC-Root/mdcs</li>
-            <li>Presentation: TODO</li>
+            <li><a href="mailto:alex@ctrlc.name">alex@ctrlc.name</a></li>
+            <li><a href="https://github.com/CtrlC-Root/mdcs">https://github.com/CtrlC-Root/mdcs</a></li>
           </ul>
         </section>
         <!-- END REFERENCES -->

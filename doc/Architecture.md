@@ -1,16 +1,6 @@
 # Architecture
 
-## Goals
-
-* Modular
-  * Components should be small and easy to replace.
-  * All control plane functionality should be provided through HTTP APIs.
-* Distributed
-  * No centralized services. Components should be useful on their own.
-  * No single points of failure for the overall system. Components should fail independently.
-* Soft Real Time
-  * Components make no guarantees about response time. They should handle timeouts gracefully.
-  * Frequent failures degrade the overall system performance and should be avoided.
+This document describes the high-level architecture of the control system.
 
 ## Device Tree
 
@@ -57,11 +47,3 @@ The control system is made up of smaller components that work together. Most of 
 and schema definitions.
 
 ![](components.png)
-
-* Control: components that interface with hardware or software
-  * [Node](Node.md): A daemon that exposes devices for local hardware or software.
-  * [Bridge](Node.md): A specialized node daemon that exposes devices for a remote service.
-* Data Storage: components that record device attribute values
-* Automation: components that automate tasks using devices
-* Monitoring: components that monitor devices
-  * [Registry](Registry.md): A daemon that keeps track of online nodes and devices.

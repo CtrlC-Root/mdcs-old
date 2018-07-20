@@ -6,8 +6,7 @@ soft real-time distributed control system.
 ## Documentation
 
 There is high-level architecture, framework, and component documentation in the `doc` directory. A good place to start
-is the [architecture documentation](doc/Architecture.md). There is also a [project roadmap](ROADMAP.md) that shows
-what functionality has been already implemented and what still needs to be done.
+is the [README.md](doc/README.md). There is also a [project roadmap](ROADMAP.md).
 
 ## Framework
 
@@ -25,6 +24,7 @@ Standalone components.
 * [bridge-hue](pkg/bridge-hue/README.md): bridge node for Philips Hue lights
 * [registry](pkg/registry/README.md): node and device registry
 * [reactor](pkg/reactor/README.md): event based automation tool
+* [remote](pkg/remote/README.md): mobile remote control application
 
 ## Quick Start
 

@@ -22,4 +22,6 @@ correctness and better performance.
 
 ## Network Discovery
 
-TODO
+Nodes use the Multicast plugin for network discovery.
+
+* [Network Discovery](Network_Discovery.md)

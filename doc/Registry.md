@@ -12,4 +12,6 @@ TODO: document with swagger
 
 ## Network Discovery
 
-TODO
+Registries use the Multicast plugin for network discovery.
+
+* [Network Discovery](Network_Discovery.md)

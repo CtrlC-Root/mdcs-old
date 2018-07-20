@@ -6,7 +6,7 @@ soft real-time distributed control system.
 ## Documentation
 
 There is high-level architecture, framework, and component documentation in the `doc` directory. A good place to start
-is the [README.md](doc/README.md). There is also a [project roadmap](ROADMAP.md).
+is the [README.md](doc/README.md) file. There is also a [project roadmap](ROADMAP.md).
 
 ## Framework
 

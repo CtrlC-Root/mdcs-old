@@ -8,6 +8,12 @@ Relevant links to project documentation for this component:
 
 * [Node](../../doc/Node.md)
 
+## Roadmap
+
+- [ ] Retrieve information about an attribute.
+- [ ] Retrieve information about an action.
+- [ ] Run actions.
+
 ## References
 
 Libraries:

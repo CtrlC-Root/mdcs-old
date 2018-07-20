@@ -39,3 +39,17 @@ if [ $? -ne 0 ]; then
     sudo systemctl enable aurora.service
     sudo systemctl start aurora.service
 fi
+
+# configure and start MDCS registry service
+if [ ! -f "/etc/systemd/system/mdcs-registry.service" ]; then
+    # install the systemd service
+    sudo install -o root -g root -m 0644 /vagrant/vagrant/mdcs-registry.service /etc/systemd/system/
+    sudo systemctl daemon-reload
+fi
+
+systemctl is-active mdcs-registry.service &> /dev/null
+if [ $? -ne 0 ]; then
+    # enable and start the service
+    sudo systemctl enable mdcs-registry.service
+    sudo systemctl start mdcs-registry.service
+fi

@@ -1,0 +1,12 @@
+[Unit]
+Description=MDCS Registry
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/mdcs
+ExecStart=/bin/bash -c "${MDCS_VENV}/bin/mdcs-registry"
+User=vagrant
+Group=vagrant
+
+[Install]
+WantedBy=multi-user.target

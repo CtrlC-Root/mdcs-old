@@ -16,6 +16,30 @@ const getters = {
   }
 };
 
+function parseDevice(device) {
+  var attributes = device.attributes.map(function (attribute) {
+    return {
+      path: attribute.path,
+      flags: attribute.flags,
+      schema: JSON.parse(attribute.schema),
+    };
+  });
+
+  var actions = device.actions.map(function (action) {
+    return {
+      path: action.path,
+      inputSchema: JSON.parse(action.input_schema),
+      outputSchema: JSON.parse(action.output_schema),
+    };
+  });
+
+  return {
+    name: device.name,
+    attributes: attributes,
+    actions: actions,
+  };
+}
+
 const mutations = {
   addNode: function (state, node) {
     // TODO: verify node.name exists and is unique
@@ -59,8 +83,8 @@ const actions = {
       return {
         name: data.name,
         host: parsedUrl.hostname,
-        httpPort: data.config.httpPort,
-        tcpPort: data.config.tcpPort
+        httpPort: data.config.http_port,
+        tcpPort: data.config.tcp_port
       };
     }).then((node) => {
       // retrieve node devices
@@ -68,7 +92,7 @@ const actions = {
         return response.json();
       }).then((data) => {
         return Object.assign(node, {
-          devices: data
+          devices: data.map(parseDevice)
         });
       });
     }).then((node) => {
@@ -85,7 +109,7 @@ const actions = {
       context.commit('updateNode', {
         name: node.name,
         loading: false,
-        devices: data
+        devices: data.map(parseDevice)
       });
     });
   }

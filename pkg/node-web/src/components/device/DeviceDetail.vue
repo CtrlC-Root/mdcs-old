@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h3 class="display-3 text-center">Device: {{ device.name }}</h3>
+    <h3 class="display-3 text-center">{{ device.name }}</h3>
 
     <!-- Attributes -->
     <table class="table table-striped">

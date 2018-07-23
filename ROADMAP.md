@@ -4,6 +4,8 @@ This file contains high-level items. Please see the respective `README.md` files
 package-specific items.
 
 - [ ] Structured logging.
+- [ ] Unit testing.
+- [ ] Integration testing?
 - [ ] Support for running actions.
 - [ ] Access control:
   - [ ] Generic backend framework in `libmdcs-python`.

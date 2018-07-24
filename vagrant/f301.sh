@@ -53,3 +53,9 @@ if [ $? -ne 0 ]; then
     sudo systemctl enable mdcs-registry.service
     sudo systemctl start mdcs-registry.service
 fi
+
+# TODO: reactor
+# http://flask.pocoo.org/docs/1.0/deploying/wsgi-standalone/#gunicorn
+# http://docs.gunicorn.org/en/latest/deploy.html#systemd
+
+# TODO: reactor-worker

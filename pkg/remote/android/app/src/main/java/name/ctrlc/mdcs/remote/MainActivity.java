@@ -1,4 +1,4 @@
-package com.example.remote;
+package name.ctrlc.mdcs.remote;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

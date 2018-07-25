@@ -1,6 +1,6 @@
 {
   "name": "node-web",
-  "description": "MDCS Web Client",
+  "description": "MDCS Node Web Client",
   "version": "1.0.0",
   "author": "Alexandru Barbur <root.ctrlc@gmail.com>",
   "private": true,

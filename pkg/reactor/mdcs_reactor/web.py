@@ -19,7 +19,7 @@ database_engine = create_engine(application.config['DATABASE_URI'], convert_unic
 database_session_factory = sessionmaker(bind=database_engine)
 
 
-# create and finalize the session
+# manage the session database and queue connections
 # http://flask.pocoo.org/docs/1.0/patterns/sqlite3/
 # http://flask.pocoo.org/docs/1.0/patterns/sqlalchemy/
 # https://github.com/mayhewj/greenstalk#getting-started
@@ -42,31 +42,16 @@ def finalize_session(exception=None):
         queue.close()
 
 
-# register top-level utility views
-@application.route('/')
-def index():
-    """
-    Index route that provides some useful information about the web application.
-    """
-
-    return 'MDCS Reactor HTTP API'
-
-
-@application.route('/health')
-def health():
-    """
-    Check the health of the web application.
-    """
-
-    # XXX: anything to do here?
-    return "healthy", 200
-
 
 # import views after the application object exists to avoid a circular import error
 # disable the pycodestyle E402 warning for these lines since we know what we're doing
 # https://pycodestyle.readthedocs.io/en/latest/intro.html#error-codes
+from .views import Index, Health  # noqa
 from .views import ActionList, ActionDetail  # noqa
 from .views import TaskList, TaskDetail  # noqa
+
+application.add_url_rule('/', view_func=Index.as_view('index'))
+application.add_url_rule('/health', view_func=Health.as_view('health'))
 
 application.add_url_rule('/action/', view_func=ActionList.as_view('action_list'))
 application.add_url_rule('/action/<uuid>', view_func=ActionDetail.as_view('action_detail'))

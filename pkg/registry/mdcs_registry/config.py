@@ -3,17 +3,13 @@ class RegistryDaemonConfig:
     Configuration settings for a Registry daemon.
     """
 
-    def __init__(self, public_host, bind_host, http_port, discovery, background):
+    def __init__(self, public_host, bind_host, http_port, logging, discovery, background):
         self._public_host = public_host
-
-        # HTTP API
         self._http_host = bind_host
         self._http_port = http_port
 
-        # Discovery
+        self._logging = logging
         self._discovery = discovery
-
-        # Daemon
         self._background = background
 
     @property
@@ -27,6 +23,10 @@ class RegistryDaemonConfig:
     @property
     def http_port(self):
         return self._http_port
+
+    @property
+    def logging(self):
+        return self._logging
 
     @property
     def discovery(self):

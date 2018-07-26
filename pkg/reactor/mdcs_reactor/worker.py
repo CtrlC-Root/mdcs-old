@@ -8,6 +8,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 import mdcs.task
 import mdcs.daemon
+from mdcs.logging import LoggingConfig
 
 from .models import Action, Task, TaskState
 from .scripting.lua import LuaScriptConfig
@@ -89,8 +90,8 @@ class WorkerTask(mdcs.task.Task):
 
 
 class WorkerDaemon(mdcs.daemon.Daemon):
-    def __init__(self, beanstalk_host, beanstalk_port, database_uri, script_config, background):
-        super().__init__()
+    def __init__(self, beanstalk_host, beanstalk_port, database_uri, script_config, logging_config, background):
+        super().__init__(logging_config=logging_config, background=background)
 
         # create the database engine and session factory
         self._db_engine = create_engine(database_uri, convert_unicode=True)
@@ -125,10 +126,15 @@ def main():
     parser.add_argument('--bs-port', type=int, default=11300, help="beanstalk port")
     parser.add_argument('--db-uri', type=str, help="database uri")
     LuaScriptConfig.define_args(parser)
+    LoggingConfig.define_args(parser)
 
     parser.add_argument('--daemon', action='store_true', help="run as daemon in background")
 
     args = parser.parse_args()
+
+    # configure logging
+    logging_config = LoggingConfig.from_args(args)
+    logging_config.apply()
 
     # create and run the daemon
     daemon = WorkerDaemon(
@@ -136,6 +142,7 @@ def main():
         beanstalk_port=args.bs_port,
         database_uri=args.db_uri,
         script_config=LuaScriptConfig.from_args(args),
+        logging_config=logging_config,
         background=args.daemon)
 
     daemon.run()

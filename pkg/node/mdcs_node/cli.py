@@ -3,6 +3,7 @@
 import argparse
 
 from mdcs.discovery import MulticastDiscoveryConfig
+from mdcs.logging import LoggingConfig
 
 from .node import Node, NodeConfig
 from .daemon import NodeDaemon
@@ -20,10 +21,15 @@ def main():
     parser.add_argument('--http-port', type=int, default=5510, help="HTTP API port")
     parser.add_argument('--tcp-port', type=int, default=5511, help="TCP API port")
     MulticastDiscoveryConfig.define_args(parser)
+    LoggingConfig.define_args(parser)
 
     parser.add_argument('--daemon', action='store_true', help="run as daemon in background")
 
     args = parser.parse_args()
+
+    # configure logging
+    logging_config = LoggingConfig.from_args(args)
+    logging_config.apply()
 
     # create the node
     config = NodeConfig(
@@ -39,5 +45,5 @@ def main():
     node.add_device(HostDevice())
 
     # create the node daemon and run it
-    daemon = NodeDaemon(node=node, background=args.daemon)
+    daemon = NodeDaemon(node=node, logging_config=logging_config, background=args.daemon)
     daemon.run()

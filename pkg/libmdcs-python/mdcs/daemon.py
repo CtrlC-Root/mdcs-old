@@ -2,6 +2,9 @@ import sys
 import time
 import daemon
 import signal
+import logging
+
+from .logging import LoggingConfig
 
 
 class Daemon:
@@ -9,12 +12,14 @@ class Daemon:
     A daemon that runs one or more tasks in the background.
     """
 
-    def __init__(self, background=False):
+    def __init__(self, logging_config=LoggingConfig(), background=False):
+        self._logging_config = logging_config
         self._background = background
 
         self._tasks = []
         self._running = False
         self._interrupted = False
+        self._logger = logging.getLogger(__name__)
 
     def add_task(self, task):
         """
@@ -28,6 +33,7 @@ class Daemon:
         Handle a POSIX signal sent to the the daemon process.
         """
 
+        # https://docs.python.org/3.6/library/logging.html#thread-safety
         self._interrupted = True
 
     def initialize_context(self):
@@ -49,8 +55,12 @@ class Daemon:
         Run the daemon.
         """
 
+        open_files = list(self._logging_config.files)
+        for task in self._tasks:
+            open_files.extend(task.files)
+
         context = daemon.DaemonContext(
-            files_preserve=sum(map(lambda t: t.files, self._tasks), []),
+            files_preserve=open_files,
             signal_map={
                 signal.SIGTERM: self._process_signal,
                 signal.SIGINT: self._process_signal
@@ -69,6 +79,7 @@ class Daemon:
             # start the daemon
             self.initialize_context()
             for task in self._tasks:
+                self._logger.info('starting task', {'task': task.name})
                 task.start()
 
             # run until asked to stop
@@ -78,15 +89,18 @@ class Daemon:
                     # check if the task was started but died
                     if not task.healthy:
                         # XXX something is broken, let's shut down
+                        self._logger.warning('detected unhealthy task', {'task': task.name})
                         self._interrupted = True
                         break
 
                     # check if the task is not running (added after we started)
                     if not task.running:
+                        self._logger.info('starting task', {'task': task.name})
                         task.start()
 
             # stop the daemon
             for task in self._tasks:
+                self._logger.info('stopping task', {'task': task.name})
                 task.stop()
 
             self.finalize_context()

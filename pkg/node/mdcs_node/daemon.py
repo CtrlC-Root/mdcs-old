@@ -10,8 +10,8 @@ class NodeDaemon(Daemon):
     A daemon that runs tasks necessary for a Node.
     """
 
-    def __init__(self, node, background):
-        super().__init__(background=background)
+    def __init__(self, node, logging_config, background):
+        super().__init__(logging_config=logging_config, background=background)
         self._node = node
 
         # create the HTTP API server

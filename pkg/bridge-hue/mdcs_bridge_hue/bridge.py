@@ -6,6 +6,7 @@ from http import HTTPStatus
 import requests
 
 from mdcs.discovery import MulticastDiscoveryConfig
+from mdcs.logging import LoggingConfig
 from mdcs_node import Node, NodeConfig, NodeDaemon
 
 from .device import LightDevice, GroupDevice
@@ -22,12 +23,17 @@ def main():
     parser.add_argument('--http-port', type=int, default=5510, help="HTTP API port")
     parser.add_argument('--tcp-port', type=int, default=5511, help="TCP API port")
     MulticastDiscoveryConfig.define_args(parser)
+    LoggingConfig.define_args(parser)
 
     parser.add_argument('--daemon', action='store_true', help="run as daemon in background")
     parser.add_argument('--bridge', type=str, required=True, help="bridge hostname or IP address")
     parser.add_argument('--user', type=str, required=True, help="bridge username")
 
     args = parser.parse_args()
+
+    # configure logging
+    logging_config = LoggingConfig.from_args(args)
+    logging_config.apply()
 
     # retrieve bridge configuration
     response = requests.get("http://{0}/api/{1}/config".format(args.bridge, args.user))
@@ -75,5 +81,5 @@ def main():
         node.add_device(GroupDevice(name, args.bridge, args.user, group_id))
 
     # create the node daemon and run it
-    daemon = NodeDaemon(node=node, background=args.daemon)
+    daemon = NodeDaemon(node=node, logging_config=logging_config, background=args.daemon)
     daemon.run()

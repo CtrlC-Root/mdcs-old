@@ -10,7 +10,7 @@ class RegistryDaemon(Daemon):
     """
 
     def __init__(self, config):
-        super().__init__(background=config.background)
+        super().__init__(logging_config=config.logging, background=config.background)
         self._config = config
 
         # create the discovery backend and subscribe task

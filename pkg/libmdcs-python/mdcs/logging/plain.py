@@ -7,4 +7,7 @@ class PlainFormatter(logging.Formatter):
     """
 
     def __init__(self):
-        super().__init__()
+        super().__init__(
+            fmt='[%(asctime)-15s] %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S',
+            style='%')

@@ -23,7 +23,7 @@ class LoggingConfig:
         'json': JSONFormatter,
     }
 
-    def __init__(self, level=logging.INFO, format='plain'):
+    def __init__(self, level='info', format='plain'):
         self._level = level
         self._format = format
         self._output_stream = sys.stdout

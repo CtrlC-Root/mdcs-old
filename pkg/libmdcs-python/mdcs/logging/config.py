@@ -1,7 +1,7 @@
 import sys
 import logging
 
-from .formatter import JSONFormatter
+from .json import JSONFormatter
 
 
 class LoggingConfig:

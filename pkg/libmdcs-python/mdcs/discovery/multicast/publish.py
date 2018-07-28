@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from socketserver import BaseRequestHandler
 
@@ -9,6 +10,8 @@ from .server import MulticastServer
 
 class PublishRequestHandler(BaseRequestHandler):
     def setup(self):
+        self.logger = logging.getLogger(__name__)
+
         self.registry = self.server.registry
         self.packet, self.socket = self.request
 
@@ -41,9 +44,9 @@ class PublishRequestHandler(BaseRequestHandler):
                         'event': 'ONLINE'
                     })
 
+        # XXX: catch specific exceptions?
         except Exception as e:
-            # TODO: log this or something
-            print('uh oh: {0}'.format(e))
+            self.logger.error('multicast publish handler', exc_info=e)
 
 
 class MulticastPublishServer(MulticastServer):

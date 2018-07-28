@@ -1,3 +1,4 @@
+import logging
 from socketserver import BaseRequestHandler
 
 from mdcs.tcp.avro import unserialize_value
@@ -8,6 +9,8 @@ from .server import MulticastServer
 
 class SubscribeRequestHandler(BaseRequestHandler):
     def setup(self):
+        self.logger = logging.getLogger(__name__)
+
         self.registry = self.server.registry
         self.packet, self.socket = self.request
 
@@ -36,9 +39,9 @@ class SubscribeRequestHandler(BaseRequestHandler):
                     print("removing node {0} device {1}".format(message['node'], message['device']))
                     self.registry.remove_device(message['device'])
 
+        # XXX: catch specific extensions
         except Exception as e:
-            # TODO: log this or something
-            print('uh oh: {0}'.format(e))
+            self.logger.error('multicast subscribe handle', exc_info=e)
 
 
 class MulticastSubscribeServer(MulticastServer):

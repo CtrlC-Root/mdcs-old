@@ -79,7 +79,7 @@ class Daemon:
             # start the daemon
             self.initialize_context()
             for task in self._tasks:
-                self._logger.info('starting task', {'task': task.name})
+                self._logger.info('starting task: %(task)s', {'task': task.name})
                 task.start()
 
             # run until asked to stop
@@ -88,19 +88,20 @@ class Daemon:
                 for task in self._tasks:
                     # check if the task was started but died
                     if not task.healthy:
-                        # XXX something is broken, let's shut down
-                        self._logger.warning('detected unhealthy task', {'task': task.name})
+                        self._logger.warning('detected unhealthy task: %(task)s', {'task': task.name})
+
+                        # not sure how to fix this so just quit
                         self._interrupted = True
                         break
 
                     # check if the task is not running (added after we started)
                     if not task.running:
-                        self._logger.info('starting task', {'task': task.name})
+                        self._logger.info('starting task: %(task)s', {'task': task.name})
                         task.start()
 
             # stop the daemon
             for task in self._tasks:
-                self._logger.info('stopping task', {'task': task.name})
+                self._logger.info('stopping task: %(task)s', {'task': task.name})
                 task.stop()
 
             self.finalize_context()

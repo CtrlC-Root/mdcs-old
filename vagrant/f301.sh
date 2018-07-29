@@ -3,6 +3,18 @@
 # settings
 AURORA_URL="https://github.com/xuri/aurora/releases/download/2.1/aurora_linux_amd64_v2.1.tar.gz"
 
+# configure private network (https://netplan.io/)
+NETPLAN_CONFIG="/etc/netplan/55-vagrant.yaml"
+if [ ! -f "${NETPLAN_CONFIG}" ]; then
+    sudo install -o root -g root -m 0644 /vagrant/vagrant/netplan-private.yaml "${NETPLAN_CONFIG}"
+    sudo sed -i -e 's|VAGRANTCIDR|192.168.80.10/24|g' "${NETPLAN_CONFIG}"
+    sudo sed -i -e 's|VAGRANTIPADDR|192.168.80.10|g' "${NETPLAN_CONFIG}"
+
+    sudo netplan generate
+    sudo netplan apply
+    # sudo systemctl restart systemd-networkd.service
+fi
+
 # install beanstalk daemon
 dpkg -l beanstalkd &> /dev/null
 if [ $? -ne 0 ]; then

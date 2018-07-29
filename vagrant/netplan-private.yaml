@@ -1,0 +1,11 @@
+---
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp0s8:
+      addresses:
+      - VAGRANTCIDR
+      routes:
+      - to: 224.0.0.0/4
+        via: VAGRANTIPADDR

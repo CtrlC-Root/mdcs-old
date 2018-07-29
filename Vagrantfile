@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
     f301.vm.network "private_network", ip: "192.168.80.10", auto_config: false
     f301.vm.network :forwarded_port, guest: 11300, host: 11300 # beanstalkd
     f301.vm.network :forwarded_port, guest: 3000, host: 3000   # aurora beanstalk dahsboard
-    f301.vm.network :forwarded_port, guest: 5520, host: 55520  # Registry HTTP API
+    f301.vm.network :forwarded_port, guest: 5520, host: 5520  # Registry HTTP API
   end
 
   config.vm.define "x301" do |x301|
@@ -38,7 +38,7 @@ Vagrant.configure("2") do |config|
 
     x301.vm.provision "shell", path: "vagrant/x301.sh"
     x301.vm.network "private_network", ip: "192.168.80.20", auto_config: false
-    x301.vm.network :forwarded_port, guest: 5510, host: 55510 # Node HTTP API
-    x301.vm.network :forwarded_port, guest: 5511, host: 55511 # Node TCP API
+    x301.vm.network :forwarded_port, guest: 5510, host: 5510 # Node HTTP API
+    x301.vm.network :forwarded_port, guest: 5511, host: 5511 # Node TCP API
   end
 end

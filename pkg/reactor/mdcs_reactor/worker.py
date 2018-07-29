@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import logging
 import argparse
 
 import greenstalk
@@ -28,11 +29,14 @@ class WorkerTask(mdcs.task.Task):
         self._backend = script_backend
         self._running = False
 
+        self.logger = logging.getLogger(__name__)
+
     def _process_job(self, session, job):
-        print("======== JOB {0} ========".format(job.id))
+        self.logger.info("processing job {job_id}: {job_body}", {'job_id': job.id, 'job_body': job.body})
+
         task = session.query(Task).filter(Task.uuid == job.body).one()
         if task.state != TaskState.PENDING:
-            print("skipping task in state: {0}".format(task.state.name))
+            self.logger.info("skipping {task_state} task", {'task_state': task.state.name})
             return
 
         task.state = TaskState.RUNNING
@@ -78,8 +82,9 @@ class WorkerTask(mdcs.task.Task):
                 # try again
                 continue
 
+            # XXX: catch more specific exceptions
             except Exception as e:
-                print(">> EXC <<\n{0}".format(e))
+                self.logger.error("error while running job {job_id}", {'job_id': job.id}, exc_info=e)
                 self._queue.bury(job)
 
             finally:

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import logging
 import argparse
 from http import HTTPStatus
 
@@ -35,10 +36,13 @@ def main():
     logging_config = LoggingConfig.from_args(args)
     logging_config.apply()
 
+    # retrieve top-level logger
+    logger = logging.getLogger(__name__)
+
     # retrieve bridge configuration
     response = requests.get("http://{0}/api/{1}/config".format(args.bridge, args.user))
     if response.status_code != HTTPStatus.OK:
-        print("error retrieving config from bridge: {0}".format(response))
+        logger.critical("failed to retrieve Hue bridge config", {'response': str(response)})
         sys.exit(1)
 
     config = response.json()
@@ -58,7 +62,7 @@ def main():
     # retrieve available lights from the Hue bridge and create devices
     response = requests.get("http://{0}/api/{1}/lights".format(args.bridge, args.user))
     if response.status_code != HTTPStatus.OK:
-        print("error retrieving lights from bridge: {0}".format(response))
+        logger.critical("failed to retrieve lights", {'response': str(response)})
         sys.exit(1)
 
     lights = response.json()
@@ -72,7 +76,7 @@ def main():
     # retrieve available groups from the Hue bridge and create devices
     response = requests.get("http://{0}/api/{1}/groups".format(args.bridge, args.user))
     if response.status_code != HTTPStatus.OK:
-        print("error retrieving groups from bridge: {0}".format(response))
+        logger.critical("failed to retrieve groups", {'response': str(response)})
         sys.exit(1)
 
     groups = response.json()

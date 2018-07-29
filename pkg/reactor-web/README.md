@@ -17,6 +17,16 @@ npm run build
 
 For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
+## Roadmap
+
+- [ ] Connect to Reactor instance and fetch actions and tasks.
+- [ ] Create new actions.
+- [ ] Edit existing actions.
+- [ ] Delete existing actions.
+- [ ] Status display of running and pending tasks.
+- [ ] Cancel pending tasks.
+- [ ] Inspect completed task output.
+
 ## Documentation
 
 Relevant links to project documentation for this component:

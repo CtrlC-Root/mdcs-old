@@ -118,8 +118,6 @@
             <strong>C</strong>ontrol <strong>S</strong>ystem
           </p>
 
-          <!-- TODO: some kind of diagram??? -->
-
           <aside class="notes">
             Personal project to implement a control system as a foundation for
             automation research. Reference implementation written in Python.
@@ -259,21 +257,10 @@
           <h2>Component API(s)</h2>
 
           <ul>
-            <li>
-              Client Support:
-              <ul>
-                <li>Console</li>
-                <li>Web Browser</li>
-                <li>Mobile Application</li>
-              </ul>
-            </li>
-            <li>
-              Data Flows:
-              <ul>
-                <li>Request / Response</li>
-                <li>Publish / Subscribe</li>
-              </ul>
-            </li>
+            <li>Client Support</li>
+            <li>Data Flows</li>
+            <li>Performance</li>
+            <li>Documentation</li>
           </ul>
 
           <aside class="notes">
@@ -288,10 +275,10 @@
                 </ul>
               </li>
               <li>
-                Documentation:
+                Data Flows:
                 <ul>
-                  <li>Show me the schema</li>
-                  <li>Use Swagger to generate clients</li>
+                  <li>Request / Response</li>
+                  <li>Publish / Subscribe</li>
                 </ul>
               </li>
               <li>
@@ -299,6 +286,13 @@
                 <ul>
                   <li>Minimize encoding and decoding. Prefer binary encodings.</li>
                   <li>Reduce transmission overhead. Prefer lower level protocols.</li>
+                </ul>
+              </li>
+              <li>
+                Documentation:
+                <ul>
+                  <li>Show me the schema</li>
+                  <li>Use Swagger to generate clients</li>
                 </ul>
               </li>
             </ul>
@@ -310,7 +304,7 @@
         </section>
 
         <section>
-          <h2>Ex: Node API(s)</h2>
+          <h2>Ex: MDCS Node API(s)</h2>
 
           <ul>
             <li>
@@ -734,7 +728,7 @@
 
           <ul>
             <li>Access Control</li>
-            <li>Recording Attribute Values</li>
+            <li>Recording Attributes</li>
             <li>Hotplugging Devices</li>
           </ul>
 

@@ -22,21 +22,21 @@ class SubscribeRequestHandler(BaseRequestHandler):
             # check if it's a node event
             if {'node', 'config', 'event'}.issubset(message):
                 if message['event'] == 'ONLINE':
-                    self.logger.info("updating node {node}", {'node': message['node'], 'config': message['config']})
+                    self.logger.info("updating node %(node)s", {'node': message['node'], 'config': message['config']})
                     self.registry.add_node(**message['config'], name=message['node'])
 
                 elif message['event'] == 'OFFLINE':
-                    self.logger.info("removing node {node}", {'node': message['node']})
+                    self.logger.info("removing node %(node)s", {'node': message['node']})
                     self.registry.remove_node(message['node'])
 
             # check if it's a device event
             elif {'node', 'device', 'event'}.issubset(message):
                 if message['event'] == 'ONLINE':
-                    self.logger.info("node {node} device {device} online", {'node': message['node'], 'device': message['device']})
+                    self.logger.info("node %(node)s device %(device)s online", {'node': message['node'], 'device': message['device']})
                     self.registry.add_device(message['device'], message['node'])
 
                 elif message['event'] == 'OFFLINE':
-                    self.logger.info("node {node} device {device} offline", {'node': message['node'], 'device': message['device']})
+                    self.logger.info("node %(node)s device %(device)s offline", {'node': message['node'], 'device': message['device']})
                     self.registry.remove_device(message['device'])
 
         # XXX: catch specific extensions

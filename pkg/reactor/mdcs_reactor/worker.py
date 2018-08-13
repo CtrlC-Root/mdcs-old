@@ -32,11 +32,11 @@ class WorkerTask(mdcs.task.Task):
         self.logger = logging.getLogger(__name__)
 
     def _process_job(self, session, job):
-        self.logger.info("processing job {job_id}: {job_body}", {'job_id': job.id, 'job_body': job.body})
+        self.logger.info("processing job %(job_id)s: %(job_body)s", {'job_id': job.id, 'job_body': job.body})
 
         task = session.query(Task).filter(Task.uuid == job.body).one()
         if task.state != TaskState.PENDING:
-            self.logger.info("skipping {task_state} task", {'task_state': task.state.name})
+            self.logger.info("skipping %(task_state)s task", {'task_state': task.state.name})
             return
 
         task.state = TaskState.RUNNING
@@ -84,7 +84,7 @@ class WorkerTask(mdcs.task.Task):
 
             # XXX: catch more specific exceptions
             except Exception as e:
-                self.logger.error("error while running job {job_id}", {'job_id': job.id}, exc_info=e)
+                self.logger.error("error while running job %(job_id)s", {'job_id': job.id}, exc_info=e)
                 self._queue.bury(job)
 
             finally:

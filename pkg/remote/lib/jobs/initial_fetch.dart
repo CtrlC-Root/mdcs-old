@@ -16,7 +16,7 @@ class InitialFetchJob extends Job {
     final client = http.Client();
 
     // retrieve actions
-    final actionUri = this._api.replace(path: '/action/');
+    final actionUri = this._api.replace(path: '${this._api.path}/action/');
     final actionResponse = await client.get(actionUri.toString());
 
     if (actionResponse.statusCode != 200) {
@@ -29,7 +29,7 @@ class InitialFetchJob extends Job {
     this._actions = actionsData.map((Map<String, dynamic> data) => Action.fromJSON(data)).toList();
 
     // retrieve tasks
-    final taskUri = this._api.replace(path: '/task/');
+    final taskUri = this._api.replace(path: '${this._api.path}/task/');
     final taskResponse = await client.get(taskUri.toString());
 
     if (taskResponse.statusCode != 200) {

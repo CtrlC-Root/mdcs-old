@@ -16,7 +16,7 @@ class FetchTaskJob extends Job {
     final client = http.Client();
 
     // retrieve task
-    final taskUri = this._api.replace(path: '/task/${this._primaryKey}');
+    final taskUri = this._api.replace(path: '${this._api.path}/task/${this._primaryKey}');
     final taskResponse = await client.get(taskUri.toString());
 
     if (taskResponse.statusCode != 200) {

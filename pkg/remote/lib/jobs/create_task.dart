@@ -16,7 +16,7 @@ class CreateTaskJob extends Job {
     final client = http.Client();
 
     // create task
-    final taskUri = this._api.replace(path: '/task/');
+    final taskUri = this._api.replace(path: '${this._api.path}/task/');
     final createResponse = await client.post(
       taskUri.toString(),
       headers: {'Content-Type': 'application/json'},

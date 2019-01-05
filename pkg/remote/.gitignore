@@ -6,4 +6,5 @@
 
 build/
 
+.vscode
 .flutter-plugins

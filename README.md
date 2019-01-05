@@ -25,7 +25,7 @@ Standalone components.
 * [registry](pkg/registry/README.md): node and device registry
 * [reactor](pkg/reactor/README.md): event based automation tool
 * [reactor-web](pkg/reactor-web/README.md): web interface for reactors
-* [remote](pkg/remote/README.md): mobile remote control application
+* [remote-mobile](pkg/remote/README.md): mobile client for remote
 
 ## Quick Start
 

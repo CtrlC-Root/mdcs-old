@@ -35,7 +35,7 @@ def upgrade():
         sa.Column('description', sa.String(64), nullable=False))
 
     op.create_table(
-        'button',
+        'button_control',
         sa.Column('uuid', sa.String(22), primary_key=True, nullable=False),
         sa.Column('control_uuid', sa.String(22), sa.ForeignKey('control.uuid'), nullable=False),
         sa.Column('title', sa.String(16), nullable=False))

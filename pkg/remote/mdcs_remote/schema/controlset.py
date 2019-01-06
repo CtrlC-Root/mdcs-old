@@ -2,7 +2,7 @@ from marshmallow import Schema, pre_dump
 from marshmallow.fields import String, Nested
 from marshmallow.validate import Length, OneOf
 
-from mdcs_reactor.models.controlset import ConfigType
+from mdcs_remote.models.controlset import ConfigType
 
 from .control import Control
 

@@ -3,9 +3,9 @@ from flask import g, request, jsonify
 from flask.views import MethodView
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
-from mdcs_reactor.web import application
-from mdcs_reactor.models import ControlSet
-from mdcs_reactor.schema import ControlSet as ControlSetSchema
+from mdcs_remote.web import application
+from mdcs_remote.models import ControlSet
+from mdcs_remote.schema import ControlSet as ControlSetSchema
 
 
 class ControlSetList(MethodView):

@@ -1,4 +1,4 @@
-from marshmallow import Schema, pre_dump
+from marshmallow import Schema, pre_dump, post_load
 from marshmallow.fields import String, Nested
 from marshmallow.validate import Length, OneOf
 
@@ -18,10 +18,17 @@ class ControlSet(Schema):
     config_type = String(validate=OneOf(choices=[type.name for type in ConfigType]))
     config = String(validate=Length(min=1))
 
-    controls = Nested(Control, many=True, exclude=('action_uuid',), dump_only=True)
+    controls = Nested(Control, many=True, exclude=('controlset_uuid',), dump_only=True)
+
+    @post_load
+    def parse_controlset(self, data):
+        if 'config_type' in data:
+            data['config_type'] = ConfigType[data['config_type']]
+
+        return data
 
     @pre_dump
-    def jsonify_task(self, controlset):
+    def jsonify_controlset(self, controlset):
         return {
             'uuid': controlset.uuid,
             'name': controlset.name,

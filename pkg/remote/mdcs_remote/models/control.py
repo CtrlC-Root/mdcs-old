@@ -20,13 +20,13 @@ class Control(Model):
     uuid = Column(String(22), primary_key=True)
     controlset_uuid = Column(String(22), ForeignKey('controlset.uuid'), nullable=False)
     type = Column(Enum(ControlType), nullable=False)
-    name = Column(String(16), nullable=False)
+    description = Column(String(64), nullable=False)
 
     controlset = relationship('ControlSet', back_populates='controls')
 
     def __repr__(self):
-        return "<Control(uuid='{0}', action_uuid='{1}', type='{2}', name={3}')>".format(
+        return "<Control(uuid='{0}', action_uuid='{1}', type='{2}', description={3}')>".format(
             self.uuid,
             self.action_uuid,
             self.type.name,
-            self.name)
+            self.description)

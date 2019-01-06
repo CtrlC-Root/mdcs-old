@@ -24,8 +24,6 @@ class ControlSet(Model):
     config_type = Column(Enum(ConfigType), nullable=False, default=ConfigType.JSON)
     config = Column(Text, nullable=False)
 
-    # http://docs.sqlalchemy.org/en/latest/orm/basic_relationships.html#one-to-many
-    # http://docs.sqlalchemy.org/en/latest/orm/cascades.html
     controls = relationship(
         'Control',
         order_by='Control.uuid',

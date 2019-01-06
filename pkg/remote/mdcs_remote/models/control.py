@@ -25,7 +25,7 @@ class Control(Model):
     controlset = relationship('ControlSet', back_populates='controls')
 
     button = relationship(
-        'Button',
+        'ButtonControl',
         uselist=False,
         cascade='save-update, merge, delete, delete-orphan',
         cascade_backrefs=False,

@@ -13,7 +13,7 @@ class ControlSet(Schema):
     """
 
     uuid = String(dump_only=True)
-    title = String(validate=Length(min=1, max=32))
+    name = String(validate=Length(min=1, max=32))
     description = String(validate=Length(max=64))
     config_type = String(validate=OneOf(choices=[type.name for type in ConfigType]))
     config = String(validate=Length(min=1))
@@ -22,7 +22,7 @@ class ControlSet(Schema):
     def jsonify_task(self, controlset):
         return {
             'uuid': controlset.uuid,
-            'type': controlset.title,
+            'name': controlset.name,
             'description': controlset.description,
             'config_type': controlset.config_type.name,
             'config': controlset.config}

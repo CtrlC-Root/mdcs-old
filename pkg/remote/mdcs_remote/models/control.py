@@ -8,8 +8,6 @@ from .generic import Model
 
 class ControlType(enum.Enum):
     BUTTON = enum.auto()
-    TOGGLE = enum.auto()
-    SLIDER = enum.auto()
 
 
 class Control(Model):

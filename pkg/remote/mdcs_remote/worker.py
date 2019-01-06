@@ -34,29 +34,8 @@ class WorkerTask(mdcs.task.Task):
     def _process_job(self, session, job):
         self.logger.info("processing job %(job_id)s: %(job_body)s", {'job_id': job.id, 'job_body': job.body})
 
-        task = session.query(Task).filter(Task.uuid == job.body).one()
-        if task.state != TaskState.PENDING:
-            self.logger.info("skipping %(task_state)s task", {'task_state': task.state.name})
-            return
-
-        task.state = TaskState.RUNNING
-        session.add(task)
-        session.commit()
-
-        try:
-            self._backend.run(task.action.content)
-
-        except Exception as e:
-            task.state = TaskState.FAILED
-            task.output = str(e)
-            raise
-
-        else:
-            task.state = TaskState.COMPLETED
-
-        finally:
-            session.add(task)
-            session.commit()
+        # TODO
+        pass
 
     def _start(self):
         self._running = True

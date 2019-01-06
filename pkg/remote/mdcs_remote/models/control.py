@@ -20,7 +20,7 @@ class Control(Model):
     uuid = Column(String(22), primary_key=True)
     controlset_uuid = Column(String(22), ForeignKey('controlset.uuid'), nullable=False)
     type = Column(Enum(ControlType), nullable=False)
-    description = Column(String(64), nullable=False)
+    description = Column(String(64), nullable=False, default="")
 
     controlset = relationship('ControlSet', back_populates='controls')
 

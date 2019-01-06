@@ -13,7 +13,7 @@ class Control(Schema):
     uuid = String(dump_only=True)
     controlset_uuid = String()
     type = String(validate=OneOf(choices=[type.name for type in ControlType]))
-    description = String(validate=Length(min=1, max=64))
+    description = String(validate=Length(max=64))
 
     @pre_dump
     def jsonify_task(self, control):

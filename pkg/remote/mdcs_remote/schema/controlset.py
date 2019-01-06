@@ -18,8 +18,6 @@ class ControlSet(Schema):
     config_type = String(validate=OneOf(choices=[type.name for type in ConfigType]))
     config = String(validate=Length(min=1))
 
-    controls = Nested(Control, many=True, exclude=('controlset_uuid',), dump_only=True)
-
     @pre_dump
     def jsonify_task(self, controlset):
         return {
@@ -27,5 +25,4 @@ class ControlSet(Schema):
             'type': controlset.title,
             'description': controlset.description,
             'config_type': controlset.config_type.name,
-            'config': controlset.config,
-            'controls': controlset.controls}
+            'config': controlset.config}

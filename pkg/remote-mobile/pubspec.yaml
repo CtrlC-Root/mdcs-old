@@ -1,5 +1,5 @@
 name: remote
-description: MDCS reactor remote control
+description: MDCS remote control
 
 dependencies:
   flutter:

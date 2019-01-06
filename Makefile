@@ -1,6 +1,6 @@
 # project settings
 TOP := $(shell pwd)
-PACKAGES := libmdcs-python node node-console node-web registry reactor bridge-hue
+PACKAGES := libmdcs-python node node-console node-web registry remote remote-web bridge-hue
 MAKEFLAGS += --silent
 
 export MAKEFLAGS

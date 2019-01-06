@@ -23,8 +23,8 @@ Standalone components.
 * [node-web](pkg/node-web/README.md): web interface for nodes
 * [bridge-hue](pkg/bridge-hue/README.md): bridge node for Philips Hue lights
 * [registry](pkg/registry/README.md): node and device registry
-* [reactor](pkg/reactor/README.md): event based automation tool
-* [reactor-web](pkg/reactor-web/README.md): web interface for reactors
+* [remote](pkg/remote/README.md): TODO
+* [remote-web](pkg/remote-web/README.md): web interface for remote
 * [remote-mobile](pkg/remote/README.md): mobile client for remote
 
 ## Quick Start

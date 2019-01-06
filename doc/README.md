@@ -19,7 +19,7 @@
   * [Bridge](Node.md): A specialized node daemon that exposes devices for a remote service.
 * Data Storage: components that record device attribute values
 * Automation: components that automate tasks using devices
-  * [Reactor](Reactor.md): An event-based automation tool.
+  * Remote
 * Monitoring: components that monitor devices
   * [Registry](Registry.md): A daemon that keeps track of online nodes and devices.
 * Clients:

@@ -1,6 +1,6 @@
 # remote
 
-A cross-platform mobile application for controlling reactor instances.
+A cross-platform mobile application for controlling remote instances.
 
 ## References
 

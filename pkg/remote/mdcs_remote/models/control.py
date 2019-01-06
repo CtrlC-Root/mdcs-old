@@ -24,8 +24,15 @@ class Control(Model):
 
     controlset = relationship('ControlSet', back_populates='controls')
 
+    button = relationship(
+        'Button',
+        uselist=False,
+        cascade='save-update, merge, delete, delete-orphan',
+        cascade_backrefs=False,
+        back_populates='control')
+
     def __repr__(self):
-        return "<Control(uuid='{0}', action_uuid='{1}', type='{2}', description={3}')>".format(
+        return "<Control(uuid='{0}', action_uuid='{1}', type='{2}', description='{3}')>".format(
             self.uuid,
             self.action_uuid,
             self.type.name,

@@ -13,10 +13,10 @@ class ControlSet(Schema):
     """
 
     uuid = String(dump_only=True)
-    name = String(validate=Length(min=1, max=32))
+    name = String(required=True, validate=Length(min=1, max=32))
     description = String(validate=Length(max=64))
     config_type = String(validate=OneOf(choices=[type.name for type in ConfigType]))
-    config = String(validate=Length(min=1))
+    config = String(required=True, validate=Length(min=1))
 
     controls = Nested(Control, many=True, exclude=('controlset_uuid',), dump_only=True)
 

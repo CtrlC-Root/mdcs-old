@@ -6,12 +6,14 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from mdcs_remote.web import application
 from mdcs_remote.models import Control, ControlType, ButtonControl
 from mdcs_remote.schema import Control as ControlSchema
+from mdcs_remote.schema import ButtonControl as ButtonControlSchema
 
 
 class ControlList(MethodView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.schema = ControlSchema()
+        self.button_schema = ButtonControlSchema()
 
     def get(self):
         return jsonify(self.schema.dump(g.db.query(Control).all(), many=True).data)
@@ -32,7 +34,11 @@ class ControlList(MethodView):
 
         # create the specialized control
         if control.type == ControlType.BUTTON:
-            button = ButtonControl(**control_data.get('button', {}))
+            button_data, errors = self.button_schema.load(control_data.get('button', {}))
+            if errors:
+                return jsonify({'button': [errors]}), 400
+
+            button = ButtonControl(**button_data)
             button.uuid = shortuuid.uuid()
             button.control_uuid = control.uuid
 

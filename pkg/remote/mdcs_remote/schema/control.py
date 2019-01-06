@@ -13,8 +13,8 @@ class Control(Schema):
     """
 
     uuid = String(dump_only=True)
-    controlset_uuid = String()
-    type = String(validate=OneOf(choices=[type.name for type in ControlType]))
+    controlset_uuid = String(required=True)
+    type = String(required=True, validate=OneOf(choices=[type.name for type in ControlType]))
     description = String(validate=Length(max=64))
 
     button = Nested(ButtonControl, exclude=('uuid', 'control_uuid'))

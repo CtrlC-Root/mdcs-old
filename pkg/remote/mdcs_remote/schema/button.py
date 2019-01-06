@@ -10,4 +10,4 @@ class ButtonControl(Schema):
 
     uuid = String(dump_only=True)
     control_uuid = String(dump_only=True)
-    title = String(validate=Length(min=1, max=16))
+    title = String(required=True, validate=Length(min=1, max=16))

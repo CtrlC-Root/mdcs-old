@@ -42,13 +42,13 @@ def finalize_session(exception=None):
         queue.close()
 
 
-
 # import views after the application object exists to avoid a circular import error
 # disable the pycodestyle E402 warning for these lines since we know what we're doing
 # https://pycodestyle.readthedocs.io/en/latest/intro.html#error-codes
-from .views import Index, Health  # noqa
-from .views import ControlSetList, ControlSetDetail # noqa
-from .views import ControlList, ControlDetail # noqa
+from .views import Index, Health   # noqa
+from .views import ControlSetList, ControlSetDetail  # noqa
+from .views import ControlList, ControlDetail  # noqa
+from .views import TaskList, TaskDetail  # noqa
 
 application.add_url_rule('/', view_func=Index.as_view('index'))
 application.add_url_rule('/health', view_func=Health.as_view('health'))
@@ -58,3 +58,6 @@ application.add_url_rule('/controlset/<uuid>', view_func=ControlSetDetail.as_vie
 
 application.add_url_rule('/control/', view_func=ControlList.as_view('control_list'))
 application.add_url_rule('/control/<uuid>', view_func=ControlDetail.as_view('control_detail'))
+
+application.add_url_rule('/task/', view_func=TaskList.as_view('task_list'))
+application.add_url_rule('/task/<uuid>', view_func=TaskDetail.as_view('task_detail'))

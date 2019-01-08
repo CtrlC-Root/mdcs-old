@@ -8,11 +8,11 @@ class Task(Schema):
     """
 
     uuid = String(dump_only=True)
-    controlset_uuid = String(dump_only=True)
+    controlset_uuid = String(required=True)
     state = String(dump_only=True)
     created = DateTime(dump_only=True)
     modified = DateTime(dump_only=True)
-    input = Dict(dump_only=True)
+    input = Dict(required=True)
     output = Dict(dump_only=True)
 
     @pre_dump

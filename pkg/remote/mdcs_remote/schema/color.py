@@ -3,11 +3,10 @@ from marshmallow.fields import String
 from marshmallow.validate import Length
 
 
-class ButtonControl(Schema):
+class ColorControl(Schema):
     """
-    Serialization schema for ButtonControl model instances.
+    Serialization schema for ColorControl model instances.
     """
 
     uuid = String(dump_only=True)
     control_uuid = String(dump_only=True)
-    title = String(required=True, validate=Length(min=1, max=16))

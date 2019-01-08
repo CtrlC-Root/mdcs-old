@@ -40,8 +40,14 @@ def upgrade():
         sa.Column('control_uuid', sa.String(22), sa.ForeignKey('control.uuid'), nullable=False),
         sa.Column('title', sa.String(16), nullable=False))
 
+    op.create_table(
+        'color_control',
+        sa.Column('uuid', sa.String(22), primary_key=True, nullable=False),
+        sa.Column('control_uuid', sa.String(22), sa.ForeignKey('control.uuid'), nullable=False))
+
 
 def downgrade():
-    op.drop_table('button')
+    op.drop_table('color_control')
+    op.drop_table('button_control')
     op.drop_table('control')
     op.drop_table('controlset')

@@ -8,6 +8,7 @@ from .generic import Model
 
 class ControlType(enum.Enum):
     BUTTON = enum.auto()
+    COLOR = enum.auto()
 
 
 class Control(Model):
@@ -26,6 +27,13 @@ class Control(Model):
 
     button = relationship(
         'ButtonControl',
+        uselist=False,
+        cascade='save-update, merge, delete, delete-orphan',
+        cascade_backrefs=False,
+        back_populates='control')
+
+    color = relationship(
+        'ColorControl',
         uselist=False,
         cascade='save-update, merge, delete, delete-orphan',
         cascade_backrefs=False,

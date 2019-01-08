@@ -4,9 +4,10 @@ from flask.views import MethodView
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from mdcs_remote.web import application
-from mdcs_remote.models import Control, ControlType, ButtonControl
+from mdcs_remote.models import Control, ControlType, ButtonControl, ColorControl
 from mdcs_remote.schema import Control as ControlSchema
 from mdcs_remote.schema import ButtonControl as ButtonControlSchema
+from mdcs_remote.schema import ColorControl as ColorControlSchema
 
 
 class ControlList(MethodView):
@@ -14,6 +15,7 @@ class ControlList(MethodView):
         super().__init__(*args, **kwargs)
         self.schema = ControlSchema()
         self.button_schema = ButtonControlSchema()
+        self.color_schema = ColorControlSchema()
 
     def get(self):
         return jsonify(self.schema.dump(g.db.query(Control).all(), many=True).data)
@@ -26,6 +28,7 @@ class ControlList(MethodView):
 
         base_data = control_data.copy()
         base_data.pop('button', None)
+        base_data.pop('color', None)
 
         control = Control(**base_data)
         control.uuid = shortuuid.uuid()
@@ -43,6 +46,17 @@ class ControlList(MethodView):
             button.control_uuid = control.uuid
 
             g.db.add(button)
+
+        elif control.type == ControlType.COLOR:
+            color_data, errors = self.color_schema.load(control_data.get('color', {}))
+            if errors:
+                return jsonify({'color': [errors]}), 400
+
+            color = ColorControl(**color_data)
+            color.uuid = shortuuid.uuid()
+            color.control_uuid = control.uuid
+
+            g.db.add(color)
 
         else:
             return "invalid control type: {0}".format(control.type.name), 400
@@ -81,7 +95,7 @@ class ControlDetail(MethodView):
 
         # control fields
         for field, value in updates.items():
-            if field in ['button']:
+            if field in ['button', 'color']:
                 continue
 
             setattr(control, field, value)
@@ -91,7 +105,9 @@ class ControlDetail(MethodView):
             for field, value in updates['button'].items():
                 setattr(control.button, field, value)
 
-            del updates['button']
+        elif control.type == ControlType.COLOR and 'color' in updates:
+            for field, value in updates['color'].items():
+                setattr(control.color, field, value)
 
         g.db.add(control)
         g.db.commit()

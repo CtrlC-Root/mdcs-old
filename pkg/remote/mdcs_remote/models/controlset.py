@@ -31,6 +31,13 @@ class ControlSet(Model):
         cascade_backrefs=False,
         back_populates='controlset')
 
+    tasks = relationship(
+        'Task',
+        order_by='Task.uuid',
+        cascade='save-update, merge, delete, delete-orphan',
+        cascade_backrefs=False,
+        back_populates='controlset')
+
     def __repr__(self):
         return "<ControlSet(uuid='{0}', name='{1}', description='{2}', config_type='{3}', config='{4}')>".format(
             self.uuid,

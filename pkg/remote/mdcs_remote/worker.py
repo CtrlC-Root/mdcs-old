@@ -22,7 +22,7 @@ class WorkerTask(mdcs.task.Task):
             run=self._run,
             start=self._start,
             stop=self._stop,
-            files=[queue_client._sock]) # XXX: any way not to access private property?
+            files=[queue_client._sock])  # XXX: any way not to access private property?
 
         self._session = session_factory
         self._queue = queue_client

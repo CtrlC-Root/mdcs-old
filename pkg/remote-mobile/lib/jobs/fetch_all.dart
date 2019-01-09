@@ -34,7 +34,7 @@ class FetchAllJob extends Job {
     final List<Map<String, dynamic>> controlSetData = json.decode(controlSetResponse.body).cast<Map<String, dynamic>>();
     this._controlSets = controlSetData.map((Map<String, dynamic> data) => ControlSet.fromJSON(data)).toList();
 
-   // retrieve controls
+    // retrieve controls
     final controlUri = this._api.replace(path: '${this._api.path}/control/');
     final controlResponse = await client.get(controlUri.toString());
 
@@ -43,7 +43,7 @@ class FetchAllJob extends Job {
       return;
     }
 
-    // parse control sets
+    // parse controls
     final List<Map<String, dynamic>> controlData = json.decode(controlResponse.body).cast<Map<String, dynamic>>();
     this._controls = controlData.map((Map<String, dynamic> data) => Control.fromJSON(data)).toList();
 

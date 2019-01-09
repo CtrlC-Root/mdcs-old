@@ -11,10 +11,6 @@ class DashboardScreen extends StatelessWidget {
     // TODO: do something
   }
 
-  void onNewAction() {
-    // TODO: do something
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,16 +28,9 @@ class DashboardScreen extends StatelessWidget {
         children: [
           StatusIndicator(repository: repository),
           Expanded(
-            child: ActionList(repository: repository),
+            child: Text('TODO'),
           ),
         ],
-      ),
-      floatingActionButton: IconButton(
-        icon: Icon(Icons.add_circle),
-        iconSize: 48.0,
-        color: Color.fromRGBO(0, 0, 196, 1.0),
-        tooltip: "New",
-        onPressed: this.onNewAction,
       ),
     );
   }

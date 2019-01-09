@@ -17,15 +17,15 @@ class FetchTaskJob extends Job {
 
     // retrieve task
     final taskUri = this._api.replace(path: '${this._api.path}/task/${this._primaryKey}');
-    final taskResponse = await client.get(taskUri.toString());
+    final response = await client.get(taskUri.toString());
 
-    if (taskResponse.statusCode != 200) {
+    if (response.statusCode != 200) {
       this.fail(Exception('failed to retrieve task: ${this._primaryKey}'));
       return;
     }
 
     // parse task
-    final Map<String, dynamic> taskData = json.decode(taskResponse.body);
+    final Map<String, dynamic> taskData = json.decode(response.body);
     this._task = Task.fromJSON(taskData);
 
     // done

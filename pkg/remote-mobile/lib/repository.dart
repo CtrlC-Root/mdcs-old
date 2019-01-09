@@ -6,7 +6,6 @@ import 'package:remote/jobs/jobs.dart';
 class Repository {
   final JobQueue _queue;
   final Uri reactorUri;
-  final ActionStore actions = ActionStore();
   final TaskStore tasks = TaskStore();
 
   Repository(JobQueue queue, Uri reactorUri) : this._queue = queue, this.reactorUri = reactorUri;
@@ -14,15 +13,7 @@ class Repository {
   Future fetchAll() {
     return this._queue.run(InitialFetchJob(this.reactorUri))
       .then((InitialFetchJob initialFetch) {
-        this.actions.values = initialFetch.actions;
         this.tasks.values = initialFetch.tasks;
-      });
-  }
-
-  Future createTask(Action action) {
-    return this._queue.run(CreateTaskJob(this.reactorUri, action))
-      .then((CreateTaskJob createTask) {
-        this.tasks.add(createTask.task);
       });
   }
 
@@ -41,41 +32,5 @@ class Repository {
 
         return tasks;
       });
-  }
-
-  void loadTestData() {
-    final actionOne = Action(
-      uuid: "one",
-      title: "More Light",
-      description: "Make everything brighter",
-      content: "more_light()",
-    );
-
-    final actionTwo = Action(
-      uuid: "two",
-      title: "Less Light",
-      description: "Make everything darker",
-      content: "less_light()",
-    );
-
-    this.actions.values = [actionOne, actionTwo];
-    this.tasks.values = [
-      Task(
-        uuid: "one",
-        actionUuid: actionOne.uuid,
-        state: TaskState.running,
-        created: DateTime.now(),
-        modified: DateTime.now(),
-        output: "",
-      ),
-      Task(
-        uuid: "two",
-        actionUuid: actionTwo.uuid,
-        state: TaskState.running,
-        created: DateTime.now(),
-        modified: DateTime.now(),
-        output: "",
-      ),
-    ];
   }
 }

@@ -19,14 +19,6 @@ class _StatusIndicatorState extends State<StatusIndicator> {
 
   Task get _task => _notifier?.value;
 
-  Action get _action {
-    if (this._task == null) {
-      return null;
-    }
-
-    return this.widget.repository.actions.getValueByKey(this._task.actionUuid);
-  }
-
   Task pickTask(List<Task> tasks) {
     tasks.sort((a, b) => a.modified.compareTo(b.modified));
 
@@ -115,18 +107,18 @@ class _StatusIndicatorState extends State<StatusIndicator> {
     switch (this._task.state) {
       case TaskState.pending:
       case TaskState.running:
-        statusText = "Running '${this._action.title}'";
+        statusText = "Running";
         statusWidget = CircularProgressIndicator();
         break;
 
       case TaskState.completed:
-        statusText = "Ran '${this._action.title}'";
+        statusText = "Finished";
         statusWidget = Icon(Icons.check_circle, color: Color.fromRGBO(0, 196, 0, 1.0), size: 48.0);
         break;
 
       case TaskState.cancelled:
       case TaskState.failed:
-        statusText = "Failed '${this._action.title}'";
+        statusText = "Failed";
         statusWidget = Icon(Icons.error, color: Color.fromRGBO(196, 0, 0, 1.0), size: 48.0);
         break;
     }

@@ -6,27 +6,46 @@ import 'package:remote/jobs/job.dart';
 
 class InitialFetchJob extends Job {
   final Uri _api;
-  List<Action> _actions;
+  List<ControlSet> _controlSets;
+  List<Control> _controls;
   List<Task> _tasks;
 
-  InitialFetchJob(Uri api) : this._api = api, this._actions = List<Action>(), this._tasks = List<Task>(), super();
+  InitialFetchJob(Uri api):
+    this._api = api,
+    this._controlSets = List<ControlSet>(),
+    this._controls = List<Control>(),
+    this._tasks = List<Task>(),
+    super();
 
   @override
   Future run() async {
     final client = http.Client();
 
-    // retrieve actions
-    final actionUri = this._api.replace(path: '${this._api.path}/action/');
-    final actionResponse = await client.get(actionUri.toString());
+    // retrieve control sets
+    final controlSetUri = this._api.replace(path: '${this._api.path}/controlset/');
+    final controlSetResponse = await client.get(controlSetUri.toString());
 
-    if (actionResponse.statusCode != 200) {
-      this.fail(Exception('failed to retrieve actions'));
+    if (controlSetResponse.statusCode != 200) {
+      this.fail(Exception('failed to retrieve control sets'));
       return;
     }
 
-    // parse actions
-    final List<Map<String, dynamic>> actionsData = json.decode(actionResponse.body).cast<Map<String, dynamic>>();
-    this._actions = actionsData.map((Map<String, dynamic> data) => Action.fromJSON(data)).toList();
+    // parse control sets
+    final List<Map<String, dynamic>> controlSetData = json.decode(controlSetResponse.body).cast<Map<String, dynamic>>();
+    this._controlSets = controlSetData.map((Map<String, dynamic> data) => ControlSet.fromJSON(data)).toList();
+
+   // retrieve controls
+    final controlUri = this._api.replace(path: '${this._api.path}/control/');
+    final controlResponse = await client.get(controlUri.toString());
+
+    if (controlResponse.statusCode != 200) {
+      this.fail(Exception('failed to retrieve control sets'));
+      return;
+    }
+
+    // parse control sets
+    final List<Map<String, dynamic>> controlData = json.decode(controlResponse.body).cast<Map<String, dynamic>>();
+    this._controls = controlData.map((Map<String, dynamic> data) => Control.fromJSON(data)).toList();
 
     // retrieve tasks
     final taskUri = this._api.replace(path: '${this._api.path}/task/');
@@ -45,9 +64,14 @@ class InitialFetchJob extends Job {
     this.complete();
   }
 
-  List<Action> get actions {
+  List<ControlSet> get controlSets {
     assert(this.state == JobState.completed);
-    return this._actions;
+    return this._controlSets;
+  }
+
+  List<Control> get controls {
+    assert(this.state == JobState.completed);
+    return this._controls;
   }
 
   List<Task> get tasks {

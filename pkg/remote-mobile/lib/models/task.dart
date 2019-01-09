@@ -12,21 +12,19 @@ enum TaskState {
 /// A task to run an action.
 class Task extends Model {
   final String uuid;
-  final String actionUuid;
+  final String controlSetUuid;
   final TaskState state;
   final DateTime created;
   final DateTime modified;
-  final String output;
 
-  Task({this.uuid, this.actionUuid, this.state, this.created, this.modified, this.output});
+  Task({this.uuid, this.controlSetUuid, this.state, this.created, this.modified});
 
   Task.fromJSON(Map<String, dynamic> data) :
     this.uuid = data['uuid'] as String,
-    this.actionUuid = data['action_uuid'] as String,
+    this.controlSetUuid = data['controlset_uuid'] as String,
     this.state = Task.parseState(data['state'] as String),
     this.created = DateTime.parse(data['created'] as String),
-    this.modified = DateTime.parse(data['modified'] as String),
-    this.output = data['output'] as String;
+    this.modified = DateTime.parse(data['modified'] as String);
 
   static TaskState parseState(String value) {
     switch (value.toLowerCase()) {

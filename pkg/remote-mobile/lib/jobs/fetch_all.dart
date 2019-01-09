@@ -31,21 +31,29 @@ class FetchAllJob extends Job {
     }
 
     // parse control sets
-    final List<Map<String, dynamic>> controlSetData = json.decode(controlSetResponse.body).cast<Map<String, dynamic>>();
-    this._controlSets = controlSetData.map((Map<String, dynamic> data) => ControlSet.fromJSON(data)).toList();
+    final List<Map<String, dynamic>> controlSetsData = json.decode(controlSetResponse.body).cast<Map<String, dynamic>>();
 
-    // retrieve controls
-    final controlUri = this._api.replace(path: '${this._api.path}/control/');
-    final controlResponse = await client.get(controlUri.toString());
+    for (var controlSetData in controlSetsData) {
+      final controlSet = ControlSet.fromJSON(controlSetData);
+      this._controlSets.add(controlSet);
 
-    if (controlResponse.statusCode != 200) {
-      this.fail(Exception('failed to retrieve control sets'));
-      return;
+      // parse controls
+      for (var controlData in controlSetData['controls']) {
+        final type = Control.parseControlType(controlData['type']);
+        switch (type) {
+          case ControlType.button:
+            this._controls.add(ButtonControl.fromJSON(controlData, controlSetUuid: controlSet.uuid));
+            break;
+          case ControlType.color:
+            this._controls.add(ColorControl.fromJSON(controlData, controlSetUuid: controlSet.uuid));
+            break;
+          case ControlType.none:
+            // XXX: this shouldn't happen, what do we do here?
+            this._controls.add(Control.fromJSON(controlData, controlSetUuid: controlSet.uuid));
+            break;
+        }
+      }
     }
-
-    // parse controls
-    final List<Map<String, dynamic>> controlData = json.decode(controlResponse.body).cast<Map<String, dynamic>>();
-    this._controls = controlData.map((Map<String, dynamic> data) => Control.fromJSON(data)).toList();
 
     // retrieve tasks
     final taskUri = this._api.replace(path: '${this._api.path}/task/');

@@ -16,26 +16,6 @@ class TaskList(MethodView):
     def get(self):
         return jsonify(self.schema.dump(g.db.query(Task).all(), many=True).data)
 
-    def post(self):
-        # parse the task data
-        task_data, errors = self.schema.load(request.json)
-        if errors:
-            return jsonify(errors), 400
-
-        # create the task
-        task = Task(**task_data)
-        task.uuid = shortuuid.uuid()
-
-        # save it to the database
-        g.db.add(task)
-        g.db.commit()
-
-        # enqueue a job for the task in the worker queue
-        g.queue.put(task.uuid)
-
-        # return the newly created task
-        return jsonify(self.schema.dump(task).data)
-
 
 class TaskDetail(MethodView):
     def __init__(self, *args, **kwargs):

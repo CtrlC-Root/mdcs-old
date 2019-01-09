@@ -46,7 +46,7 @@ def finalize_session(exception=None):
 # disable the pycodestyle E402 warning for these lines since we know what we're doing
 # https://pycodestyle.readthedocs.io/en/latest/intro.html#error-codes
 from .views import Index, Health   # noqa
-from .views import ControlSetList, ControlSetDetail  # noqa
+from .views import ControlSetList, ControlSetDetail, ControlSetApply  # noqa
 from .views import ControlList, ControlDetail  # noqa
 from .views import TaskList, TaskDetail  # noqa
 
@@ -55,6 +55,7 @@ application.add_url_rule('/health', view_func=Health.as_view('health'))
 
 application.add_url_rule('/controlset/', view_func=ControlSetList.as_view('controlset_list'))
 application.add_url_rule('/controlset/<uuid>', view_func=ControlSetDetail.as_view('controlset_detail'))
+application.add_url_rule('/controlset/<uuid>/apply', view_func=ControlSetApply.as_view('controlset_apply'))
 
 application.add_url_rule('/control/', view_func=ControlList.as_view('control_list'))
 application.add_url_rule('/control/<uuid>', view_func=ControlDetail.as_view('control_detail'))

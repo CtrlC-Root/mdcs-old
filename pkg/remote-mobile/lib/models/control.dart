@@ -17,9 +17,9 @@ class Control extends Model {
 
   Control({this.uuid, this.controlSetUuid, this.name, this.type, this.description});
 
-  Control.fromJSON(Map<String, dynamic> data) :
+  Control.fromJSON(Map<String, dynamic> data, {String controlSetUuid}):
     this.uuid = data['uuid'] as String,
-    this.controlSetUuid = data['controlset_uuid'] as String,
+    this.controlSetUuid = controlSetUuid != null ? controlSetUuid : data['controlset_uuid'] as String,
     this.name = data['name'] as String,
     this.type = Control.parseControlType(data['type'] as String),
     this.description = data['description'] as String;

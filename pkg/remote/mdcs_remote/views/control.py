@@ -21,47 +21,35 @@ class ControlList(MethodView):
         return jsonify(self.schema.dump(g.db.query(Control).all(), many=True).data)
 
     def post(self):
-        # create the control set
+        # create the control
         control_data, errors = self.schema.load(request.json)
         if errors:
             return jsonify(errors), 400
 
-        base_data = control_data.copy()
-        base_data.pop('button', None)
-        base_data.pop('color', None)
+        if control_data['type'] == ControlType.BUTTON:
+            if 'button' not in control_data:
+                return jsonify({'button': ["Missing data for required field."]}), 400
 
-        control = Control(**base_data)
-        control.uuid = shortuuid.uuid()
+            button_data = control_data.pop('button')
+            control_data.update(button_data)
 
-        g.db.add(control)
+            control = ButtonControl(**control_data)
+            control.uuid = shortuuid.uuid()
 
-        # create the specialized control
-        if control.type == ControlType.BUTTON:
-            button_data, errors = self.button_schema.load(control_data.get('button', {}))
-            if errors:
-                return jsonify({'button': [errors]}), 400
+        elif control_data['type'] == ControlType.COLOR:
+            if 'color' not in control_data:
+                return jsonify({'color': ["Missing data for required field."]}), 400
 
-            button = ButtonControl(**button_data)
-            button.uuid = shortuuid.uuid()
-            button.control_uuid = control.uuid
+            color_data = control_data.pop('color')
+            control_data.update(color_data)
 
-            g.db.add(button)
-
-        elif control.type == ControlType.COLOR:
-            color_data, errors = self.color_schema.load(control_data.get('color', {}))
-            if errors:
-                return jsonify({'color': [errors]}), 400
-
-            color = ColorControl(**color_data)
-            color.uuid = shortuuid.uuid()
-            color.control_uuid = control.uuid
-
-            g.db.add(color)
+            control = ColorControl(**control_data)
+            control.uuid = shortuuid.uuid()
 
         else:
             return "invalid control type: {0}".format(control.type.name), 400
 
-        # save the control objects
+        g.db.add(control)
         g.db.commit()
 
         # return the newly created instance
@@ -72,6 +60,8 @@ class ControlDetail(MethodView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.schema = ControlSchema()
+        self.button_schema = ButtonControlSchema()
+        self.color_schema = ColorControlSchema()
 
     def dispatch_request(self, uuid):
         try:
@@ -93,25 +83,27 @@ class ControlDetail(MethodView):
         if errors:
             return jsonify(errors), 400
 
-        # control fields
+        # control type can't be changed once it's been created
+        updates.pop('type', None)
+
+        # pull out specialized control fields and merge into top-level fields
+        button_updates = updates.pop('button', {})
+        color_updates = updates.pop('color', {})
+
+        if control.type == ControlType.BUTTON:
+            updates.update(button_updates)
+
+        elif control.type == ControlType.COLOR:
+            updates.update(color_updates)
+
+        # update and save the model
         for field, value in updates.items():
-            if field in ['button', 'color']:
-                continue
-
             setattr(control, field, value)
-
-        # specialied control fields
-        if control.type == ControlType.BUTTON and 'button' in updates:
-            for field, value in updates['button'].items():
-                setattr(control.button, field, value)
-
-        elif control.type == ControlType.COLOR and 'color' in updates:
-            for field, value in updates['color'].items():
-                setattr(control.color, field, value)
 
         g.db.add(control)
         g.db.commit()
 
+        # return the updated instance
         return jsonify(self.schema.dump(control).data)
 
     def delete(self, control):

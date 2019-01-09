@@ -8,5 +8,4 @@ class ColorControl(Schema):
     Serialization schema for ColorControl model instances.
     """
 
-    uuid = String(dump_only=True)
-    control_uuid = String(dump_only=True)
+    pass

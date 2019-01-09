@@ -7,6 +7,7 @@ from .generic import Model
 
 
 class ControlType(enum.Enum):
+    NONE = enum.auto()
     BUTTON = enum.auto()
     COLOR = enum.auto()
 
@@ -25,23 +26,14 @@ class Control(Model):
 
     controlset = relationship('ControlSet', back_populates='controls')
 
-    button = relationship(
-        'ButtonControl',
-        uselist=False,
-        cascade='save-update, merge, delete, delete-orphan',
-        cascade_backrefs=False,
-        back_populates='control')
-
-    color = relationship(
-        'ColorControl',
-        uselist=False,
-        cascade='save-update, merge, delete, delete-orphan',
-        cascade_backrefs=False,
-        back_populates='control')
+    __mapper_args__ = {
+        'polymorphic_identity': ControlType.NONE,
+        'polymorphic_on': type
+    }
 
     def __repr__(self):
-        return "<Control(uuid='{0}', action_uuid='{1}', type='{2}', description='{3}')>".format(
+        return "<Control(uuid='{0}', controlset_uuid='{1}', type=ControlType.{2}, description='{3}')>".format(
             self.uuid,
-            self.action_uuid,
+            self.controlset_uuid,
             self.type.name,
             self.description)

@@ -18,8 +18,8 @@ class Control(Schema):
     type = String(required=True, validate=OneOf(choices=[type.name for type in ControlType]))
     description = String(validate=Length(max=64))
 
-    button = Nested(ButtonControl, exclude=('uuid', 'control_uuid'))
-    color = Nested(ColorControl, exclude=('uuid', 'control_uuid'))
+    button = Nested(ButtonControl)
+    color = Nested(ColorControl)
 
     @post_load
     def parse_control(self, data):
@@ -37,10 +37,10 @@ class Control(Schema):
             'description': control.description}
 
         if control.type == ControlType.BUTTON:
-            data['button'] = control.button
+            data['button'] = {'title': control.title}
 
         elif control.type == ControlType.COLOR:
-            data['color'] = control.color
+            data['color'] = {}
 
         else:
             # TODO: throw specific validation error?

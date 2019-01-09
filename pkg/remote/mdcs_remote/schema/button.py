@@ -8,6 +8,4 @@ class ButtonControl(Schema):
     Serialization schema for ButtonControl model instances.
     """
 
-    uuid = String(dump_only=True)
-    control_uuid = String(dump_only=True)
     title = String(required=True, validate=Length(min=1, max=16))

@@ -17,6 +17,10 @@ class _ControlSetListState extends State<ControlSetList> {
     this.setState(() {});
   }
 
+  Future onRefreshList() {
+    return this.widget.repository.fetchAll();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -42,14 +46,18 @@ class _ControlSetListState extends State<ControlSetList> {
   @override
   Widget build(BuildContext context) {
     final List<ControlSet> controlSets = this.widget.repository.controlSets.values;
-    return ListView.builder(
-      itemCount: controlSets.length,
-      itemBuilder: (context, index) {
-        return ControlSetCard(
-          repository: this.widget.repository,
-          controlSetUuid: controlSets[index].uuid
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: this.onRefreshList,
+      child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: controlSets.length,
+        itemBuilder: (context, index) {
+          return ControlSetCard(
+            repository: this.widget.repository,
+            controlSetUuid: controlSets[index].uuid
+          );
+        },
+      )
     );
   }
 }

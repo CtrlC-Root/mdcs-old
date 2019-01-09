@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import Column, ForeignKey, String, Enum
+from sqlalchemy import Column, ForeignKey, UniqueConstraint, String, Enum
 from sqlalchemy.orm import relationship
 
 from .generic import Model
@@ -18,9 +18,13 @@ class Control(Model):
     """
 
     __tablename__ = 'control'
+    __table_args__ = (
+        UniqueConstraint('controlset_uuid', 'name'),
+    )
 
     uuid = Column(String(22), primary_key=True)
     controlset_uuid = Column(String(22), ForeignKey('controlset.uuid'), nullable=False)
+    name = Column(String(32), nullable=False)
     type = Column(Enum(ControlType), nullable=False)
     description = Column(String(64), nullable=False, default="")
 
@@ -32,8 +36,9 @@ class Control(Model):
     }
 
     def __repr__(self):
-        return "<Control(uuid='{0}', controlset_uuid='{1}', type=ControlType.{2}, description='{3}')>".format(
+        return "<Control(uuid='{0}', controlset_uuid='{1}', name={2}, type=ControlType.{3}, description='{4}')>".format(
             self.uuid,
             self.controlset_uuid,
+            self.name,
             self.type.name,
             self.description)

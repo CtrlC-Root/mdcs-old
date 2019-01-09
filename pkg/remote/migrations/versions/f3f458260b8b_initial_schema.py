@@ -31,8 +31,10 @@ def upgrade():
         'control',
         sa.Column('uuid', sa.String(22), primary_key=True, nullable=False),
         sa.Column('controlset_uuid', sa.String(22), sa.ForeignKey('controlset.uuid'), nullable=False),
+        sa.Column('name', sa.String(32), nullable=False),
         sa.Column('type', sa.Enum(ControlType), nullable=False),
-        sa.Column('description', sa.String(64), nullable=False))
+        sa.Column('description', sa.String(64), nullable=False),
+        sa.UniqueConstraint('controlset_uuid', 'name'))
 
     op.create_table(
         'task',

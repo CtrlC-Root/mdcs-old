@@ -1,6 +1,6 @@
 from marshmallow import Schema, pre_dump, post_load
 from marshmallow.fields import String, Nested
-from marshmallow.validate import Length, OneOf
+from marshmallow.validate import Length, OneOf, Regexp
 
 from mdcs_remote.models.control import ControlType
 
@@ -15,6 +15,7 @@ class Control(Schema):
 
     uuid = String(dump_only=True)
     controlset_uuid = String(required=True)
+    name = String(required=True, validate=[Length(min=1, max=32), Regexp(r'^[a-zA-Z]([_a-zA-Z0-9]*)$')])
     type = String(required=True, validate=OneOf(choices=[type.name for type in ControlType]))
     description = String(validate=Length(max=64))
 
@@ -33,6 +34,7 @@ class Control(Schema):
         data = {
             'uuid': control.uuid,
             'controlset_uuid': control.controlset_uuid,
+            'name': control.name,
             'type': control.type.name,
             'description': control.description}
 

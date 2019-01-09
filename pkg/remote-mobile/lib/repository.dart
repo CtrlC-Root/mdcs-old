@@ -6,6 +6,9 @@ import 'package:remote/jobs/jobs.dart';
 class Repository {
   final JobQueue _queue;
   final Uri reactorUri;
+
+  final ControlSetStore controlSets = ControlSetStore();
+  final ControlStore controls = ControlStore();
   final TaskStore tasks = TaskStore();
 
   Repository(JobQueue queue, Uri reactorUri) : this._queue = queue, this.reactorUri = reactorUri;
@@ -13,6 +16,8 @@ class Repository {
   Future fetchAll() {
     return this._queue.run(FetchAllJob(this.reactorUri))
       .then((FetchAllJob initialFetch) {
+        this.controlSets.values = initialFetch.controlSets;
+        this.controls.values = initialFetch.controls;
         this.tasks.values = initialFetch.tasks;
       });
   }

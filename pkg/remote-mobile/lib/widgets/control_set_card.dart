@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:remote/repository.dart';
 import 'package:remote/stores/control_set.dart';
 import 'package:remote/models/models.dart';
+import 'package:remote/widgets/button_control.dart';
 
 class ControlSetCard extends StatefulWidget {
   final Repository repository;
   final String controlSetUuid;
 
-  ControlSetCard({Key key, @required this.repository, @required this.controlSetUuid}) : super(key: key);
+  ControlSetCard({Key key, @required this.repository, @required this.controlSetUuid}): super(key: key);
 
   @override
   _ControlSetCardState createState() => _ControlSetCardState();
@@ -18,10 +19,6 @@ class _ControlSetCardState extends State<ControlSetCard> {
 
   void onControlSetChanged() {
     this.setState(() {});
-  }
-
-  void onButtonControlClick() {
-    // TODO
   }
 
   @override
@@ -86,46 +83,34 @@ class _ControlSetCardState extends State<ControlSetCard> {
     // XXX: sort order?
     // controls.sort((Control a, Control b) => a.name.compareTo(b.name));
 
-    final controlRows = controls.map((Control control) {
-      switch (control.type) {
-        case ControlType.button:
-          final buttonControl = control as ButtonControl;
-          return Row(
-            children: [
-              Expanded(
-                child: RaisedButton(
-                  onPressed: this.onButtonControlClick,
-                  child: Text(buttonControl.title)
-                )
-              )
-            ]
-          );
+    final controlRows = controls
+      .map((Control control) {
+        switch (control.type) {
+          case ControlType.button:
+            return ButtonControlWidget(
+              repository: this.widget.repository,
+              controlUuid: control.uuid
+            );
 
-        case ControlType.color:
-          // TODO: implement a color picker widget
+          case ControlType.color:
+            // TODO: implement a color picker widget
 
-        case ControlType.none:
-          return Row(
-            children: [
-              Expanded(
-                child: Text(control.description)
-              )
-            ],
-          );
-      }
-    });
-
-    // XXX: this feels dirty
-    List<Widget> widgets = List<Widget>();
-    widgets.add(headerRow);
-    widgets.addAll(controlRows);
+          case ControlType.none:
+            // XXX: this shouldn't happen, what do we do here?
+            return Expanded(
+              child: Text(control.description)
+            );
+        }
+      })
+      .map((Widget widget) => Row(children: [widget]))
+      .toList();
 
     return Card(
       margin: const EdgeInsets.all(8.0),
       child: Container(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          children: widgets,
+          children: [headerRow] + controlRows,
         )
       )
     );

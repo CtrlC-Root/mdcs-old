@@ -7,7 +7,6 @@ from .generic import Model
 
 
 class ConfigType(enum.Enum):
-    JSON = enum.auto()
     LUA = enum.auto()
 
 
@@ -21,7 +20,7 @@ class ControlSet(Model):
     uuid = Column(String(22), primary_key=True)
     name = Column(String(32), unique=True, nullable=False)
     description = Column(String(64), nullable=False, default="")
-    config_type = Column(Enum(ConfigType), nullable=False, default=ConfigType.JSON)
+    config_type = Column(Enum(ConfigType), nullable=False)
     config = Column(Text, nullable=False)
 
     controls = relationship(

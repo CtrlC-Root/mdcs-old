@@ -28,7 +28,7 @@ class DashboardScreen extends StatelessWidget {
         children: [
           StatusIndicator(repository: repository),
           Expanded(
-            child: Text('TODO'),
+            child: ControlSetList(repository: this.repository),
           ),
         ],
       ),

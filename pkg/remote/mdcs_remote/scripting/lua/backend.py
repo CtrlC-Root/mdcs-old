@@ -46,11 +46,14 @@ class LuaScriptBackend(ScriptBackend):
                 name=device_name,
                 node=device_config['node'])
 
-    def run(self, script):
+    def run(self, script, vars={}):
         self._sync_registry()
 
         runtime = lupa.LuaRuntime(unpack_returned_tuples=True)
         globals = runtime.globals()
         globals['registry'] = RegistryProxy(runtime, self._registry)
+
+        for key, value in vars.items():
+            globals[key] = value
 
         runtime.execute(script)

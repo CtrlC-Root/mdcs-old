@@ -11,7 +11,7 @@ import mdcs.task
 import mdcs.daemon
 from mdcs.logging import LoggingConfig
 
-from .models import Action, Task, TaskState
+from .models import ConfigType, Task, TaskState
 from .scripting.lua import LuaScriptConfig
 
 
@@ -34,8 +34,35 @@ class WorkerTask(mdcs.task.Task):
     def _process_job(self, session, job):
         self.logger.info("processing job %(job_id)s: %(job_body)s", {'job_id': job.id, 'job_body': job.body})
 
-        # TODO
-        pass
+        task = session.query(Task).filter(Task.uuid == job.body).one()
+        if task.state != TaskState.PENDING:
+            self.logger.info("skipping %(task_state)s task", {'task_state': task.state.name})
+            return
+
+        task.state = TaskState.RUNNING
+        session.add(task)
+        session.commit()
+
+        try:
+            if task.controlset.config_type == ConfigType.LUA:
+                self._backend.run(
+                    task.controlset.config,
+                    vars={'input': task.input})
+
+            else:
+                raise RuntimeError("unknown config type: {0}".format(task.controlset.type))
+
+        except Exception as e:
+            task.state = TaskState.FAILED
+            task.output = {"error": str(e)}
+            raise
+
+        else:
+            task.state = TaskState.COMPLETED
+
+        finally:
+            session.add(task)
+            session.commit()
 
     def _start(self):
         self._running = True

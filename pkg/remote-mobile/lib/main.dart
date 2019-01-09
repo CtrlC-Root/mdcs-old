@@ -6,7 +6,7 @@ import 'package:remote/screens/screens.dart';
 /// Application entry point.
 void main() {
   final JobQueue queue = JobQueue();
-  final Repository repository = Repository(queue, Uri(scheme: 'http', host: 'localhost', port: 5000));
+  final Repository repository = Repository(queue, Uri(scheme: 'http', host: '10.0.2.2', port: 5000));
 
   queue.start().then((JobQueue ignore) {
     runApp(RemoteApp(repository: repository));
@@ -18,7 +18,7 @@ class RemoteApp extends StatelessWidget {
   final Repository repository;
 
   RemoteApp({Key key, @required this.repository}) : super(key: key) {
-    // initialize repository
+    // XXX: initialize repository
     this.repository.fetchAll()
       .catchError((e) {
         debugPrint("UH OH: ${e.toString()}");

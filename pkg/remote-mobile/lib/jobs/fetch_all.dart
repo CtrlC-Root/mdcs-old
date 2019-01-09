@@ -4,13 +4,13 @@ import 'package:http/http.dart' as http;
 import 'package:remote/models/models.dart';
 import 'package:remote/jobs/job.dart';
 
-class InitialFetchJob extends Job {
+class FetchAllJob extends Job {
   final Uri _api;
   List<ControlSet> _controlSets;
   List<Control> _controls;
   List<Task> _tasks;
 
-  InitialFetchJob(Uri api):
+  FetchAllJob(Uri api):
     this._api = api,
     this._controlSets = List<ControlSet>(),
     this._controls = List<Control>(),

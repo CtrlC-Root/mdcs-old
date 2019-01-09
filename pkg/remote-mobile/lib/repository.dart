@@ -11,8 +11,8 @@ class Repository {
   Repository(JobQueue queue, Uri reactorUri) : this._queue = queue, this.reactorUri = reactorUri;
 
   Future fetchAll() {
-    return this._queue.run(InitialFetchJob(this.reactorUri))
-      .then((InitialFetchJob initialFetch) {
+    return this._queue.run(FetchAllJob(this.reactorUri))
+      .then((FetchAllJob initialFetch) {
         this.tasks.values = initialFetch.tasks;
       });
   }

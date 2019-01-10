@@ -7,11 +7,10 @@ import 'package:remote/jobs/job.dart';
 class ApplyControlSetJob extends Job {
   final Uri _api;
   final ControlSet _controlSet;
+  final Map<String, ControlValue> _input;
   Task _task;
 
-  ApplyControlSetJob(Uri api, ControlSet controlSet):
-    this._api = api,
-    this._controlSet = controlSet,
+  ApplyControlSetJob(this._api, this._controlSet, this._input):
     this._task = null,
     super();
 
@@ -24,10 +23,10 @@ class ApplyControlSetJob extends Job {
     final response = await client.post(
       taskUri.toString(),
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({'todo': {'clicked': true}}));  // TODO: inputs go here
+      body: json.encode(this._input));
 
     if (response.statusCode != 200) {
-      this.fail(Exception('failed to create task for control set ${this._controlSet.uuid}: ${response.body}'));
+      this.fail(Exception('failed to apply control set ${this._controlSet.uuid}: ${response.body}'));
       return;
     }
 
@@ -40,6 +39,8 @@ class ApplyControlSetJob extends Job {
   }
 
   ControlSet get controlSet => this._controlSet;
+
+  Map<String, ControlValue> get input => this._input;
 
   Task get task {
     assert(this.state == JobState.completed);

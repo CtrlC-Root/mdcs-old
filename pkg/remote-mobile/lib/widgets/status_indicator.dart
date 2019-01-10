@@ -55,7 +55,7 @@ class _StatusIndicatorState extends State<StatusIndicator> {
 
       this._notifier = this.widget.repository.tasks.getNotifierByKey(task.primaryKey);
       this._notifier.addListener(this.onTaskChanged);
-      this._refresh = Timer(Duration(seconds: 2), this.onRefreshTimer);
+      this._refresh = Timer(Duration(seconds: 1), this.onRefreshTimer);
     });
   }
 

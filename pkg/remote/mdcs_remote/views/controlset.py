@@ -118,6 +118,10 @@ class ControlSetApply(MethodView):
             if errors:
                 return jsonify({control.name: errors}), 400
 
+            # store the control type with the value data to make parsing
+            # easier in the future when the control set may have changed
+            input_data[control.name]['type'] = control.type.name
+
         # create the task
         task = Task(
             uuid=shortuuid.uuid(),

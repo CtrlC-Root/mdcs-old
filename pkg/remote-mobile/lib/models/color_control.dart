@@ -21,3 +21,20 @@ class ColorControl extends Control {
     assert(this.type == ControlType.color);
   }
 }
+
+/// A color control value.
+class ColorValue extends ControlValue {
+  final int red;
+  final int green;
+  final int blue;
+
+  ColorValue({this.red, this.green, this.blue}): super();
+  ColorValue.fromJSON(Map<String, dynamic> data):
+    this.red = int.parse(data['red'] as String),
+    this.green = int.parse(data['green'] as String),
+    this.blue = int.parse(data['blue'] as String),
+    super();
+
+  @override
+  Map<String, dynamic> toData() => {'red': this.red, 'green': this.green, 'blue': this.blue};
+}

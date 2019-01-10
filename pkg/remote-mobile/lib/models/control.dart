@@ -16,7 +16,6 @@ class Control extends Model {
   final String description;
 
   Control({this.uuid, this.controlSetUuid, this.name, this.type, this.description});
-
   Control.fromJSON(Map<String, dynamic> data, {String controlSetUuid}):
     this.uuid = data['uuid'] as String,
     this.controlSetUuid = controlSetUuid != null ? controlSetUuid : data['controlset_uuid'] as String,
@@ -35,4 +34,10 @@ class Control extends Model {
 
   @override
   String get primaryKey => this.uuid;
+}
+
+/// A generic control value.
+class ControlValue {
+  /// Get the JSON serializable representation of the value.
+  Map<String, dynamic> toData() => {};
 }

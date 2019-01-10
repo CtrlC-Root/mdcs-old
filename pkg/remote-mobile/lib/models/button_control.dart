@@ -24,3 +24,16 @@ class ButtonControl extends Control {
     assert(this.type == ControlType.button);
   }
 }
+
+/// A button control value.
+class ButtonValue  extends ControlValue {
+  final bool clicked;
+
+  ButtonValue({this.clicked}): super();
+  ButtonValue.fromJSON(Map<String, dynamic> data):
+    this.clicked = data['clicked'] as bool,
+    super();
+
+  @override
+  Map<String, dynamic> toData() => {'clicked': this.clicked};
+}

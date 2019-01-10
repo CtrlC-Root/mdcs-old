@@ -22,6 +22,14 @@ class Repository {
       });
   }
 
+  Future applyControlSet(ControlSet controlSet, Map<String, ControlValue> input) {
+    return this._queue
+      .run(ControlSetApplyJob(this.reactorUri, controlSet, input))
+      .then((ControlSetApplyJob job) {
+        this.tasks.add(job.task);
+      });
+  }
+
   Future<List<Task>> fetchPendingTasks() {
     final Set<TaskState> pendingStates = Set.of([TaskState.pending, TaskState.running]);
     final refreshJobs = this.tasks.values

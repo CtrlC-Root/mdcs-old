@@ -21,6 +21,29 @@ class _ControlSetCardState extends State<ControlSetCard> {
     this.setState(() {});
   }
 
+  // TODO: make this generic instead of button-specific
+  void onApply(ButtonControl sourceButton) {
+    final controlSet = this._notifier.value;
+    final controls = this.widget.repository.controls.values
+      .where((Control control) => control.controlSetUuid == controlSet.uuid)
+      .toList();
+
+    // TODO: woah there, this makes all sorts of wild assumptions
+    Map<String, ControlValue> input = Map<String, ControlValue>.fromEntries(
+      controls.map((Control control) {
+        if (control == sourceButton) {
+          return MapEntry(control.name, ButtonValue(clicked: true));
+        }
+        else {
+          return MapEntry(control.name, ButtonValue(clicked: false));
+        }
+      })
+    );
+
+    // create the job
+    this.widget.repository.applyControlSet(controlSet, input);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -89,7 +112,8 @@ class _ControlSetCardState extends State<ControlSetCard> {
           case ControlType.button:
             return ButtonControlWidget(
               repository: this.widget.repository,
-              controlUuid: control.uuid
+              controlUuid: control.uuid,
+              onApply: () => this.onApply(control as ButtonControl),
             );
 
           case ControlType.color:

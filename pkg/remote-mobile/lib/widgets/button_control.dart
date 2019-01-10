@@ -6,8 +6,9 @@ import 'package:remote/models/models.dart';
 class ButtonControlWidget extends StatefulWidget {
   final Repository repository;
   final String controlUuid;
+  final VoidCallback onApply;
 
-  ButtonControlWidget({Key key, @required this.repository, @required this.controlUuid}):
+  ButtonControlWidget({Key key, @required this.repository, @required this.controlUuid, @required this.onApply}):
     super(key: key);
 
   @override
@@ -19,10 +20,6 @@ class _ButtonControlWidgetState extends State<ButtonControlWidget> {
 
   void onControlChanged() {
     this.setState(() {});
-  }
-
-  void onClick() {
-    // TODO: implement me
   }
 
   @override
@@ -56,7 +53,7 @@ class _ButtonControlWidgetState extends State<ButtonControlWidget> {
     return Container(
       child: Expanded(
         child: RaisedButton(
-          onPressed: this.onClick,
+          onPressed: this.widget.onApply,
           child: Text(buttonControl.title)
         )
       ),

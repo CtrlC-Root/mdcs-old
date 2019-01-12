@@ -4,6 +4,7 @@ Description=MDCS Remote API
 [Service]
 Type=simple
 EnvironmentFile=/etc/default/mdcs
+Environment="MDCS_REMOTE_CONFIG=/home/vagrant/mdcs-remote.conf"
 WorkingDirectory=/home/vagrant
 ExecStart=/bin/bash -c "${MDCS_VENV}/bin/gunicorn --workers 2 --bind unix:/run/mdcs/remote mdcs_remote:application"
 User=vagrant

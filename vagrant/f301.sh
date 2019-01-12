@@ -81,6 +81,12 @@ fi
 # deactivate virtualenv to avoid any pollution
 deactivate
 
+# create MDCS configuration file
+# TODO: customize settings to use local remote.db copy
+if [ ! -f "/home/vagrant/mdcs-remote.conf" ]; then
+    echo "DATABASE_URI='sqlite:////vagrant/pkg/remote/remote.db'" > /home/vagrant/mdcs-remote.conf
+fi
+
 # install and start MDCS remote service
 # TODO: customize settings to use local remote.db copy
 if [ ! -f "/etc/systemd/system/mdcs-remote.service" ]; then

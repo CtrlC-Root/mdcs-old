@@ -6,12 +6,15 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 # create the application
 application = Flask('mdcs_remote', instance_relative_config=True)
-# XXX application.config.from_envvar('REMOTE_CONFIG')
+application.config.update({
+    'DATABASE_URI': 'sqlite:///remote.db',
+    'BEANSTALKD_HOST': 'localhost',
+    'BEANSTALKD_PORT': 11300,
+})
 
-# XXX: local development
-application.config['DATABASE_URI'] = 'sqlite:///remote.db'
-application.config['BEANSTALKD_HOST'] = '127.0.0.1'
-application.config['BEANSTALKD_PORT'] = 11300
+application.config.from_envvar('MDCS_REMOTE_CONFIG', silent=True)
+
+# TODO: http://flask.pocoo.org/docs/1.0/config/#APPLICATION_ROOT
 
 # wrap the WSGI application with a middleware to work with relative
 # request paths when the application is behind a reverse proxy

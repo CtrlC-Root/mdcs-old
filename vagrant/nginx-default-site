@@ -25,6 +25,8 @@ server {
         proxy_read_timeout 120;
         proxy_redirect default; # XXX: does this actually work here though?
 
+        # we want $http_host here because $http strips the port number and
+        # we are actually hosting the application on a non-standard port
         proxy_set_header Host $http_host;
         proxy_set_header X-Scheme $scheme;
         proxy_set_header X-Real-IP $remote_addr;

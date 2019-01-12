@@ -1,0 +1,13 @@
+[Unit]
+Description=MDCS Remote Worker
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/mdcs
+WorkingDirectory=/home/vagrant
+ExecStart=/bin/bash -c "${MDCS_VENV}/bin/mdcs-remote-worker --db-uri 'sqlite:////vagrant/pkg/remote/remote.db'"
+User=vagrant
+Group=vagrant
+
+[Install]
+WantedBy=multi-user.target

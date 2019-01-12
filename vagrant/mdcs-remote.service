@@ -1,0 +1,13 @@
+[Unit]
+Description=MDCS Remote API
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/mdcs
+WorkingDirectory=/home/vagrant
+ExecStart=/bin/bash -c "${MDCS_VENV}/bin/gunicorn --workers 2 --bind 127.0.0.1:8080 mdcs_remote:application"
+User=vagrant
+Group=vagrant
+
+[Install]
+WantedBy=multi-user.target

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # settings
-MDCS_VENV="/home/vagrant/env"
+source /vagrant/vagrant/settings.sh
 
 # update packages
 sudo apt-get update

@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # settings
+source /vagrant/vagrant/settings.sh
 AURORA_URL="https://github.com/xuri/aurora/releases/download/2.1/aurora_linux_amd64_v2.1.tar.gz"
 
 # configure private network (https://netplan.io/)
 NETPLAN_CONFIG="/etc/netplan/55-vagrant.yaml"
 if [ ! -f "${NETPLAN_CONFIG}" ]; then
-    sudo install -o root -g root -m 0644 /vagrant/vagrant/netplan-private.yaml "${NETPLAN_CONFIG}"
+    sudo install -o root -g root -m 0644 "${SRC}/netplan-private.yaml" "${NETPLAN_CONFIG}"
     sudo sed -i -e 's|VAGRANTCIDR|192.168.80.10/24|g' "${NETPLAN_CONFIG}"
     sudo sed -i -e 's|VAGRANTIPADDR|192.168.80.10|g' "${NETPLAN_CONFIG}"
 
@@ -36,12 +37,12 @@ fi
 
 if [ ! -f "/etc/aurora.toml" ]; then
     # install the configuration file
-    sudo install -o root -g root -m 0640 /vagrant/vagrant/aurora.toml /etc/
+    sudo install -o root -g root -m 0640 "${SRC}/aurora.toml" /etc/
 fi
 
 if [ ! -f "/etc/systemd/system/aurora.service" ]; then
     # install the systemd service
-    sudo install -o root -g root -m 0644 /vagrant/vagrant/aurora.service /etc/systemd/system/
+    sudo install -o root -g root -m 0644 "${SRC}/aurora.service" /etc/systemd/system/
     sudo systemctl daemon-reload
 fi
 
@@ -55,7 +56,7 @@ fi
 # configure and start MDCS registry service
 if [ ! -f "/etc/systemd/system/mdcs-registry.service" ]; then
     # install the systemd service
-    sudo install -o root -g root -m 0644 /vagrant/vagrant/mdcs-registry.service /etc/systemd/system/
+    sudo install -o root -g root -m 0644 "${SRC}/mdcs-registry.service" /etc/systemd/system/
     sudo systemctl daemon-reload
 fi
 
@@ -66,8 +67,51 @@ if [ $? -ne 0 ]; then
     sudo systemctl start mdcs-registry.service
 fi
 
-# TODO: remote
-# http://flask.pocoo.org/docs/1.0/deploying/wsgi-standalone/#gunicorn
-# http://docs.gunicorn.org/en/latest/deploy.html#systemd
+# activate virtualenv
+source "${MDCS_VENV}/bin/activate"
 
-# TODO: remote-worker
+# install gunicorn for running the remote web application
+if [ ! -f "${MDCS_VENV}/bin/gunicorn" ]; then
+    pip install --upgrade gunicorn
+fi
+
+# create the remote sqlite database
+# TODO: we should make a separate copy on the VM
+if [ ! -f "${PKG}/remote/remote.db" ]; then
+    pushd "${PKG}/remote"
+    alembic upgrade head
+    popd
+fi
+
+# deactivate virtualenv to avoid any pollution
+deactivate
+
+# install and start MDCS remote service
+# TODO: customize settings to use local remote.db copy
+if [ ! -f "/etc/systemd/system/mdcs-remote.service" ]; then
+    # install the systemd service
+    sudo install -o root -g root -m 0644 "${SRC}/mdcs-remote.service" /etc/systemd/system/
+    sudo systemctl daemon-reload
+fi
+
+systemctl is-active mdcs-remote.service &> /dev/null
+if [ $? -ne 0 ]; then
+    # enable and start the service
+    sudo systemctl enable mdcs-remote.service
+    sudo systemctl start mdcs-remote.service
+fi
+
+# install and start MDCS remote worker service
+# TODO: customize settings to use local remote.db copy
+if [ ! -f "/etc/systemd/system/mdcs-remote-worker.service" ]; then
+    # install the systemd service
+    sudo install -o root -g root -m 0644 "${SRC}/mdcs-remote-worker.service" /etc/systemd/system/
+    sudo systemctl daemon-reload
+fi
+
+systemctl is-active mdcs-remote-worker.service &> /dev/null
+if [ $? -ne 0 ]; then
+    # enable and start the service
+    sudo systemctl enable mdcs-remote-worker.service
+    sudo systemctl start mdcs-remote-worker.service
+fi

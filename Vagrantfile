@@ -23,7 +23,8 @@ Vagrant.configure("2") do |config|
     f301.vm.network "private_network", ip: "192.168.80.10", auto_config: false
     f301.vm.network :forwarded_port, guest: 11300, host: 11300 # beanstalkd
     f301.vm.network :forwarded_port, guest: 3000, host: 3000   # aurora beanstalk dahsboard
-    f301.vm.network :forwarded_port, guest: 5520, host: 5520  # Registry HTTP API
+    f301.vm.network :forwarded_port, guest: 5520, host: 5520   # Registry HTTP API
+    f301.vm.network :forwarded_port, guest: 8080, host: 8080   # Remote API
   end
 
   config.vm.define "x301" do |x301|

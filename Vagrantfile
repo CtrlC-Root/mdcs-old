@@ -24,6 +24,7 @@ Vagrant.configure("2") do |config|
     f301.vm.network :forwarded_port, guest: 11300, host: 11300 # beanstalkd
     f301.vm.network :forwarded_port, guest: 3000, host: 3000   # aurora beanstalk dahsboard
     f301.vm.network :forwarded_port, guest: 5520, host: 5520   # Registry HTTP API
+    f301.vm.network :forwarded_port, guest: 8080, host: 8080   # Remote API and Web UI
   end
 
   config.vm.define "x301" do |x301|
@@ -40,20 +41,5 @@ Vagrant.configure("2") do |config|
     x301.vm.network "private_network", ip: "192.168.80.20", auto_config: false
     x301.vm.network :forwarded_port, guest: 5510, host: 5510 # Node HTTP API
     x301.vm.network :forwarded_port, guest: 5511, host: 5511 # Node TCP API
-  end
-
-  config.vm.define "x302" do |x302|
-    x302.vm.hostname = "x302"
-    x302.vm.provider "virtualbox" do |vb|
-      vb.memory = 768
-      vb.cpus = 1
-
-      # override setting in ubuntu/xenial64 box to disable output log file
-      vb.customize ["modifyvm", :id, "--uartmode1", "disconnected"]
-    end
-
-    x302.vm.provision "shell", path: "vagrant/x302.sh"
-    x302.vm.network "private_network", ip: "192.168.80.30", auto_config: false
-    x302.vm.network :forwarded_port, guest: 8080, host: 8080 # Remote API
   end
 end

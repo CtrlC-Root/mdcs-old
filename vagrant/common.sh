@@ -13,6 +13,16 @@ sudo apt-get -y install build-essential vim tmux htop
 # install python 3
 sudo apt-get -y install python3 python3-dev python3-virtualenv
 
+# configure tmpfiles to create socket directory
+if [ ! -f "/etc/tmpfiles.d/mdcs" ]; then
+    sudo install -o root -g root -m 0644 "${SRC}/tmpfiles" /etc/tmpfiles.d/mdcs
+fi
+
+# manually create socket directory for first boot
+if [ ! -d "/run/mdcs" ]; then
+    sudo install -o vagrant -g vagrant -m 0755 -d /run/mdcs
+fi
+
 # create the virtualenv
 if [ ! -d "${MDCS_VENV}" ]; then
     python3 -m virtualenv -p $(which python3) "${MDCS_VENV}"

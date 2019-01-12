@@ -28,7 +28,6 @@ fi
 # https://github.com/xuri/aurora
 which aurora &> /dev/null
 if [ $? -ne 0 ]; then
-    # download, extract, and install the binary
     # https://unix.stackexchange.com/a/239745/103130
     wget --quiet -O - "${AURORA_URL}" | tar -xz -C $HOME
     sudo install -o root -g root -m 0755 $HOME/aurora /usr/local/bin
@@ -36,19 +35,16 @@ if [ $? -ne 0 ]; then
 fi
 
 if [ ! -f "/etc/aurora.toml" ]; then
-    # install the configuration file
     sudo install -o root -g root -m 0640 "${SRC}/aurora.toml" /etc/
 fi
 
 if [ ! -f "/etc/systemd/system/aurora.service" ]; then
-    # install the systemd service
     sudo install -o root -g root -m 0644 "${SRC}/aurora.service" /etc/systemd/system/
     sudo systemctl daemon-reload
 fi
 
 systemctl is-active aurora.service &> /dev/null
 if [ $? -ne 0 ]; then
-    # enable and start the service
     sudo systemctl enable aurora.service
     sudo systemctl start aurora.service
 fi
@@ -62,56 +58,6 @@ fi
 
 systemctl is-active mdcs-registry.service &> /dev/null
 if [ $? -ne 0 ]; then
-    # enable and start the service
     sudo systemctl enable mdcs-registry.service
     sudo systemctl start mdcs-registry.service
-fi
-
-# activate virtualenv
-source "${MDCS_VENV}/bin/activate"
-
-# install gunicorn for running the remote web application
-if [ ! -f "${MDCS_VENV}/bin/gunicorn" ]; then
-    pip install --upgrade gunicorn
-fi
-
-# create the remote sqlite database
-# TODO: we should make a separate copy on the VM
-if [ ! -f "${PKG}/remote/remote.db" ]; then
-    pushd "${PKG}/remote"
-    alembic upgrade head
-    popd
-fi
-
-# deactivate virtualenv to avoid any pollution
-deactivate
-
-# install and start MDCS remote service
-# TODO: customize settings to use local remote.db copy
-if [ ! -f "/etc/systemd/system/mdcs-remote.service" ]; then
-    # install the systemd service
-    sudo install -o root -g root -m 0644 "${SRC}/mdcs-remote.service" /etc/systemd/system/
-    sudo systemctl daemon-reload
-fi
-
-systemctl is-active mdcs-remote.service &> /dev/null
-if [ $? -ne 0 ]; then
-    # enable and start the service
-    sudo systemctl enable mdcs-remote.service
-    sudo systemctl start mdcs-remote.service
-fi
-
-# install and start MDCS remote worker service
-# TODO: customize settings to use local remote.db copy
-if [ ! -f "/etc/systemd/system/mdcs-remote-worker.service" ]; then
-    # install the systemd service
-    sudo install -o root -g root -m 0644 "${SRC}/mdcs-remote-worker.service" /etc/systemd/system/
-    sudo systemctl daemon-reload
-fi
-
-systemctl is-active mdcs-remote-worker.service &> /dev/null
-if [ $? -ne 0 ]; then
-    # enable and start the service
-    sudo systemctl enable mdcs-remote-worker.service
-    sudo systemctl start mdcs-remote-worker.service
 fi

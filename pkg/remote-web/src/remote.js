@@ -44,19 +44,57 @@ $(function(){
     },
   });
 
+  // ControlSet Detail view
+  // ********************************
+  var ControlSetDetailView = Backbone.View.extend({
+    tagName: 'div',
+    className: 'controlset',
+    template: _.template($('#controlset-tmpl').html()),
+    initialize: function() {
+      this.listenTo(this.model, 'change', this.render);
+      this.listenTo(this.model, 'destroy', this.remove);
+    },
+    render: function() {
+      var html = this.template(this.model.toJSON());
+      this.$el.html(html);
+
+      return this;
+    }
+  });
+
+  // ControlSet List view
+  // ********************************
+  var ControlSetListView = Backbone.View.extend({
+    initialize: function() {
+      this.listenTo(this.collection, 'update sync', this.render);
+      this.collection.fetch();
+    },
+    render: function() {
+      this.$el.empty();
+      this.collection.each(function(model) {
+        var item = new ControlSetDetailView({model: model});
+        this.$el.append(item.render().$el);
+      }, this);
+
+      return this;
+    }
+  });
+
   // Application view
   // ********************************
   var RemoteView = Backbone.View.extend({
     el: $("#remote"),
     initialize: function() {
-      // TODO
-    },
-    render: function() {
-      // TODO
+      // control sets
+      this.controlSets = new ControlSetCollection();
+      this.controlSetsList = new ControlSetListView({
+        el: this.$('.controlsets'),
+        collection: this.controlSets,
+      });
     }
   });
 
-  // TODO
+  // Initialize application
   // ********************************
   var app = new RemoteView();
 

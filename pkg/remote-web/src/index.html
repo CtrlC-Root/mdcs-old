@@ -10,20 +10,27 @@
     <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" />
 
-    <!-- MDCS -->
+    <!-- MDCS Remote -->
     <link rel="stylesheet" href="remote.css" />
     <title>MDCS Remote</title>
   </head>
   <body>
-    <!-- MDCS -->
+    <!-- RemoteView -->
     <div id="remote" class="container">
       <section class="header">
         <h1>Remote</h1>
         <!-- TODO: task status indicator -->
       </section>
 
-      <!-- TODO: control sets -->
+      <!-- ControlSetListView -->
+      <section class="controlsets"></section>
     </div>
+
+    <!-- ControlSetDetailView template -->
+    <script type="text/template" id="controlset-tmpl">
+      <h3><%= name %></h3>
+      <p><%= description %></p>
+    </script>
 
     <!-- jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -34,7 +41,7 @@
     <!-- Backbone.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min.js"></script>
 
-    <!-- MDCS -->
+    <!-- MDCS Remote -->
     <script src="remote.js"></script>
   </body>
 </html>

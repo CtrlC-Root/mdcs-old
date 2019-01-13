@@ -3,13 +3,16 @@ $(function(){
   // ControlSet Model (ESksfnYfHPrPc5Rb5Cdfgk)
   // ********************************
   var ControlSet = Backbone.Model.extend({
-    urlRoot: '/controlset/',
+    urlRoot: function() {
+      return new URL('controlset/', window.location.href).href;
+    },
     idAttribute: 'uuid',
     defaults: {
-      uuid: '',
+      uuid: null,
       name: '',
       description: '',
-      configType: '',
+      configType: 'lua',
+      config: '-- nothing',
     },
     parse: function(data, options) {
       return {
@@ -17,6 +20,7 @@ $(function(){
         name: data.name,
         description: data.description,
         configType: data.config_type.toLowerCase(),
+        config: data.config,
       };
     },
     toJSON: function() {
@@ -26,6 +30,7 @@ $(function(){
         name: data.name,
         description: data.description,
         config_type: data.configType.toUpperCase(),
+        config: data.config,
       };
     },
   });
@@ -33,11 +38,13 @@ $(function(){
   // ControlSet Collection
   // ********************************
   var ControlSetCollection = Backbone.Collection.extend({
-    url: '/controlset/',
     model: ControlSet,
+    url: function() {
+      return new URL('controlset/', window.location.href).href;
+    },
   });
 
-  // Application
+  // Application view
   // ********************************
   var RemoteView = Backbone.View.extend({
     el: $("#remote"),

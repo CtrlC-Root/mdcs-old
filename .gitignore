@@ -4,3 +4,6 @@
 *.egg-info
 __pycache__
 .vagrant
+
+# ubuntu vagrant box logs
+ubuntu-*-cloudimg-console.log

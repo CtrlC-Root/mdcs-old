@@ -14,9 +14,6 @@ Vagrant.configure("2") do |config|
     f301.vm.provider "virtualbox" do |vb|
       vb.memory = 1536
       vb.cpus = 2
-
-      # override setting in ubuntu/xenial64 box to disable output log file
-      vb.customize ["modifyvm", :id, "--uartmode1", "disconnected"]
     end
 
     f301.vm.provision "shell", path: "vagrant/f301.sh"
@@ -32,9 +29,6 @@ Vagrant.configure("2") do |config|
     x301.vm.provider "virtualbox" do |vb|
       vb.memory = 768
       vb.cpus = 1
-
-      # override setting in ubuntu/xenial64 box to disable output log file
-      vb.customize ["modifyvm", :id, "--uartmode1", "disconnected"]
     end
 
     x301.vm.provision "shell", path: "vagrant/x301.sh"

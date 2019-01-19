@@ -17,19 +17,55 @@
   <body>
     <!-- RemoteView -->
     <div id="remote" class="container">
-      <section class="header">
-        <h1>Remote</h1>
-        <!-- TODO: task status indicator -->
+      <section class="remote-controlsets">
+        <!-- ControlSetTableView -->
+        <table class="u-full-width">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Config Type</th>
+              <th>Description</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
       </section>
 
-      <!-- ControlSetListView -->
-      <section class="controlsets"></section>
+      <section class="remote-controlsets-create">
+        <form>
+          <label for="controlset-name">Name</label>
+          <input id="controlset-name" type="text" class="u-full-width">
+
+          <label for="controlset-configType">Config Type</label>
+          <select id="controlset-configType" class="u-full-width">
+            <option value="lua">Lua</option>
+          </select>
+
+          <label for="controlset-description">Description</label>
+          <input id="controlset-description" type="text" class="u-full-width">
+
+          <input id="controlset-create"
+            type="submit"
+            class="button-primary"
+            value="Create">
+
+          <input id="controlset-reset"
+            type="reset"
+            value="Reset">
+        </form>
+      </section>
     </div>
 
-    <!-- ControlSetDetailView template -->
-    <script type="text/template" id="controlset-tmpl">
-      <h3><%= name %></h3>
-      <p><%= description %></p>
+    <!-- ControlSetDetailView table row template -->
+    <script type="text/template" id="remote-cs-row-tmpl">
+      <td><%= name %></td>
+      <td><%= configType %></td>
+      <td><%= description %></td>
+      <td>
+        <button class="controlset-delete">Delete</button>
+      </td>
     </script>
 
     <!-- jQuery -->

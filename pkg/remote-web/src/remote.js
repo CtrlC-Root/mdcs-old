@@ -44,36 +44,41 @@ $(function(){
     },
   });
 
-  // ControlSet Detail view
+  // ControlSet Detail views
   // ********************************
-  var ControlSetDetailView = Backbone.View.extend({
-    tagName: 'div',
-    className: 'controlset',
-    template: _.template($('#controlset-tmpl').html()),
+  var ControlSetRowView = Backbone.View.extend({
+    tagName: 'tr',
+    template: _.template($('#remote-cs-row-tmpl').html()),
+    events: {
+      'click button.controlset-delete': 'onDelete'
+    },
     initialize: function() {
       this.listenTo(this.model, 'change', this.render);
       this.listenTo(this.model, 'destroy', this.remove);
     },
     render: function() {
-      var html = this.template(this.model.toJSON());
-      this.$el.html(html);
-
+      this.$el.html(this.template(this.model.attributes));
       return this;
+    },
+    onDelete: function() {
+      this.model.destroy();
     }
   });
 
-  // ControlSet List view
+  // ControlSet List views
   // ********************************
-  var ControlSetListView = Backbone.View.extend({
+  var ControlSetTableView = Backbone.View.extend({
     initialize: function() {
       this.listenTo(this.collection, 'update sync', this.render);
       this.collection.fetch();
     },
     render: function() {
-      this.$el.empty();
+      var $tbody = this.$('tbody');
+      $tbody.empty();
+
       this.collection.each(function(model) {
-        var item = new ControlSetDetailView({model: model});
-        this.$el.append(item.render().$el);
+        var item = new ControlSetRowView({model: model});
+        $tbody.append(item.render().$el);
       }, this);
 
       return this;
@@ -84,13 +89,37 @@ $(function(){
   // ********************************
   var RemoteView = Backbone.View.extend({
     el: $("#remote"),
+    events: {
+      'click #controlset-create': 'onCreate'
+    },
     initialize: function() {
       // control sets
       this.controlSets = new ControlSetCollection();
-      this.controlSetsList = new ControlSetListView({
-        el: this.$('.controlsets'),
+      this.controlSetsList = new ControlSetTableView({
+        el: this.$('.remote-controlsets table'),
         collection: this.controlSets,
       });
+    },
+    onCreate: function(event) {
+      // don't submit the form
+      event.preventDefault();
+
+      // retrieve form values
+      var $name = this.$('#controlset-name');
+      var $configType = this.$('#controlset-configType');
+      var $description = this.$('#controlset-description');
+
+      // TODO: validation
+
+      // create the new control set
+      this.controlSets.create({
+        name: $name.val(),
+        configType: $configType.val(),
+        description: $description.val()
+      });
+
+      // reset the form
+      this.$('#controlset-reset').click();
     }
   });
 

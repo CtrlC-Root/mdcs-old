@@ -16,6 +16,7 @@
   </head>
   <body>
     <!-- Application container -->
+    <h1>Remote</h1>
     <div id="remote" class="container"></div>
 
     <!-- DashboardView template -->
@@ -69,13 +70,59 @@
       <td><%= model.configType %></td>
       <td><%= model.description %></td>
       <td>
-        <button data-action="delete">Delete</button>
+        <a href="#" data-action="delete">Delete</a>
       </td>
     </script>
 
     <!-- ControlSetView template -->
     <script type="text/template" id="remote-controlset-tmpl">
-      <h2><%= model.name %></h2>
+      <h2>Control Set: <%= model.name %></h2>
+
+      <div class="row">
+        <div class="six columns">
+          <label for="<%= vid %>-name">Name</label>
+          <input id="<%= vid %>-name"
+            type="text"
+            class="u-full-width"
+            value="<%= model.name %>">
+
+          <label for="<%= vid %>-configType">Config Type</label>
+          <select id="<%= vid %>-configType" class="u-full-width">
+            <option value="lua">Lua</option>
+          </select>
+
+          <label for="<%= vid %>-description">Description</label>
+          <input id="<%= vid %>-description"
+            type="text"
+            class="u-full-width"
+            value="<%= model.description %>">
+        </div>
+
+        <div class="six columns">
+          <table id="<%= vid %>-controls" class="u-full-width">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>one</code></td>
+                <td>Button</td>
+                <td>
+                  <a href="#" data-action="delete">Delete</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <label for="<%= vid %>-config">Config</label>
+      <textarea id="<%= vid %>-config"
+        class="u-full-width"><%= model.config %></textarea>
     </script>
 
     <!-- jQuery -->

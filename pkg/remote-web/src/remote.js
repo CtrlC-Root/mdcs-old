@@ -50,7 +50,7 @@ $(function(){
     tagName: 'tr',
     template: _.template($('#remote-cs-row-tmpl').html()),
     events: {
-      'click button[data-action=delete]': 'onDelete'
+      'click a[data-action=delete]': 'onDelete'
     },
     initialize: function() {
       this.vid = _.uniqueId();
@@ -65,7 +65,8 @@ $(function(){
 
       return this;
     },
-    onDelete: function() {
+    onDelete: function(event) {
+      event.preventDefault();
       this.model.destroy();
     }
   });

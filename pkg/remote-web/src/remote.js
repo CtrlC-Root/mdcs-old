@@ -137,29 +137,44 @@ $(function(){
     }
   });
 
+  var ControlSetView = Backbone.View.extend({
+    template: _.template($('#remote-controlset-tmpl').html()),
+    initialize: function() {
+      this.vid = _.uniqueId();
+      this.listenTo(this.model, 'sync change', this.render);
+      //this.listenTo(this.model, 'destroy', this.remove);
+      this.model.fetch();
+    },
+    render: function() {
+      this.$el.html(this.template({
+        'vid': this.vid,
+        'model': this.model.attributes
+      }));
+
+      return this;
+    }
+  });
+
   // Application router
   // ********************************
   var RemoteRouter = Backbone.Router.extend({
     routes: {
       'dashboard':        'dashboard',
-      'controlset/:uuid': 'controlSet'
+      'controlset/:uuid': 'controlSet',
+
+      '*path':            'dashboard'
     },
     activeView: null,
     dashboard: function() {
-      if (this.activeView) {
-        this.activeView.remove();
-      }
-
       this.activeView = new DashboardView({
         el: $('#remote')
       });
     },
     controlSet: function(uuid) {
-      if (this.activeView) {
-        this.activeView.remove();
-      }
-
-      this.activeView = null;
+      this.activeView = new ControlSetView({
+        el: $('#remote'),
+        model: new ControlSet({uuid: uuid})
+      });
     }
   });
 
@@ -167,7 +182,6 @@ $(function(){
   // ********************************
   var router = new RemoteRouter();
   Backbone.history.start();
-  router.navigate("dashboard", {trigger: true});
 
   // DEBUG
   // ********************************

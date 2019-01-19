@@ -17,22 +17,10 @@
   <body>
     <!-- RemoteView -->
     <div id="remote" class="container">
-      <section class="remote-controlsets">
-        <!-- ControlSetTableView -->
-        <table class="u-full-width">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Config Type</th>
-              <th>Description</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </section>
+      <!-- ControlSetTableView -->
+      <section class="remote-controlsets"></section>
 
+      <!-- RemoteView -->
       <section class="remote-controlsets-create">
         <form>
           <label for="controlset-name">Name</label>
@@ -57,6 +45,22 @@
         </form>
       </section>
     </div>
+
+    <!-- ControlSetTableView template -->
+    <script type="text/template" id="remote-cs-table-tmpl">
+      <table class="u-full-width">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Config Type</th>
+            <th>Description</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </script>
 
     <!-- ControlSetDetailView table row template -->
     <script type="text/template" id="remote-cs-row-tmpl">

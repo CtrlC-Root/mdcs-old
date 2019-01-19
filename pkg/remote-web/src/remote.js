@@ -68,14 +68,16 @@ $(function(){
   // ControlSet List views
   // ********************************
   var ControlSetTableView = Backbone.View.extend({
+    template: _.template($('#remote-cs-table-tmpl').html()),
     initialize: function() {
       this.listenTo(this.collection, 'update sync', this.render);
       this.collection.fetch();
     },
     render: function() {
+      this.$el.html(this.template());
       var $tbody = this.$('tbody');
-      $tbody.empty();
 
+      $tbody.empty();
       this.collection.each(function(model) {
         var item = new ControlSetRowView({model: model});
         $tbody.append(item.render().$el);
@@ -96,7 +98,7 @@ $(function(){
       // control sets
       this.controlSets = new ControlSetCollection();
       this.controlSetsList = new ControlSetTableView({
-        el: this.$('.remote-controlsets table'),
+        el: this.$('.remote-controlsets'),
         collection: this.controlSets,
       });
     },

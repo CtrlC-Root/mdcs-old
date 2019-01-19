@@ -15,36 +15,36 @@
     <title>MDCS Remote</title>
   </head>
   <body>
-    <!-- RemoteView -->
-    <div id="remote" class="container">
-      <!-- ControlSetTableView -->
-      <section class="remote-controlsets"></section>
+    <!-- Application container -->
+    <div id="remote" class="container"></div>
 
-      <!-- RemoteView -->
-      <section class="remote-controlsets-create">
+    <!-- DashboardView template -->
+    <script type="text/template" id="remote-dashboard-tmpl">
+      <section id="<%= vid %>-controlsets"></section>
+      <section id="<%= vid %>-create">
         <form>
-          <label for="controlset-name">Name</label>
-          <input id="controlset-name" type="text" class="u-full-width">
+          <label for="<%= vid %>-name">Name</label>
+          <input id="<%= vid %>-name" type="text" class="u-full-width">
 
-          <label for="controlset-configType">Config Type</label>
-          <select id="controlset-configType" class="u-full-width">
+          <label for="<%= vid %>-configType">Config Type</label>
+          <select id="<%= vid %>-configType" class="u-full-width">
             <option value="lua">Lua</option>
           </select>
 
-          <label for="controlset-description">Description</label>
-          <input id="controlset-description" type="text" class="u-full-width">
+          <label for="<%= vid %>-description">Description</label>
+          <input id="<%= vid %>-description" type="text" class="u-full-width">
 
-          <input id="controlset-create"
+          <input data-action="create"
             type="submit"
             class="button-primary"
             value="Create">
 
-          <input id="controlset-reset"
+          <input data-action="reset"
             type="reset"
             value="Reset">
         </form>
       </section>
-    </div>
+    </script>
 
     <!-- ControlSetTableView template -->
     <script type="text/template" id="remote-cs-table-tmpl">
@@ -57,18 +57,19 @@
             <th></th>
           </tr>
         </thead>
-        <tbody>
-        </tbody>
+        <tbody></tbody>
       </table>
     </script>
 
     <!-- ControlSetRowView template -->
     <script type="text/template" id="remote-cs-row-tmpl">
-      <td><%= name %></td>
-      <td><%= configType %></td>
-      <td><%= description %></td>
       <td>
-        <button class="controlset-delete">Delete</button>
+        <a href="#controlset/<%= model.uuid %>"><%= model.name %></a>
+      </td>
+      <td><%= model.configType %></td>
+      <td><%= model.description %></td>
+      <td>
+        <button data-action="delete">Delete</button>
       </td>
     </script>
 

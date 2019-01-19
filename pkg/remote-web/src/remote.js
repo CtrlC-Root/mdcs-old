@@ -1,6 +1,6 @@
 // Application code is loaded by jQuery once the DOM is ready.
 $(function(){
-  // ControlSet Model (ESksfnYfHPrPc5Rb5Cdfgk)
+  // ControlSet Model
   // ********************************
   var ControlSet = Backbone.Model.extend({
     urlRoot: function() {

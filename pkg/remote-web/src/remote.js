@@ -1,3 +1,8 @@
+// https://stackoverflow.com/questions/7348988/backbone-js-events-not-firing-after-re-render
+// https://stackoverflow.com/questions/12028835/backbone-event-lost-in-re-render/12029250#12029250
+// http://www.jquerybyexample.net/2012/05/empty-vs-remove-vs-detach-jquery.html
+// https://www.joezimjs.com/javascript/backbone-js-subview-rendering-trick/
+
 // Application code is loaded by jQuery once the DOM is ready.
 $(function(){
   // ControlSet Model
@@ -140,6 +145,10 @@ $(function(){
 
   var ControlSetView = Backbone.View.extend({
     template: _.template($('#remote-controlset-tmpl').html()),
+    events: {
+      'click button[data-action=save]':    'onSave',
+      'click button[data-action=refresh]': 'onRefresh'
+    },
     initialize: function() {
       this.vid = _.uniqueId();
       this.listenTo(this.model, 'sync change', this.render);
@@ -153,6 +162,18 @@ $(function(){
       }));
 
       return this;
+    },
+    onSave: function() {
+      // TODO: validation
+      this.model.save({
+        name: this.$(`#${this.vid}-name`).val(),
+        configType: this.$(`#${this.vid}-configType`).val(),
+        description: this.$(`#${this.vid}-description`).val(),
+        config: this.$(`#${this.vid}-config`).val(),
+      });
+    },
+    onRefresh: function() {
+      this.model.fetch();
     }
   });
 

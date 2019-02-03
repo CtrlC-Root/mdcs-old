@@ -177,18 +177,27 @@ $(function(){
   // ********************************
   var RemoteRouter = Backbone.Router.extend({
     routes: {
-      'dashboard':        'dashboard',
-      'controlset/:uuid': 'controlSet',
+      'dashboard':        'showDashboard',
+      'controlset/:uuid': 'showControlSet',
 
-      '*path':            'dashboard'
+      '*path':            'showDashboard'
     },
     activeView: null,
-    dashboard: function() {
+    removeActiveView: function() {
+      if (this.activeView != null) {
+        this.activeView.undelegateEvents();
+      }
+
+      this.activeView = null;
+    },
+    showDashboard: function() {
+      this.removeActiveView();
       this.activeView = new DashboardView({
         el: $('#remote')
       });
     },
-    controlSet: function(uuid) {
+    showControlSet: function(uuid) {
+      this.removeActiveView();
       this.activeView = new ControlSetView({
         el: $('#remote'),
         model: new ControlSet({uuid: uuid})

@@ -58,13 +58,12 @@ $(function(){
       'click a[data-action=delete]': 'onDelete'
     },
     initialize: function() {
-      this.vid = _.uniqueId();
       this.listenTo(this.model, 'change', this.render);
       this.listenTo(this.model, 'destroy', this.remove);
     },
     render: function() {
       this.$el.html(this.template({
-        'vid': this.vid,
+        'vid': this.cid,
         'model': this.model.attributes
       }));
 
@@ -81,12 +80,11 @@ $(function(){
   var ControlSetTableView = Backbone.View.extend({
     template: _.template($('#remote-cs-table-tmpl').html()),
     initialize: function() {
-      this.vid = _.uniqueId();
       this.listenTo(this.collection, 'update sync', this.render);
       this.collection.fetch();
     },
     render: function() {
-      this.$el.html(this.template({'vid': this.vid}));
+      this.$el.html(this.template({'vid': this.cid}));
       var $tbody = this.$('tbody');
 
       $tbody.empty();
@@ -108,13 +106,12 @@ $(function(){
     },
     initialize: function() {
       this.controlSets = new ControlSetCollection();
-      this.vid = _.uniqueId();
       this.render();
     },
     render: function() {
-      this.$el.html(this.template({'vid': this.vid}));
+      this.$el.html(this.template({'vid': this.cid}));
       new ControlSetTableView({
-        el: this.$(`#${this.vid}-controlsets`),
+        el: this.$(`#${this.cid}-controlsets`),
         collection: this.controlSets
       });
 
@@ -125,9 +122,9 @@ $(function(){
       event.preventDefault();
 
       // retrieve form values
-      var $name = this.$(`#${this.vid}-name`);
-      var $configType = this.$(`#${this.vid}-configType`);
-      var $description = this.$(`#${this.vid}-description`);
+      var $name = this.$(`#${this.cid}-name`);
+      var $configType = this.$(`#${this.cid}-configType`);
+      var $description = this.$(`#${this.cid}-description`);
 
       // TODO: validation
 
@@ -150,14 +147,13 @@ $(function(){
       'click button[data-action=refresh]': 'onRefresh'
     },
     initialize: function() {
-      this.vid = _.uniqueId();
       this.listenTo(this.model, 'sync change', this.render);
       //this.listenTo(this.model, 'destroy', this.remove);
       this.model.fetch();
     },
     render: function() {
       this.$el.html(this.template({
-        'vid': this.vid,
+        'vid': this.cid,
         'model': this.model.attributes
       }));
 
@@ -166,10 +162,10 @@ $(function(){
     onSave: function() {
       // TODO: validation
       this.model.save({
-        name: this.$(`#${this.vid}-name`).val(),
-        configType: this.$(`#${this.vid}-configType`).val(),
-        description: this.$(`#${this.vid}-description`).val(),
-        config: this.$(`#${this.vid}-config`).val(),
+        name: this.$(`#${this.cid}-name`).val(),
+        configType: this.$(`#${this.cid}-configType`).val(),
+        description: this.$(`#${this.cid}-description`).val(),
+        config: this.$(`#${this.cid}-config`).val(),
       });
     },
     onRefresh: function() {

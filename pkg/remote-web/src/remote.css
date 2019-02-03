@@ -1,3 +1,32 @@
 h1, h2, h3, h4, h5, h6 {
   text-align: center;
 }
+
+table {
+  border-spacing: 0;
+}
+
+table tbody tr:hover {
+  background-color: #F1F1F1;
+}
+
+/* overwrite skeleton td:first-child, th:first-child */
+td, th {
+  padding: 12px 15px !important;
+}
+
+.card {
+  padding: 12px;
+  margin-bottom: 1.5rem;
+
+  border: 1px solid #888;
+  border-radius: 4px;
+}
+
+.card-placeholder {
+  border-style: dashed;
+}
+
+.card input:last-child {
+  margin-bottom: 0;
+}

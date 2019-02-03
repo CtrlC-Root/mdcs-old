@@ -78,45 +78,62 @@
     <script type="text/template" id="remote-controlset-tmpl">
       <h2>Control Set: <%= model.name %></h2>
 
-      <div class="row">
-        <div class="six columns">
-          <label for="<%= vid %>-name">Name</label>
-          <input id="<%= vid %>-name"
-            type="text"
-            class="u-full-width"
-            value="<%= model.name %>">
+      <label for="<%= vid %>-name">Name</label>
+      <input id="<%= vid %>-name"
+        type="text"
+        class="u-full-width"
+        value="<%= model.name %>">
 
-          <label for="<%= vid %>-configType">Config Type</label>
-          <select id="<%= vid %>-configType" class="u-full-width">
-            <option value="lua">Lua</option>
+      <label for="<%= vid %>-configType">Config Type</label>
+      <select id="<%= vid %>-configType" class="u-full-width">
+        <option value="lua">Lua</option>
+      </select>
+
+      <label for="<%= vid %>-description">Description</label>
+      <input id="<%= vid %>-description"
+        type="text"
+        class="u-full-width"
+        value="<%= model.description %>">
+
+      <label>Controls</label>
+      <div class="row">
+        <div class="four columns card">
+          <label>Name</label>
+          <input type="text" class="u-full-width" value="one" />
+
+          <label>Type</label>
+          <select class="u-full-width">
+            <option value="button">Button</option>
+            <option value="color">Color</option>
           </select>
 
-          <label for="<%= vid %>-description">Description</label>
-          <input id="<%= vid %>-description"
-            type="text"
-            class="u-full-width"
-            value="<%= model.description %>">
+          <label>Title</label>
+          <input type="text" class="u-full-width" value="Click Me" />
         </div>
 
-        <div class="six columns">
-          <table id="<%= vid %>-controls" class="u-full-width">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>one</code></td>
-                <td>Button</td>
-                <td>
-                  <a href="#" data-action="delete">Delete</a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="four columns card">
+          <label>Name</label>
+          <input type="text" class="u-full-width" value="one" />
+
+          <label>Type</label>
+          <select class="u-full-width">
+            <option value="button">Button</option>
+            <option value="color">Color</option>
+          </select>
+
+          <label>Title</label>
+          <input type="text" class="u-full-width" value="Click Me" />
+        </div>
+
+        <div class="four columns card card-placeholder">
+          <label>Name</label>
+          <input type="text" class="u-full-width" placeholder="Name" />
+
+          <label>Type</label>
+          <select class="u-full-width">
+            <option value="button">Button</option>
+            <option value="color">Color</option>
+          </select>
         </div>
       </div>
 

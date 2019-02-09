@@ -5,6 +5,100 @@
 
 // Application code is loaded by jQuery once the DOM is ready.
 $(function(){
+  // Control Models
+  // ********************************
+  var Control = Backbone.Model.extend({
+    urlRoot: function() {
+      return new URL('control/', window.location.href).href;
+    },
+    idAttribute: 'uuid',
+    defaults: {
+      uuid: null,
+      controlSetUuid: '',
+      name: '',
+      type: '',
+      description: '',
+      button: {
+        title: ''
+      },
+      color: {},
+    },
+    parse: function(data, options) {
+      var generic = {
+        uuid: data.uuid,
+        controlSetUuid: data.controlset_uuid,
+        name: data.name,
+        type: data.type.toLowerCase(),
+        description: data.description,
+      };
+
+      switch (generic.type) {
+        case 'button':
+          return Object.assign(generic, {
+            button: {
+              title: data.button.title,
+            }
+          });
+
+        case 'color':
+          return Object.assign(generic, {color: {}});
+      }
+
+      console.warn('unknown control type: %s', generic.type);
+      return generic;
+    },
+    toJSON: function() {
+      var data = this.attributes;
+      var generic = {
+        uuid: data.uuid,
+        controlset_uuid: data.controlSetUuid,
+        name: data.name,
+        type: data.type.toUpperCase(),
+        description: data.description,
+      };
+
+      switch (data.type) {
+        case 'button':
+          return Object.assign(generic, {
+            button: {
+              title: data.button.title,
+            }
+          });
+
+        case 'color':
+          return Object.assign(generic, {color: {}});
+      }
+
+      console.warn('unknown control type: %s', generic.type);
+      return generic;
+    },
+  });
+
+  // Control Collection
+  // ********************************
+  var ControlCollection = Backbone.Collection.extend({
+    model: Control,
+    url: function() {
+      return new URL('control/', window.location.href).href;
+    },
+    initialize: function(models, options) {
+      this.controlSet = null;
+      if (options !== undefined) {
+        if ('controlSet' in options) {
+          this.controlSet = options.controlSet;
+        }
+      }
+    },
+    parse: function(data) {
+      var controls = Backbone.Collection.prototype.parse.apply(this, arguments);
+      if (this.controlSet == null) {
+        return controls;
+      }
+
+      return controls.filter(control => control.controlset_uuid == this.controlSet.attributes.uuid);
+    },
+  });
+
   // ControlSet Model
   // ********************************
   var ControlSet = Backbone.Model.extend({
@@ -142,20 +236,62 @@ $(function(){
 
   var ControlSetView = Backbone.View.extend({
     template: _.template($('#remote-controlset-tmpl').html()),
+    buttonTemplate: _.template($('#remote-controlcard-button-tmpl').html()),
+    colorTemplate: _.template($('#remote-controlcard-color-tmpl').html()),
     events: {
       'click button[data-action=save]':    'onSave',
       'click button[data-action=refresh]': 'onRefresh'
     },
     initialize: function() {
+      this.controls = new ControlCollection(null, {controlSet: this.model});
+
+      // XXX: this results in multiple calls to this.render() but
+      // ideally there would only be one
+
       this.listenTo(this.model, 'sync change', this.render);
-      //this.listenTo(this.model, 'destroy', this.remove);
+      this.listenTo(this.controls, 'sync update', this.render);
+
       this.model.fetch();
+      this.controls.fetch();
     },
     render: function() {
       this.$el.html(this.template({
         'vid': this.cid,
         'model': this.model.attributes
       }));
+
+      var cards = this.controls.map(function(control) {
+        switch (control.get('type')) {
+          case 'button':
+            return $(this.buttonTemplate({
+              'vid': this.cid,
+              'model': control.attributes
+            }));
+
+          case 'color':
+            return $(this.colorTemplate({
+              'vid': this.cid,
+              'model': control.attributes
+            }));
+        }
+      }, this);
+
+      // TODO: add the placeholder card for creating a new control
+
+      var controls = this.$(`#${this.cid}-controls`);
+      controls.empty();
+
+      while (cards.length > 0) {
+        var row = controls.find('div.row').last();
+        if (row.length == 0) {
+          row = $('<div/>', {class: 'row'});
+          controls.append(row);
+        }
+
+        var column = $('<div/>', {class: 'four columns'});
+        column.append(cards.shift());
+        column.appendTo(row);
+      }
 
       return this;
     },
@@ -212,6 +348,8 @@ $(function(){
 
   // DEBUG
   // ********************************
+  window.Control = Control;
+  window.ControlCollection = ControlCollection;
   window.ControlSet = ControlSet;
   window.ControlSetCollection = ControlSetCollection;
 });

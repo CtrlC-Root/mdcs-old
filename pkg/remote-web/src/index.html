@@ -96,46 +96,7 @@
         value="<%= model.description %>">
 
       <label>Controls</label>
-      <div class="row">
-        <div class="four columns card">
-          <label>Name</label>
-          <input type="text" class="u-full-width" value="one" />
-
-          <label>Type</label>
-          <select class="u-full-width">
-            <option value="button">Button</option>
-            <option value="color">Color</option>
-          </select>
-
-          <label>Title</label>
-          <input type="text" class="u-full-width" value="Click Me" />
-        </div>
-
-        <div class="four columns card">
-          <label>Name</label>
-          <input type="text" class="u-full-width" value="one" />
-
-          <label>Type</label>
-          <select class="u-full-width">
-            <option value="button">Button</option>
-            <option value="color">Color</option>
-          </select>
-
-          <label>Title</label>
-          <input type="text" class="u-full-width" value="Click Me" />
-        </div>
-
-        <div class="four columns card card-placeholder">
-          <label>Name</label>
-          <input type="text" class="u-full-width" placeholder="Name" />
-
-          <label>Type</label>
-          <select class="u-full-width">
-            <option value="button">Button</option>
-            <option value="color">Color</option>
-          </select>
-        </div>
-      </div>
+      <div id="<%= vid %>-controls"></div>
 
       <label for="<%= vid %>-config">Config</label>
       <textarea id="<%= vid %>-config"
@@ -143,6 +104,25 @@
 
       <button class="button-primary" data-action="save">Save</button>
       <button data-action="refresh">Refresh</button>
+    </script>
+
+    <!-- ButtonControlCard template -->
+    <script type="text/template" id="remote-controlcard-button-tmpl">
+      <div class="card">
+        <label>Name</label>
+        <input type="text" class="u-full-width" value="<%= model.name %>" />
+
+        <label>Title</label>
+        <input type="text" class="u-full-width" value="<%= model.button.title %>" />
+      </div>
+    </script>
+
+    <!-- ColorControlCard template -->
+    <script type="text/template" id="remote-controlcard-color-tmpl">
+      <div class="card">
+        <label>Name</label>
+        <input type="text" class="u-full-width" value="<%= model.name %>" />
+      </div>
     </script>
 
     <!-- jQuery -->
